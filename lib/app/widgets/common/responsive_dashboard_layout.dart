@@ -7,7 +7,6 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/app_decorations.dart';
 import '../../../core/utils/responsive_helper.dart';
 import '../dashboard_navigation.dart';
-import 'responsive_top_navbar.dart';
 
 class ResponsiveDashboardLayout extends StatefulWidget {
   final String title;
@@ -69,17 +68,6 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: AppColors.background,
-      appBar: ResponsiveTopNavbar(
-        title: widget.title,
-        userRole: widget.userRole,
-        userName: widget.userName,
-        onMenuPressed: () {
-          if (isMobile || isTablet) {
-            _scaffoldKey.currentState?.openDrawer();
-          }
-        },
-        onLogoutPressed: widget.onLogoutPressed,
-      ),
       drawer: (isMobile || isTablet) ? _buildResponsiveDrawer() : null,
       body: Container(
         decoration: AppDecorations.backgroundGradient(),

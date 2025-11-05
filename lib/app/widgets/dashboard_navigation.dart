@@ -235,28 +235,38 @@ class DashboardNavigation extends StatelessWidget {
       padding: EdgeInsets.all(16.r),
       child: Column(
         children: [
-          // Quick Actions
-          Container(
-            padding: EdgeInsets.all(16.r),
-            decoration: AppDecorations.glassmorphicContainer(opacity: 0.1),
-            child: Column(
-              children: [
-                Text(
-                  'Quick Actions',
-                  style: AppTextStyles.subtitle2.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+          // Logout Button
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: _handleLogout,
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(color: Colors.red.withOpacity(0.3)),
                 ),
-                SizedBox(height: 12.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildQuickAction(FontAwesomeIcons.qrcode, 'QR Scan'),
-                    _buildQuickAction(FontAwesomeIcons.bell, 'Alerts'),
-                    _buildQuickAction(FontAwesomeIcons.headset, 'Support'),
+                    Icon(
+                      FontAwesomeIcons.rightFromBracket,
+                      size: 16.sp,
+                      color: Colors.red,
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      'Logout',
+                      style: AppTextStyles.button.copyWith(
+                        color: Colors.red,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
 
@@ -272,25 +282,21 @@ class DashboardNavigation extends StatelessWidget {
     ).animate().fadeIn(delay: 1000.ms).slideY(begin: 0.3);
   }
 
-  Widget _buildQuickAction(IconData icon, String label) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () => _handleQuickAction(label),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(12.r),
-              decoration: BoxDecoration(
-                color: _getRoleColor(userRole).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Icon(icon, size: 20.sp, color: _getRoleColor(userRole)),
-            ),
-            SizedBox(height: 6.h),
-            Text(label, style: AppTextStyles.caption.copyWith(fontSize: 10.sp)),
-          ],
-        ),
+  void _handleLogout() {
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Confirm Logout'),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              Get.offAllNamed('/');
+            },
+            child: Text('Logout', style: TextStyle(color: Colors.red)),
+          ),
+        ],
       ),
     );
   }
@@ -341,15 +347,6 @@ class DashboardNavigation extends StatelessWidget {
       default:
         return FontAwesomeIcons.user;
     }
-  }
-
-  void _handleQuickAction(String action) {
-    Get.snackbar(
-      'Quick Action',
-      '$action feature coming soon!',
-      backgroundColor: _getRoleColor(userRole).withOpacity(0.9),
-      colorText: Colors.white,
-    );
   }
 }
 

@@ -74,16 +74,21 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(flex: 3, child: _buildCalendarCard(controller)),
+          Expanded(
+            flex: 3,
+            child: SingleChildScrollView(child: _buildCalendarCard(controller)),
+          ),
           SizedBox(width: 24.w),
           Expanded(
             flex: 2,
-            child: Column(
-              children: [
-                _buildDayDetailsCard(controller),
-                SizedBox(height: 24.h),
-                _buildAttendanceStats(controller),
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildDayDetailsCard(controller),
+                  SizedBox(height: 24.h),
+                  _buildAttendanceStats(controller),
+                ],
+              ),
             ),
           ),
         ],
@@ -97,6 +102,7 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
       decoration: AppDecorations.floatingCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           // Header
           Row(
@@ -545,10 +551,12 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
 
   Widget _buildAttendanceStats(StudentController controller) {
     return Container(
+      constraints: BoxConstraints(maxHeight: 400.h),
       padding: EdgeInsets.all(24.r),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text('Monthly Overview', style: AppTextStyles.heading5),
           SizedBox(height: 20.h),
