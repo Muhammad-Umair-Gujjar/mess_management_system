@@ -54,8 +54,8 @@ class EnhancedStudentDashboard extends StatelessWidget {
 
   Widget _buildTopAppBar(StudentController controller) {
     return Container(
-      height: 60.h,
-      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 8.h),
+      height: 80.h,
+      padding: EdgeInsets.symmetric(horizontal: 32.w,),
       child: GlassmorphicContainer(
         width: double.infinity,
         height: double.infinity,

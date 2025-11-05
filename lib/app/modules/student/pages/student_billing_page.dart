@@ -68,6 +68,7 @@ class _StudentBillingPageState extends State<StudentBillingPage>
     return SingleChildScrollView(
       padding: ResponsiveHelper.getResponsivePadding(context),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           _buildCurrentBillCard(controller),
           SizedBox(height: 24.h),
@@ -76,13 +77,14 @@ class _StudentBillingPageState extends State<StudentBillingPage>
           _buildPaymentHistoryCard(controller),
           SizedBox(height: 24.h),
           _buildMealRatesCard(controller),
+          SizedBox(height: 20.h), // Add bottom padding
         ],
       ),
     );
   }
 
   Widget _buildDesktopLayout(StudentController controller) {
-    return Padding(
+    return SingleChildScrollView(
       padding: ResponsiveHelper.getResponsivePadding(context),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,6 +92,7 @@ class _StudentBillingPageState extends State<StudentBillingPage>
           Expanded(
             flex: 2,
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 _buildCurrentBillCard(controller),
                 SizedBox(height: 24.h),
@@ -101,6 +104,7 @@ class _StudentBillingPageState extends State<StudentBillingPage>
           Expanded(
             flex: 3,
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 _buildPaymentHistoryCard(controller),
                 SizedBox(height: 24.h),
@@ -393,6 +397,7 @@ class _StudentBillingPageState extends State<StudentBillingPage>
       decoration: AppDecorations.floatingCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -420,18 +425,28 @@ class _StudentBillingPageState extends State<StudentBillingPage>
 
           SizedBox(height: 24.h),
 
-          // Payment History List
-          ...List.generate(6, (index) {
-            final month = DateTime.now().subtract(Duration(days: index * 30));
-            final amount = (2500 + (index * 150)).toDouble();
+          // Payment History List with constrained height
+          ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: 400.h),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: List.generate(6, (index) {
+                  final month = DateTime.now().subtract(
+                    Duration(days: index * 30),
+                  );
+                  final amount = (2500 + (index * 150)).toDouble();
 
-            return _buildPaymentHistoryItem(
-              DateFormat('MMM yyyy').format(month),
-              amount,
-              index == 0 ? 'Current' : 'Paid',
-              index,
-            );
-          }),
+                  return _buildPaymentHistoryItem(
+                    DateFormat('MMM yyyy').format(month),
+                    amount,
+                    index == 0 ? 'Current' : 'Paid',
+                    index,
+                  );
+                }),
+              ),
+            ),
+          ),
         ],
       ),
     ).animate(delay: 400.ms).fadeIn(duration: 800.ms).slideX(begin: 0.3);

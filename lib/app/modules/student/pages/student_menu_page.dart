@@ -52,42 +52,50 @@ class _StudentMenuPageState extends State<StudentMenuPage>
   }
 
   Widget _buildMobileLayout(StudentController controller) {
-    return Column(
-      children: [
-        _buildHeader(controller),
-        _buildWeekNavigator(),
-        Expanded(child: _buildMenuContent(controller)),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildHeader(controller),
+          _buildWeekNavigator(),
+          _buildMenuContent(controller),
+        ],
+      ),
     );
   }
 
   Widget _buildDesktopLayout(StudentController controller) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          flex: 1,
-          child: Padding(
-            padding: ResponsiveHelper.getResponsivePadding(context),
-            child: Column(
-              children: [
-                _buildHeader(controller),
-                SizedBox(height: 24.h),
-                _buildWeekNavigator(),
-                SizedBox(height: 24.h),
-                _buildNutritionalInfo(controller),
-              ],
+    return SingleChildScrollView(
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: ResponsiveHelper.getResponsivePadding(context),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildHeader(controller),
+                    SizedBox(height: 24.h),
+                    _buildWeekNavigator(),
+                    SizedBox(height: 24.h),
+                    _buildNutritionalInfo(controller),
+                  ],
+                ),
+              ),
             ),
-          ),
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: ResponsiveHelper.getResponsivePadding(context),
+                child: _buildMenuContent(controller),
+              ),
+            ),
+          ],
         ),
-        Expanded(
-          flex: 2,
-          child: Padding(
-            padding: ResponsiveHelper.getResponsivePadding(context),
-            child: _buildMenuContent(controller),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
@@ -96,50 +104,58 @@ class _StudentMenuPageState extends State<StudentMenuPage>
       padding: ResponsiveHelper.getResponsivePadding(context),
       child: Row(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Weekly Menu',
-                style: AppTextStyles.heading4.copyWith(
-                  fontSize: ResponsiveHelper.getResponsiveFontSize(
-                    context,
-                    mobile: 24,
-                    tablet: 28,
-                    desktop: 32,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Weekly Menu',
+                  style: AppTextStyles.heading4.copyWith(
+                    fontSize: ResponsiveHelper.getResponsiveFontSize(
+                      context,
+                      mobile: 24,
+                      tablet: 28,
+                      desktop: 32,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 4.h),
-              Text(
-                'Plan your meals for the week',
-                style: AppTextStyles.body2.copyWith(color: AppColors.textLight),
-              ),
-            ],
-          ),
-          const Spacer(),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-            decoration: BoxDecoration(
-              gradient: AppColors.primaryGradient,
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  FontAwesomeIcons.calendarWeek,
-                  size: 16.sp,
-                  color: Colors.white,
-                ),
-                SizedBox(width: 8.w),
+                SizedBox(height: 4.h),
                 Text(
-                  'This Week',
+                  'Plan your meals for the week',
                   style: AppTextStyles.body2.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+                    color: AppColors.textLight,
                   ),
                 ),
               ],
+            ),
+          ),
+          SizedBox(width: 16.w),
+          Flexible(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+              decoration: BoxDecoration(
+                gradient: AppColors.primaryGradient,
+                borderRadius: BorderRadius.circular(20.r),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    FontAwesomeIcons.calendarWeek,
+                    size: 16.sp,
+                    color: Colors.white,
+                  ),
+                  SizedBox(width: 8.w),
+                  Text(
+                    'This Week',
+                    style: AppTextStyles.body2.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -153,7 +169,7 @@ class _StudentMenuPageState extends State<StudentMenuPage>
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
 
     return Container(
-      height: 80.h,
+      height: 90.h,
       margin: EdgeInsets.symmetric(
         horizontal: ResponsiveHelper.getResponsivePadding(context).horizontal,
       ),
@@ -178,7 +194,10 @@ class _StudentMenuPageState extends State<StudentMenuPage>
                 Container(
                       width: 70.w,
                       margin: EdgeInsets.only(right: 12.w),
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 8.h,
+                        horizontal: 4.w,
+                      ),
                       decoration: BoxDecoration(
                         gradient: isSelected ? AppColors.primaryGradient : null,
                         color: isSelected
@@ -205,6 +224,7 @@ class _StudentMenuPageState extends State<StudentMenuPage>
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             weekDays[index],
@@ -213,15 +233,17 @@ class _StudentMenuPageState extends State<StudentMenuPage>
                                   ? Colors.white
                                   : AppColors.textSecondary,
                               fontWeight: FontWeight.w600,
+                              fontSize: 12.sp,
                             ),
                           ),
-                          SizedBox(height: 4.h),
+                          SizedBox(height: 2.h),
                           Text(
                             dayDate.day.toString(),
                             style: AppTextStyles.heading5.copyWith(
                               color: isSelected
                                   ? Colors.white
                                   : AppColors.textPrimary,
+                              fontSize: 16.sp,
                             ),
                           ),
                         ],
@@ -243,6 +265,7 @@ class _StudentMenuPageState extends State<StudentMenuPage>
       ),
       decoration: AppDecorations.floatingCard(),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           // Tab Bar
           Container(
@@ -288,8 +311,9 @@ class _StudentMenuPageState extends State<StudentMenuPage>
             ),
           ),
 
-          // Tab Content
-          Expanded(
+          // Tab Content - Fixed height to avoid unbounded constraints
+          SizedBox(
+            height: 400.h, // Fixed height instead of Expanded
             child: TabBarView(
               controller: _tabController,
               children: [
@@ -323,6 +347,7 @@ class _StudentMenuPageState extends State<StudentMenuPage>
       return SingleChildScrollView(
         padding: EdgeInsets.all(20.r),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildMealHeader(menuItem),
@@ -343,30 +368,35 @@ class _StudentMenuPageState extends State<StudentMenuPage>
   Widget _buildEmptyMealState(MealType mealType) {
     final mealName = mealType == MealType.breakfast ? 'Breakfast' : 'Dinner';
 
-    return Container(
-      padding: EdgeInsets.all(40.r),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            mealType == MealType.breakfast
-                ? FontAwesomeIcons.sun
-                : FontAwesomeIcons.moon,
-            size: 64.sp,
-            color: AppColors.textLight,
-          ),
-          SizedBox(height: 20.h),
-          Text(
-            'No $mealName Planned',
-            style: AppTextStyles.heading5.copyWith(color: AppColors.textLight),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            'Menu for this day is not available yet.',
-            style: AppTextStyles.body2.copyWith(color: AppColors.textLight),
-            textAlign: TextAlign.center,
-          ),
-        ],
+    return Center(
+      child: Container(
+        padding: EdgeInsets.all(40.r),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              mealType == MealType.breakfast
+                  ? FontAwesomeIcons.sun
+                  : FontAwesomeIcons.moon,
+              size: 64.sp,
+              color: AppColors.textLight,
+            ),
+            SizedBox(height: 20.h),
+            Text(
+              'No $mealName Planned',
+              style: AppTextStyles.heading5.copyWith(
+                color: AppColors.textLight,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              'Menu for this day is not available yet.',
+              style: AppTextStyles.body2.copyWith(color: AppColors.textLight),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

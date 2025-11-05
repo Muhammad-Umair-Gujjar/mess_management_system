@@ -77,15 +77,25 @@ class _StudentFeedbackPageState extends State<StudentFeedbackPage>
   }
 
   Widget _buildMobileLayout(StudentController controller) {
-    return SingleChildScrollView(
-      padding: ResponsiveHelper.getResponsivePadding(context),
-      child: Column(
-        children: [
-          _buildFeedbackForm(controller),
-          SizedBox(height: 24.h),
-          _buildRecentFeedbacks(controller),
-        ],
-      ),
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            padding: ResponsiveHelper.getResponsivePadding(context),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildFeedbackForm(controller),
+                SizedBox(height: 24.h),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  child: _buildRecentFeedbacks(controller),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -95,7 +105,10 @@ class _StudentFeedbackPageState extends State<StudentFeedbackPage>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(flex: 2, child: _buildFeedbackForm(controller)),
+          Expanded(
+            flex: 2,
+            child: SingleChildScrollView(child: _buildFeedbackForm(controller)),
+          ),
           SizedBox(width: 24.w),
           Expanded(flex: 3, child: _buildRecentFeedbacks(controller)),
         ],
@@ -110,6 +123,7 @@ class _StudentFeedbackPageState extends State<StudentFeedbackPage>
       child: Form(
         key: _formKey,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header
@@ -368,6 +382,7 @@ class _StudentFeedbackPageState extends State<StudentFeedbackPage>
                       ),
               ),
             ),
+            SizedBox(height: 20.h), // Add bottom padding to prevent overflow
           ],
         ),
       ),
@@ -380,6 +395,7 @@ class _StudentFeedbackPageState extends State<StudentFeedbackPage>
       decoration: AppDecorations.floatingCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -408,23 +424,36 @@ class _StudentFeedbackPageState extends State<StudentFeedbackPage>
           SizedBox(height: 24.h),
 
           // Feedback List
-          Obx(() {
-            // Create some dummy feedback data for demonstration
-            final feedbacks = _getDummyFeedbacks();
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Create some dummy feedback data for demonstration
+                  Builder(
+                    builder: (context) {
+                      final feedbacks = _getDummyFeedbacks();
 
-            if (feedbacks.isEmpty) {
-              return _buildEmptyFeedbackState();
-            }
+                      if (feedbacks.isEmpty) {
+                        return _buildEmptyFeedbackState();
+                      }
 
-            return ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: feedbacks.length,
-              separatorBuilder: (context, index) => SizedBox(height: 16.h),
-              itemBuilder: (context, index) =>
-                  _buildFeedbackCard(feedbacks[index], index),
-            );
-          }),
+                      return ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: feedbacks.length,
+                        separatorBuilder: (context, index) =>
+                            SizedBox(height: 16.h),
+                        itemBuilder: (context, index) =>
+                            _buildFeedbackCard(feedbacks[index], index),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 20.h), // Add bottom padding
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     ).animate(delay: 400.ms).fadeIn(duration: 800.ms).slideX(begin: 0.3);
