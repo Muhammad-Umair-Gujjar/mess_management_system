@@ -182,6 +182,7 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage>
   /// Builds the menu items tab with filters and item list
   Widget _buildMenuItemsTab() {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         MenuFilters(
           searchController: _searchController,
@@ -260,6 +261,7 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage>
     return Container(
       margin: EdgeInsets.all(24.r),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [

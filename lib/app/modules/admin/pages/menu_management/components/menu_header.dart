@@ -43,6 +43,7 @@ class MenuHeader extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   'Menu Management',
@@ -62,13 +63,14 @@ class MenuHeader extends StatelessWidget {
           ),
 
           // Add new item button
-          ReusableButton(
-            text: 'Add New Item',
-            onPressed: onAddItem,
-            type: ButtonType.primary,
-            size: ButtonSize.medium,
-            width: 140.w,
-            icon: FontAwesomeIcons.plus,
+          Flexible(
+            child: ReusableButton(
+              text: 'Add New Item',
+              onPressed: onAddItem,
+              type: ButtonType.primary,
+              size: ButtonSize.medium,
+              icon: FontAwesomeIcons.plus,
+            ),
           ),
         ],
       ),

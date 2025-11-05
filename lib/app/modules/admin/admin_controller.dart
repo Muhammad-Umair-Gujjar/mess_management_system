@@ -24,26 +24,6 @@ class AdminController extends GetxController {
       title: 'Menu Management',
       route: '/admin/menu',
     ),
-    const NavigationItem(
-      icon: FontAwesomeIcons.indianRupee,
-      title: 'Rate Configuration',
-      route: '/admin/rates',
-    ),
-    const NavigationItem(
-      icon: FontAwesomeIcons.chartLine,
-      title: 'Analytics',
-      route: '/admin/analytics',
-    ),
-    const NavigationItem(
-      icon: FontAwesomeIcons.bell,
-      title: 'Notifications',
-      route: '/admin/notifications',
-    ),
-    const NavigationItem(
-      icon: FontAwesomeIcons.gear,
-      title: 'Settings',
-      route: '/admin/settings',
-    ),
   ];
 
   // System stats
@@ -195,14 +175,6 @@ class AdminController extends GetxController {
         return 'User Management';
       case 2:
         return 'Menu Management';
-      case 3:
-        return 'Rate Configuration';
-      case 4:
-        return 'Analytics';
-      case 5:
-        return 'Notifications';
-      case 6:
-        return 'Settings';
       default:
         return 'Admin Dashboard';
     }
@@ -217,14 +189,6 @@ class AdminController extends GetxController {
         return 'Manage users, staff, and permissions';
       case 2:
         return 'Configure menu items and categories';
-      case 3:
-        return 'Set meal rates and pricing';
-      case 4:
-        return 'View detailed reports and insights';
-      case 5:
-        return 'Manage system notifications';
-      case 6:
-        return 'System configuration and preferences';
       default:
         return 'System overview and quick actions';
     }

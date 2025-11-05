@@ -283,7 +283,15 @@ class _ReusableButtonState extends State<ReusableButton>
           Icon(widget.icon, size: _getIconSize(), color: _getTextColor()),
           SizedBox(width: 8.w),
         ],
-        Text(widget.text, style: _getTextStyle(), textAlign: TextAlign.center),
+        Flexible(
+          child: Text(
+            widget.text,
+            style: _getTextStyle(),
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ),
       ],
     );
   }

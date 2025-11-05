@@ -13,10 +13,6 @@ import 'admin_controller.dart';
 import 'pages/admin_overview_page.dart';
 import 'pages/admin_user_management_page.dart';
 import 'pages/menu_management/admin_menu_management_page.dart';
-import 'pages/admin_rate_configuration_page.dart';
-import 'pages/admin_analytics_page.dart';
-import 'pages/admin_notifications_page.dart';
-import 'pages/admin_settings_page.dart';
 
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
@@ -159,14 +155,6 @@ class AdminDashboard extends StatelessWidget {
         return const AdminUserManagementPage();
       case 2:
         return const AdminMenuManagementPage();
-      case 3:
-        return const AdminRateConfigurationPage();
-      case 4:
-        return const AdminAnalyticsPage();
-      case 5:
-        return const AdminNotificationsPage();
-      case 6:
-        return const AdminSettingsPage();
       default:
         return const AdminOverviewPage();
     }

@@ -43,9 +43,41 @@ class ResponsiveHelper {
     int tablet = 2,
     int desktop = 3,
   }) {
-    if (isMobile(context)) return mobile;
-    if (isTablet(context)) return tablet;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // For very small screens (< 400px), force to 2 columns max
+    if (screenWidth < 400) return mobile.clamp(1, 2);
+    // For small mobile screens (400-600px), use mobile setting
+    if (screenWidth < 600) return mobile;
+    // For large mobile/small tablet (600-768px), use mobile setting but allow more
+    if (screenWidth < 768) return mobile.clamp(2, 3);
+    // For tablet (768-1024px), use tablet setting
+    if (screenWidth < 1024) return tablet;
+    // For desktop (1024px+), use desktop setting
     return desktop;
+  }
+
+  static double getCardAspectRatio(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Adjust aspect ratio based on screen size for better fit
+    if (screenWidth < 400) return 0.9; // More square on very small screens
+    if (screenWidth < 600) return 1.0; // Square on mobile
+    if (screenWidth < 768) return 1.1; // Slightly taller on large mobile
+    if (screenWidth < 1024) return 1.2; // More rectangular on tablet
+    return 1.3; // Most rectangular on desktop
+  }
+
+  static EdgeInsets getCardPadding(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    if (screenWidth < 400)
+      return EdgeInsets.all(6.r); // Very small padding for tiny screens
+    if (screenWidth < 600)
+      return EdgeInsets.all(8.r); // Small padding for mobile
+    if (screenWidth < 1024)
+      return EdgeInsets.all(10.r); // Medium padding for tablet
+    return EdgeInsets.all(12.r); // Larger padding for desktop
   }
 
   static double getCardWidth(BuildContext context) {

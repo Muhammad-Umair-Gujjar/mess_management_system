@@ -35,6 +35,7 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage> {
       padding: EdgeInsets.all(24.r),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           // Filters and Actions
           _buildFiltersAndActions(isMobile),
@@ -53,6 +54,7 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage> {
       padding: EdgeInsets.all(20.r),
       decoration: AppDecorations.floatingCard(),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           if (isMobile) ...[
             // Mobile Layout
@@ -64,32 +66,49 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage> {
             SizedBox(height: 16.h),
             Row(
               children: [
-                Expanded(
+                Flexible(
                   child: DropdownButtonFormField<String>(
+                    style: TextStyle(fontSize: 10.sp),
                     decoration: const InputDecoration(
                       labelText: 'Role',
+                      labelStyle: TextStyle(fontSize: 9),
                       border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 2,
+                        vertical: 4,
+                      ),
+                      isDense: true,
                     ),
                     value: _selectedRole.isEmpty ? null : _selectedRole,
                     items: ['Student', 'Staff', 'Admin'].map((role) {
-                      return DropdownMenuItem(value: role, child: Text(role));
+                      return DropdownMenuItem(
+                        value: role,
+                        child: Text(role, style: TextStyle(fontSize: 10.sp)),
+                      );
                     }).toList(),
                     onChanged: (value) =>
                         setState(() => _selectedRole = value ?? ''),
                   ),
                 ),
-                SizedBox(width: 12.w),
-                Expanded(
+                SizedBox(width: 4.w),
+                Flexible(
                   child: DropdownButtonFormField<String>(
+                    style: TextStyle(fontSize: 10.sp),
                     decoration: const InputDecoration(
                       labelText: 'Status',
+                      labelStyle: TextStyle(fontSize: 9),
                       border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 2,
+                        vertical: 4,
+                      ),
+                      isDense: true,
                     ),
                     value: _selectedStatus.isEmpty ? null : _selectedStatus,
                     items: ['Active', 'Inactive', 'Suspended'].map((status) {
                       return DropdownMenuItem(
                         value: status,
-                        child: Text(status),
+                        child: Text(status, style: TextStyle(fontSize: 10.sp)),
                       );
                     }).toList(),
                     onChanged: (value) =>
@@ -110,14 +129,6 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage> {
                     onPressed: _showAddUserDialog,
                   ),
                 ),
-                SizedBox(width: 12.w),
-                ReusableButton(
-                  text: 'Export',
-                  icon: FontAwesomeIcons.download,
-                  type: ButtonType.outline,
-                  size: ButtonSize.medium,
-                  onPressed: () {},
-                ),
               ],
             ),
           ] else ...[
@@ -134,33 +145,50 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage> {
                 ),
                 SizedBox(width: 16.w),
                 SizedBox(
-                  width: 150.w,
+                  width: 100.w,
                   child: DropdownButtonFormField<String>(
+                    style: TextStyle(fontSize: 10.sp),
                     decoration: const InputDecoration(
                       labelText: 'Role',
+                      labelStyle: TextStyle(fontSize: 9),
                       border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 2,
+                        vertical: 4,
+                      ),
+                      isDense: true,
                     ),
                     value: _selectedRole.isEmpty ? null : _selectedRole,
                     items: ['Student', 'Staff', 'Admin'].map((role) {
-                      return DropdownMenuItem(value: role, child: Text(role));
+                      return DropdownMenuItem(
+                        value: role,
+                        child: Text(role, style: TextStyle(fontSize: 10.sp)),
+                      );
                     }).toList(),
                     onChanged: (value) =>
                         setState(() => _selectedRole = value ?? ''),
                   ),
                 ),
-                SizedBox(width: 16.w),
+                SizedBox(width: 6.w),
                 SizedBox(
-                  width: 150.w,
+                  width: 100.w,
                   child: DropdownButtonFormField<String>(
+                    style: TextStyle(fontSize: 10.sp),
                     decoration: const InputDecoration(
                       labelText: 'Status',
+                      labelStyle: TextStyle(fontSize: 9),
                       border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 2,
+                        vertical: 4,
+                      ),
+                      isDense: true,
                     ),
                     value: _selectedStatus.isEmpty ? null : _selectedStatus,
                     items: ['Active', 'Inactive', 'Suspended'].map((status) {
                       return DropdownMenuItem(
                         value: status,
-                        child: Text(status),
+                        child: Text(status, style: TextStyle(fontSize: 10.sp)),
                       );
                     }).toList(),
                     onChanged: (value) =>
@@ -174,14 +202,6 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage> {
                   type: ButtonType.primary,
                   size: ButtonSize.medium,
                   onPressed: _showAddUserDialog,
-                ),
-                SizedBox(width: 12.w),
-                ReusableButton(
-                  text: 'Export',
-                  icon: FontAwesomeIcons.download,
-                  type: ButtonType.outline,
-                  size: ButtonSize.medium,
-                  onPressed: () {},
                 ),
               ],
             ),
@@ -204,6 +224,7 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage> {
         decoration: AppDecorations.floatingCard(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               children: [
@@ -300,6 +321,7 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage> {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Row(
                 children: [
@@ -332,6 +354,7 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage> {
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Row(
                           children: [
@@ -382,6 +405,7 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage> {
                   // Status and Actions
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
                         padding: EdgeInsets.symmetric(
