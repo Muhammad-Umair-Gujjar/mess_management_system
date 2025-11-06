@@ -100,7 +100,7 @@ class _StaffAttendancePageState extends State<StaffAttendancePage>
               ],
               selectedColor: Colors.white,
               unselectedColor: AppColors.textSecondary,
-              selectedBackgroundColor: AppColors.primary,
+              selectedBackgroundColor: AppColors.staffRole,
               unselectedBackgroundColor: Colors.transparent,
               borderRadius: BorderRadius.circular(12.r),
               selectedTextStyle: AppTextStyles.body1.copyWith(

@@ -9,6 +9,8 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../widgets/common/reusable_button.dart';
+import '../../../widgets/custom_grid_view.dart';
+
 import '../admin_controller.dart';
 
 class AdminOverviewPage extends StatelessWidget {
@@ -119,140 +121,41 @@ class AdminOverviewPage extends StatelessWidget {
         },
       ];
 
-      // Responsive grid configuration for 4 boxes per row on large screens
-      final crossAxisCount = ResponsiveHelper.getGridCrossAxisCount(
-        context,
-        mobile: 2, // 2 columns on mobile
-        tablet: 3, // 3 columns on tablet
-        desktop: 4, // 4 columns on desktop
-      );
+      // Convert to GridCardData format
+      final gridData = overviewStats
+          .map(
+            (stat) => GridCardData(
+              title: stat['title'] as String,
+              value: stat['value'] as String,
+              icon: stat['icon'] as IconData,
+              color: stat['color'] as Color,
+              trend: stat['trend'] as String?,
+              trendIcon: (stat['trendUp'] as bool)
+                  ? FontAwesomeIcons.arrowTrendUp
+                  : FontAwesomeIcons.arrowTrendDown,
+              trendColor: (stat['trendUp'] as bool)
+                  ? AppColors.success
+                  : AppColors.error,
+            ),
+          )
+          .toList();
 
-      final aspectRatio = ResponsiveHelper.getCardAspectRatio(context);
-
-      return GridView.builder(
+      return CustomGridView(
+        data: gridData,
+        crossAxisCount: 4, // Desktop: 4 columns
+        mobileCrossAxisCount: 2, // Mobile: 2 columns
+        tabletCrossAxisCount: 3, // Tablet: 3 columns
+        crossAxisSpacing: 12.0,
+        mainAxisSpacing: 12.0,
+        childAspectRatio: 1.6, // Increased for larger content
+        mobileAspectRatio: 1.4, // Increased for larger content
+        tabletAspectRatio: 1.5, // Increased for larger content
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: crossAxisCount,
-          crossAxisSpacing: ResponsiveHelper.isMobile(context) ? 6.w : 8.w,
-          mainAxisSpacing: ResponsiveHelper.isMobile(context) ? 6.h : 8.h,
-          childAspectRatio: aspectRatio,
-        ),
-        itemCount: overviewStats.length,
-        itemBuilder: (context, index) {
-          final stat = overviewStats[index];
-          return _buildStatCard(stat, index);
-        },
+        cardStyle: CustomGridCardStyle.gradient,
+        showAnimation: true,
       );
     });
-  }
-
-  Widget _buildStatCard(Map<String, dynamic> stat, int index) {
-    final color = stat['color'] as Color;
-
-    return Container(
-          padding: EdgeInsets.all(16.r), // Further reduced for compact design
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [color.withOpacity(0.1), color.withOpacity(0.05)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(
-              20.r,
-            ), // Reduced from 16.r to 8.r
-            border: Border.all(color: color.withOpacity(0.2)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(12.r), // Reduced from 12.r to 6.r
-                    decoration: BoxDecoration(
-                      color: color.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(
-                        12.r,
-                      ), // Reduced from 12.r to 6.r
-                    ),
-                    child: Icon(
-                      stat['icon'],
-                      size: 30.sp,
-                      color: color,
-                    ), // Reduced from 20.sp to 12.sp
-                  ),
-                  const Spacer(),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.w, // Reduced from 8.w to 4.w
-                      vertical: 4.h, // Reduced from 4.h to 2.h
-                    ),
-                    decoration: BoxDecoration(
-                      color: (stat['trendUp'] as bool)
-                          ? AppColors.success.withOpacity(0.2)
-                          : AppColors.error.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(
-                        12.r,
-                      ), // Reduced from 12.r to 6.r
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          (stat['trendUp'] as bool)
-                              ? FontAwesomeIcons.arrowTrendUp
-                              : FontAwesomeIcons.arrowTrendDown,
-                          size: 15.sp, // Reduced from 10.sp to 6.sp
-                          color: (stat['trendUp'] as bool)
-                              ? AppColors.success
-                              : AppColors.error,
-                        ),
-                        SizedBox(width: 4.w), // Reduced from 4.w to 2.w
-                        Text(
-                          stat['trend'],
-                          style: AppTextStyles.caption.copyWith(
-                            color: (stat['trendUp'] as bool)
-                                ? AppColors.success
-                                : AppColors.error,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15.sp, // Added smaller font size
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 6.h), // Added small spacing
-              Text(
-                stat['value'],
-                style: AppTextStyles.heading4.copyWith(
-                  // Changed from heading3 to heading4
-                  color: color,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 25.sp, // Added explicit smaller size
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              SizedBox(height: 4.h), // Reduced from 4.h to 2.h
-              Text(
-                stat['title'],
-                style: AppTextStyles.body2.copyWith(
-                  color: AppColors.textSecondary,
-                  fontSize: 25.sp, // Added smaller font size
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        )
-        .animate(delay: Duration(milliseconds: 100 * index))
-        .fadeIn(duration: 600.ms)
-        .scale(begin: const Offset(0.8, 0.8));
   }
 
   Widget _buildRecentActivity(AdminController controller) {

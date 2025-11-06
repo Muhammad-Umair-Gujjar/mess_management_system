@@ -11,6 +11,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../widgets/common/reusable_button.dart';
 import '../../../widgets/custom_tab_bar.dart';
+import '../../../widgets/custom_grid_view.dart';
 
 import '../staff_controller.dart';
 
@@ -216,126 +217,60 @@ class _StaffReportsPageState extends State<StaffReportsPage> {
   }
 
   Widget _buildAttendanceSummaryCards(bool isMobile) {
-    final summaryData = [
-      {
-        'title': 'Total Students',
-        'value': '234',
-        'icon': FontAwesomeIcons.users,
-        'color': AppColors.primary,
-      },
-      {
-        'title': 'Present Today',
-        'value': '201',
-        'icon': FontAwesomeIcons.userCheck,
-        'color': AppColors.success,
-      },
-      {
-        'title': 'Absent Today',
-        'value': '33',
-        'icon': FontAwesomeIcons.userXmark,
-        'color': AppColors.error,
-      },
-      {
-        'title': 'Attendance Rate',
-        'value': '86%',
-        'icon': FontAwesomeIcons.chartLine,
-        'color': AppColors.warning,
-      },
+    final gridData = [
+      GridCardData(
+        title: 'Total Students',
+        value: '234',
+        icon: FontAwesomeIcons.users,
+        color: AppColors.primary,
+        trend: '+5%',
+        trendIcon: FontAwesomeIcons.arrowTrendUp,
+        trendColor: AppColors.success,
+      ),
+      GridCardData(
+        title: 'Present Today',
+        value: '201',
+        icon: FontAwesomeIcons.userCheck,
+        color: AppColors.success,
+        trend: '+3%',
+        trendIcon: FontAwesomeIcons.arrowTrendUp,
+        trendColor: AppColors.success,
+      ),
+      GridCardData(
+        title: 'Absent Today',
+        value: '33',
+        icon: FontAwesomeIcons.userXmark,
+        color: AppColors.error,
+        trend: '-2%',
+        trendIcon: FontAwesomeIcons.arrowTrendDown,
+        trendColor: AppColors.error,
+      ),
+      GridCardData(
+        title: 'Attendance Rate',
+        value: '86%',
+        icon: FontAwesomeIcons.chartLine,
+        color: AppColors.warning,
+        trend: '+1%',
+        trendIcon: FontAwesomeIcons.arrowTrendUp,
+        trendColor: AppColors.success,
+      ),
     ];
 
-    return GridView.builder(
+    return CustomGridView(
+      data: gridData,
+      crossAxisCount: 4, // Desktop: 4 columns
+      mobileCrossAxisCount: 2, // Mobile: 2 columns
+      tabletCrossAxisCount: 3, // Tablet: 3 columns
+      crossAxisSpacing: 12.0,
+      mainAxisSpacing: 12.0,
+      childAspectRatio: 1.6, // Increased for larger content
+      mobileAspectRatio: 1.4, // Increased for larger content
+      tabletAspectRatio: 1.5, // Increased for larger content
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: isMobile ? 2 : 4,
-        crossAxisSpacing: 16.w,
-        mainAxisSpacing: 16.h,
-        childAspectRatio: isMobile ? 1.5 : 1.7,
-      ),
-      itemCount: summaryData.length,
-      itemBuilder: (context, index) {
-        final data = summaryData[index];
-        return _buildSummaryCard(
-          data['title'] as String,
-          data['value'] as String,
-          data['icon'] as IconData,
-          data['color'] as Color,
-          index,
-        );
-      },
+      cardStyle: CustomGridCardStyle.gradient,
+      showAnimation: true,
     );
-  }
-
-  Widget _buildSummaryCard(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-    int index,
-  ) {
-    return Container(
-          padding: EdgeInsets.all(12.r),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [color.withOpacity(0.1), color.withOpacity(0.05)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(color: color.withOpacity(0.2)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(6.r),
-                    decoration: BoxDecoration(
-                      color: color.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Icon(icon, size: 14.sp, color: color),
-                  ),
-                  const Spacer(),
-                  Icon(
-                    FontAwesomeIcons.arrowTrendUp,
-                    size: 10.sp,
-                    color: color,
-                  ),
-                ],
-              ),
-              SizedBox(height: 6.h),
-              Flexible(
-                child: Text(
-                  value,
-                  style: AppTextStyles.heading5.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.sp,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              SizedBox(height: 1.h),
-              Flexible(
-                child: Text(
-                  title,
-                  style: AppTextStyles.caption.copyWith(
-                    color: AppColors.textSecondary,
-                    fontSize: 10.sp,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-              ),
-            ],
-          ),
-        )
-        .animate(delay: Duration(milliseconds: 100 * index))
-        .fadeIn(duration: 600.ms)
-        .scale(begin: const Offset(0.8, 0.8));
   }
 
   Widget _buildAttendanceChart() {
@@ -540,53 +475,59 @@ class _StaffReportsPageState extends State<StaffReportsPage> {
   }
 
   Widget _buildBillingSummaryCards(bool isMobile) {
-    final billingData = [
-      {
-        'title': 'Monthly Revenue',
-        'value': '₹2,45,600',
-        'icon': FontAwesomeIcons.indianRupee,
-        'color': AppColors.success,
-      },
-      {
-        'title': 'Pending Bills',
-        'value': '₹45,200',
-        'icon': FontAwesomeIcons.clock,
-        'color': AppColors.warning,
-      },
-      {
-        'title': 'Overdue Amount',
-        'value': '₹12,300',
-        'icon': FontAwesomeIcons.exclamation,
-        'color': AppColors.error,
-      },
-      {
-        'title': 'Collection Rate',
-        'value': '94%',
-        'icon': FontAwesomeIcons.percentage,
-        'color': AppColors.info,
-      },
+    final gridData = [
+      GridCardData(
+        title: 'Monthly Revenue',
+        value: '₹2,45,600',
+        icon: FontAwesomeIcons.indianRupeeSign,
+        color: AppColors.success,
+        trend: '+12%',
+        trendIcon: FontAwesomeIcons.arrowTrendUp,
+        trendColor: AppColors.success,
+      ),
+      GridCardData(
+        title: 'Pending Bills',
+        value: '₹45,200',
+        icon: FontAwesomeIcons.clock,
+        color: AppColors.warning,
+        trend: '-5%',
+        trendIcon: FontAwesomeIcons.arrowTrendDown,
+        trendColor: AppColors.error,
+      ),
+      GridCardData(
+        title: 'Overdue Amount',
+        value: '₹12,300',
+        icon: FontAwesomeIcons.exclamation,
+        color: AppColors.error,
+        trend: '-8%',
+        trendIcon: FontAwesomeIcons.arrowTrendDown,
+        trendColor: AppColors.success,
+      ),
+      GridCardData(
+        title: 'Collection Rate',
+        value: '94%',
+        icon: FontAwesomeIcons.percent,
+        color: AppColors.info,
+        trend: '+3%',
+        trendIcon: FontAwesomeIcons.arrowTrendUp,
+        trendColor: AppColors.success,
+      ),
     ];
 
-    return GridView.builder(
+    return CustomGridView(
+      data: gridData,
+      crossAxisCount: 4, // Desktop: 4 columns
+      mobileCrossAxisCount: 2, // Mobile: 2 columns
+      tabletCrossAxisCount: 3, // Tablet: 3 columns
+      crossAxisSpacing: 12.0,
+      mainAxisSpacing: 12.0,
+      childAspectRatio: 1.6, // Increased for larger content
+      mobileAspectRatio: 1.4, // Increased for larger content
+      tabletAspectRatio: 1.5, // Increased for larger content
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: isMobile ? 2 : 4,
-        crossAxisSpacing: 16.w,
-        mainAxisSpacing: 16.h,
-        childAspectRatio: isMobile ? 1.4 : 1.6,
-      ),
-      itemCount: billingData.length,
-      itemBuilder: (context, index) {
-        final data = billingData[index];
-        return _buildSummaryCard(
-          data['title'] as String,
-          data['value'] as String,
-          data['icon'] as IconData,
-          data['color'] as Color,
-          index,
-        );
-      },
+      cardStyle: CustomGridCardStyle.gradient,
+      showAnimation: true,
     );
   }
 

@@ -60,7 +60,7 @@ class CustomGridView extends StatelessWidget {
     this.tabletCrossAxisCount,
     this.crossAxisSpacing = 16.0,
     this.mainAxisSpacing = 16.0,
-    this.childAspectRatio = 1.0,
+    this.childAspectRatio = 1.2,
     this.mobileAspectRatio,
     this.tabletAspectRatio,
     this.padding,
@@ -87,24 +87,27 @@ class CustomGridView extends StatelessWidget {
       currentAspectRatio = tabletAspectRatio ?? childAspectRatio;
     }
 
-    return Container(
-      padding: padding,
-      child: GridView.builder(
-        shrinkWrap: shrinkWrap,
-        physics: physics ?? const NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: currentCrossAxisCount,
-          crossAxisSpacing: crossAxisSpacing.w,
-          mainAxisSpacing: mainAxisSpacing.h,
-          childAspectRatio: currentAspectRatio,
-        ),
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          final item = data[index];
-          return _buildGridCard(item, index);
-        },
+    Widget gridView = GridView.builder(
+      shrinkWrap: shrinkWrap,
+      physics: physics ?? const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: currentCrossAxisCount,
+        crossAxisSpacing: crossAxisSpacing.w,
+        mainAxisSpacing: mainAxisSpacing.h,
+        childAspectRatio: currentAspectRatio,
       ),
+      itemCount: data.length,
+      itemBuilder: (context, index) {
+        final item = data[index];
+        return _buildGridCard(item, index);
+      },
     );
+
+    if (padding != null) {
+      return Padding(padding: padding!, child: gridView);
+    }
+
+    return gridView;
   }
 
   Widget _buildGridCard(GridCardData item, int index) {
@@ -146,7 +149,7 @@ class CustomGridView extends StatelessWidget {
     return GestureDetector(
       onTap: item.onTap,
       child: Container(
-        padding: EdgeInsets.all(16.r),
+        padding: EdgeInsets.all(18.r),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16.r),
@@ -168,7 +171,7 @@ class CustomGridView extends StatelessWidget {
     return GestureDetector(
       onTap: item.onTap,
       child: Container(
-        padding: EdgeInsets.all(16.r),
+        padding: EdgeInsets.all(18.r),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16.r),
@@ -183,7 +186,7 @@ class CustomGridView extends StatelessWidget {
     return GestureDetector(
       onTap: item.onTap,
       child: Container(
-        padding: EdgeInsets.all(16.r),
+        padding: EdgeInsets.all(18.r),
         decoration: BoxDecoration(
           gradient:
               item.gradient ??
@@ -206,7 +209,7 @@ class CustomGridView extends StatelessWidget {
     return GestureDetector(
       onTap: item.onTap,
       child: Container(
-        padding: EdgeInsets.all(16.r),
+        padding: EdgeInsets.all(18.r),
         decoration: BoxDecoration(
           color: item.color.withOpacity(0.05),
           borderRadius: BorderRadius.circular(12.r),
@@ -220,7 +223,7 @@ class CustomGridView extends StatelessWidget {
     return GestureDetector(
       onTap: item.onTap,
       child: Container(
-        padding: EdgeInsets.all(16.r),
+        padding: EdgeInsets.all(18.r),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.1),
           borderRadius: BorderRadius.circular(16.r),
@@ -245,7 +248,6 @@ class CustomGridView extends StatelessWidget {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         // Header with icon and trend
         Row(
@@ -257,25 +259,26 @@ class CustomGridView extends StatelessWidget {
                 color: item.color.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8.r),
               ),
-              child: Icon(item.icon, size: 16.sp, color: item.color),
+              child: Icon(item.icon, size: 25.sp, color: item.color),
             ),
             if (item.trend != null || item.trendIcon != null)
               Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   if (item.trendIcon != null)
                     Icon(
                       item.trendIcon,
-                      size: 12.sp,
+                      size: 20.sp,
                       color: item.trendColor ?? AppColors.success,
                     ),
                   if (item.trend != null) ...[
-                    if (item.trendIcon != null) SizedBox(width: 2.w),
+                    if (item.trendIcon != null) SizedBox(width: 3.w),
                     Text(
                       item.trend!,
                       style: AppTextStyles.caption.copyWith(
                         color: item.trendColor ?? AppColors.success,
                         fontWeight: FontWeight.w600,
-                        fontSize: 10.sp,
+                        fontSize: 16.sp,
                       ),
                     ),
                   ],
@@ -284,52 +287,47 @@ class CustomGridView extends StatelessWidget {
           ],
         ),
 
-        SizedBox(height: 12.h),
+        SizedBox(height: 14.h),
 
         // Value
-        Flexible(
-          child: Text(
-            item.value,
-            style: AppTextStyles.heading4.copyWith(
-              color: item.color,
-              fontWeight: FontWeight.bold,
-              fontSize: 18.sp,
-            ),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
+        Text(
+          item.value,
+          style: AppTextStyles.heading4.copyWith(
+            color: item.color,
+            fontWeight: FontWeight.bold,
+            fontSize: 25.sp,
           ),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
         ),
 
-        SizedBox(height: 4.h),
+        SizedBox(height: 6.h),
 
         // Title and subtitle
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Flexible(
-              child: Text(
-                item.title,
-                style: AppTextStyles.body2.copyWith(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.sp,
+            Text(
+              item.title,
+              style: AppTextStyles.body2.copyWith(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w600,
+                fontSize: 20.sp,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+            if (item.subtitle != null) ...[
+              SizedBox(height: 3.h),
+              Text(
+                item.subtitle!,
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textSecondary,
+                  fontSize: 16.sp,
                 ),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
-              ),
-            ),
-            if (item.subtitle != null) ...[
-              SizedBox(height: 2.h),
-              Flexible(
-                child: Text(
-                  item.subtitle!,
-                  style: AppTextStyles.caption.copyWith(
-                    color: AppColors.textSecondary,
-                    fontSize: 10.sp,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
               ),
             ],
           ],

@@ -7,6 +7,8 @@ import '../../../../core/theme/app_decorations.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../../widgets/custom_grid_view.dart';
+
 import '../student_controller.dart';
 
 class StudentHomePage extends StatelessWidget {
@@ -220,143 +222,65 @@ class StudentHomePage extends StatelessWidget {
       final attendanceRate = controller.attendanceRate.value;
       final monthlyBill = controller.monthlyBilling.value;
 
-      return GridView.count(
+      final gridData = [
+        GridCardData(
+          title: 'Meals Attended',
+          value: '${monthlyStats['attendedMeals']}',
+          subtitle: 'This Month',
+          icon: FontAwesomeIcons.check,
+          color: AppColors.success,
+          trend: '+8%',
+          trendIcon: FontAwesomeIcons.arrowTrendUp,
+          trendColor: AppColors.success,
+        ),
+        GridCardData(
+          title: 'Monthly Bill',
+          value: '₹${monthlyBill.toStringAsFixed(0)}',
+          subtitle: 'Current',
+          icon: FontAwesomeIcons.receipt,
+          color: AppColors.warning,
+          trend: '+5%',
+          trendIcon: FontAwesomeIcons.arrowTrendUp,
+          trendColor: AppColors.success,
+        ),
+        GridCardData(
+          title: 'Attendance Rate',
+          value: '${attendanceRate.toStringAsFixed(1)}%',
+          subtitle: 'Overall',
+          icon: FontAwesomeIcons.chartLine,
+          color: AppColors.primary,
+          trend: '+2%',
+          trendIcon: FontAwesomeIcons.arrowTrendUp,
+          trendColor: AppColors.success,
+        ),
+        GridCardData(
+          title: 'Days Active',
+          value: '${DateTime.now().day}',
+          subtitle: 'This Month',
+          icon: FontAwesomeIcons.calendar,
+          color: AppColors.info,
+          trend: '${DateTime.now().day}d',
+          trendIcon: FontAwesomeIcons.calendar,
+          trendColor: AppColors.info,
+        ),
+      ];
+
+      return CustomGridView(
+        data: gridData,
+        crossAxisCount: 4, // Desktop: 4 columns
+        mobileCrossAxisCount: 2, // Mobile: 2 columns
+        tabletCrossAxisCount: 3, // Tablet: 3 columns
+        crossAxisSpacing: 16.0,
+        mainAxisSpacing: 16.0,
+        childAspectRatio: 1.5, // Increased for larger content
+        mobileAspectRatio: 1.4, // Increased for larger content
+        tabletAspectRatio: 1.45, // Increased for larger content
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: ResponsiveHelper.getGridCrossAxisCount(
-          context,
-          mobile: 2,
-          tablet: 2,
-          desktop: 4,
-        ),
-        mainAxisSpacing: 16.h,
-        crossAxisSpacing: 16.w,
-        childAspectRatio: ResponsiveHelper.isMobile(context) ? 1.3 : 1.2,
-        children: [
-          _buildStatCard(
-            context,
-            title: 'Meals Attended',
-            value: '${monthlyStats['attendedMeals']}',
-            subtitle: 'This Month',
-            icon: FontAwesomeIcons.check,
-            color: AppColors.success,
-            index: 0,
-          ),
-          _buildStatCard(
-            context,
-            title: 'Monthly Bill',
-            value: '₹${monthlyBill.toStringAsFixed(0)}',
-            subtitle: 'Current',
-            icon: FontAwesomeIcons.receipt,
-            color: AppColors.warning,
-            index: 1,
-          ),
-          _buildStatCard(
-            context,
-            title: 'Attendance Rate',
-            value: '${attendanceRate.toStringAsFixed(1)}%',
-            subtitle: 'Overall',
-            icon: FontAwesomeIcons.chartLine,
-            color: AppColors.primary,
-            index: 2,
-          ),
-          _buildStatCard(
-            context,
-            title: 'Days Active',
-            value: '${DateTime.now().day}',
-            subtitle: 'This Month',
-            icon: FontAwesomeIcons.calendar,
-            color: AppColors.info,
-            index: 3,
-          ),
-        ],
+        cardStyle: CustomGridCardStyle.elevated,
+        showAnimation: true,
       );
     });
-  }
-
-  Widget _buildStatCard(
-    BuildContext context, {
-    required String title,
-    required String value,
-    required String subtitle,
-    required IconData icon,
-    required Color color,
-    required int index,
-  }) {
-    return Container(
-          padding: EdgeInsets.all(
-            ResponsiveHelper.isMobile(context) ? 16.r : 20.r,
-          ),
-          decoration: AppDecorations.floatingCard(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(12.r),
-                    decoration: BoxDecoration(
-                      color: color.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    child: Icon(
-                      icon,
-                      color: color,
-                      size: ResponsiveHelper.isMobile(context) ? 20.sp : 24.sp,
-                    ),
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 16.h),
-
-              Text(
-                value,
-                style: AppTextStyles.heading4.copyWith(
-                  color: color,
-                  fontSize: ResponsiveHelper.getResponsiveFontSize(
-                    context,
-                    mobile: 20,
-                    tablet: 24,
-                    desktop: 28,
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 8.h),
-
-              Text(
-                title,
-                style: AppTextStyles.subtitle2.copyWith(
-                  fontSize: ResponsiveHelper.getResponsiveFontSize(
-                    context,
-                    mobile: 12,
-                    tablet: 14,
-                    desktop: 16,
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 4.h),
-
-              Text(
-                subtitle,
-                style: AppTextStyles.caption.copyWith(
-                  fontSize: ResponsiveHelper.getResponsiveFontSize(
-                    context,
-                    mobile: 10,
-                    tablet: 11,
-                    desktop: 12,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        )
-        .animate(delay: Duration(milliseconds: 200 + index * 100))
-        .fadeIn(duration: 600.ms)
-        .slideY(begin: 0.3);
   }
 
   Widget _buildTodaysMenu(BuildContext context, StudentController controller) {
