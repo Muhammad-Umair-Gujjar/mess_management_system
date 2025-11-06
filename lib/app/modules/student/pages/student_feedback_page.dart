@@ -9,6 +9,7 @@ import '../../../../core/theme/app_decorations.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../../../core/utils/toast_message.dart';
 import '../student_controller.dart';
 
 class StudentFeedbackPage extends StatefulWidget {
@@ -669,15 +670,7 @@ class _StudentFeedbackPageState extends State<StudentFeedbackPage>
     await Future.delayed(const Duration(seconds: 2));
 
     // Show success message
-    Get.snackbar(
-      'Feedback Submitted',
-      'Thank you for your feedback! We\'ll review it soon.',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: AppColors.success.withOpacity(0.1),
-      colorText: AppColors.success,
-      duration: const Duration(seconds: 3),
-      icon: Icon(FontAwesomeIcons.checkCircle, color: AppColors.success),
-    );
+    ToastMessage.success('Thank you for your feedback! We\'ll review it soon.');
 
     // Clear form
     _messageController.clear();

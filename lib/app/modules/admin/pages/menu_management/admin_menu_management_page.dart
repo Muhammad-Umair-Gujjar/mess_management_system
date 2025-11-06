@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../core/theme/app_decorations.dart';
 import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/utils/toast_message.dart';
 import '../../../../widgets/common/reusable_text_field.dart';
 import '../../../../widgets/custom_tab_bar.dart';
 
@@ -390,7 +391,7 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
 
   void _saveMenuItem(bool isEdit, [Map<String, dynamic>? existingItem]) {
     if (_itemNameController.text.isEmpty || _itemPriceController.text.isEmpty) {
-      Get.snackbar('Error', 'Please fill in required fields');
+      ToastMessage.error('Please fill in required fields');
       return;
     }
 
@@ -422,13 +423,10 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
     });
 
     Navigator.of(context).pop();
-    Get.snackbar(
-      'Success',
+    ToastMessage.success(
       isEdit
           ? 'Menu item updated successfully'
           : 'Menu item added successfully',
-      backgroundColor: Colors.green.withOpacity(0.1),
-      colorText: Colors.green,
     );
   }
 
@@ -436,8 +434,7 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
     setState(() {
       item['isAvailable'] = !item['isAvailable'];
     });
-    Get.snackbar(
-      'Updated',
+    ToastMessage.success(
       'Item ${item['isAvailable'] ? 'enabled' : 'disabled'} successfully',
     );
   }
@@ -459,7 +456,7 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
                 _menuItems.removeWhere((i) => i['id'] == item['id']);
               });
               Navigator.of(context).pop();
-              Get.snackbar('Deleted', 'Menu item deleted successfully');
+              ToastMessage.success('Menu item deleted successfully');
             },
             child: Text('Delete', style: TextStyle(color: Colors.red)),
           ),
@@ -470,7 +467,7 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
 
   void _addCategory() {
     if (_categoryController.text.isEmpty) {
-      Get.snackbar('Error', 'Please enter category name');
+      ToastMessage.error('Please enter category name');
       return;
     }
 
@@ -484,7 +481,7 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
       _categoryController.clear();
     });
 
-    Get.snackbar('Success', 'Category added successfully');
+    ToastMessage.success('Category added successfully');
   }
 
   void _editCategory(Map<String, dynamic> category) {
@@ -514,7 +511,7 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
                 });
                 Navigator.of(context).pop();
                 _categoryController.clear();
-                Get.snackbar('Success', 'Category updated successfully');
+                ToastMessage.success('Category updated successfully');
               }
             },
             child: Text('Update'),
@@ -543,7 +540,7 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
                 _categories.removeWhere((c) => c['id'] == category['id']);
               });
               Navigator.of(context).pop();
-              Get.snackbar('Deleted', 'Category deleted successfully');
+              ToastMessage.success('Category deleted successfully');
             },
             child: Text('Delete', style: TextStyle(color: Colors.red)),
           ),

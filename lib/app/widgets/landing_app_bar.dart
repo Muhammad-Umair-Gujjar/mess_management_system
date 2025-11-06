@@ -7,6 +7,7 @@ import 'package:glassmorphism/glassmorphism.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_decorations.dart';
+import '../../core/utils/toast_message.dart';
 
 class LandingAppBar extends StatelessWidget {
   final bool showBackButton;
@@ -220,13 +221,7 @@ class LandingAppBar extends StatelessWidget {
 
   void _scrollToSection(String section) {
     // In a real implementation, this would scroll to the specific section
-    Get.snackbar(
-      'Navigation',
-      'Scrolling to $section section',
-      backgroundColor: AppColors.primary.withOpacity(0.9),
-      colorText: Colors.white,
-      duration: const Duration(seconds: 2),
-    );
+    ToastMessage.info('Scrolling to $section section');
   }
 
   void _showQuickAccessDialog() {

@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../data/models/student.dart';
+import '../../../core/utils/toast_message.dart';
 import '../../data/models/attendance.dart';
 import '../../data/models/menu.dart';
 import '../../data/services/dummy_data_service.dart';
@@ -153,12 +154,7 @@ class StudentController extends GetxController {
     Future.delayed(const Duration(seconds: 1), () {
       isLoading.value = false;
 
-      Get.snackbar(
-        'Success',
-        'Thank you for your feedback!',
-        snackPosition: SnackPosition.TOP,
-        duration: const Duration(seconds: 3),
-      );
+      ToastMessage.success('Thank you for your feedback!');
     });
   }
 

@@ -9,6 +9,7 @@ import '../../../../core/theme/app_decorations.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../../../core/utils/toast_message.dart';
 import '../../../data/models/menu.dart';
 import '../../../data/models/attendance.dart';
 import '../student_controller.dart';
@@ -666,27 +667,11 @@ class _StudentBillingPageState extends State<StudentBillingPage>
 
   void _downloadPDF() {
     // Implement PDF download functionality
-    Get.snackbar(
-      'Download Started',
-      'Your billing PDF is being generated...',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: AppColors.success.withOpacity(0.1),
-      colorText: AppColors.success,
-      duration: const Duration(seconds: 3),
-      icon: Icon(FontAwesomeIcons.filePdf, color: AppColors.success),
-    );
+    ToastMessage.success('Your billing PDF is being generated...');
   }
 
   void _exportCSV() {
     // Implement CSV export functionality
-    Get.snackbar(
-      'Export Started',
-      'Your billing data is being exported to CSV...',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: AppColors.info.withOpacity(0.1),
-      colorText: AppColors.info,
-      duration: const Duration(seconds: 3),
-      icon: Icon(FontAwesomeIcons.fileCsv, color: AppColors.info),
-    );
+    ToastMessage.info('Your billing data is being exported to CSV...');
   }
 }

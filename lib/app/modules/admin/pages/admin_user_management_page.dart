@@ -8,6 +8,7 @@ import '../../../../core/theme/app_decorations.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../../../core/utils/toast_message.dart';
 import '../../../widgets/common/reusable_button.dart';
 import '../../../widgets/common/reusable_text_field.dart';
 import '../admin_controller.dart';
@@ -550,7 +551,7 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage> {
             size: ButtonSize.small,
             onPressed: () {
               Get.back();
-              Get.snackbar('Success', 'User added successfully');
+              ToastMessage.success('User added successfully');
             },
           ),
         ],

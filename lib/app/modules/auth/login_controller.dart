@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import '../../../core/utils/toast_message.dart';
 
 class LoginController extends GetxController {
   // Observable variables
@@ -30,11 +31,7 @@ class LoginController extends GetxController {
           Get.offNamed('/admin');
           break;
         default:
-          Get.snackbar(
-            'Error',
-            'Invalid role selected',
-            snackPosition: SnackPosition.BOTTOM,
-          );
+          ToastMessage.error('Invalid role selected');
       }
     });
   }

@@ -9,6 +9,7 @@ import '../../../../core/theme/app_decorations.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../../../core/utils/toast_message.dart';
 import '../../../widgets/common/reusable_button.dart';
 import '../../../widgets/common/reusable_text_field.dart';
 import '../staff_controller.dart';
@@ -735,7 +736,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
             size: ButtonSize.small,
             onPressed: () {
               Get.back();
-              _showSuccessSnackbar('Menu updated successfully');
+              ToastMessage.success('Menu updated successfully');
             },
           ),
         ],
@@ -789,7 +790,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
             size: ButtonSize.small,
             onPressed: () {
               Get.back();
-              _showSuccessSnackbar('Menu item added successfully');
+              ToastMessage.success('Menu item added successfully');
             },
           ),
         ],
@@ -798,22 +799,10 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
   }
 
   void _saveWeeklyMenu() {
-    _showSuccessSnackbar('Weekly menu saved successfully');
+    ToastMessage.success('Weekly menu saved successfully');
   }
 
   void _generateRandomMenu() {
-    _showSuccessSnackbar('Random menu generated for the week');
-  }
-
-  void _showSuccessSnackbar(String message) {
-    Get.snackbar(
-      'Success',
-      message,
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: AppColors.success.withOpacity(0.1),
-      colorText: AppColors.success,
-      icon: Icon(FontAwesomeIcons.check, color: AppColors.success),
-      duration: const Duration(seconds: 3),
-    );
+    ToastMessage.success('Random menu generated for the week');
   }
 }

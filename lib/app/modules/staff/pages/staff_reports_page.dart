@@ -9,6 +9,7 @@ import '../../../../core/theme/app_decorations.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../../../core/utils/toast_message.dart';
 import '../../../widgets/common/reusable_button.dart';
 import '../../../widgets/custom_tab_bar.dart';
 import '../../../widgets/custom_grid_view.dart';
@@ -762,14 +763,8 @@ class _StaffReportsPageState extends State<StaffReportsPage> {
   }
 
   void _exportReports() {
-    Get.snackbar(
-      'Export Started',
+    ToastMessage.success(
       'Your report is being generated and will be downloaded shortly.',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: AppColors.success.withOpacity(0.1),
-      colorText: AppColors.success,
-      icon: Icon(FontAwesomeIcons.download, color: AppColors.success),
-      duration: const Duration(seconds: 3),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../data/models/student.dart';
+import '../../../core/utils/toast_message.dart';
 import '../../data/models/attendance.dart';
 import '../../data/models/menu.dart';
 import '../../data/services/dummy_data_service.dart';
@@ -202,13 +203,7 @@ class StaffController extends GetxController {
     filteredStudents.refresh();
 
     // Show success message
-    Get.snackbar(
-      'Success',
-      'Attendance marked for ${_getStudentName(studentId)}',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Get.theme.colorScheme.primary.withOpacity(0.1),
-      colorText: Get.theme.colorScheme.primary,
-    );
+    ToastMessage.success('Attendance marked for ${_getStudentName(studentId)}');
   }
 
   void markAllAttendance(String mealType, DateTime date, bool isPresent) {

@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/dashboard_navigation.dart';
+import '../../../core/utils/toast_message.dart';
 
 class AdminController extends GetxController {
   // Current page index
@@ -214,19 +215,19 @@ class AdminController extends GetxController {
   // User management functions
   void approveUser(String userId) {
     // Implementation for approving user
-    Get.snackbar('Success', 'User approved successfully');
+    ToastMessage.success('User approved successfully');
   }
 
   void rejectUser(String userId) {
     // Implementation for rejecting user
-    Get.snackbar('Success', 'User rejected');
+    ToastMessage.warning('User rejected');
   }
 
   void suspendUser(String userId) {
     final userIndex = users.indexWhere((user) => user['id'] == userId);
     if (userIndex != -1) {
       users[userIndex]['status'] = 'Suspended';
-      Get.snackbar('Success', 'User suspended');
+      ToastMessage.warning('User suspended');
     }
   }
 
@@ -234,7 +235,7 @@ class AdminController extends GetxController {
     final userIndex = users.indexWhere((user) => user['id'] == userId);
     if (userIndex != -1) {
       users[userIndex]['status'] = 'Active';
-      Get.snackbar('Success', 'User activated');
+      ToastMessage.success('User activated');
     }
   }
 
@@ -247,7 +248,7 @@ class AdminController extends GetxController {
       'icon': icon,
       'isActive': true,
     });
-    Get.snackbar('Success', 'Category added successfully');
+    ToastMessage.success('Category added successfully');
   }
 
   void updateMenuCategory(String categoryId, Map<String, dynamic> updates) {
@@ -259,19 +260,19 @@ class AdminController extends GetxController {
         ...menuCategories[categoryIndex],
         ...updates,
       };
-      Get.snackbar('Success', 'Category updated successfully');
+      ToastMessage.success('Category updated successfully');
     }
   }
 
   void deleteMenuCategory(String categoryId) {
     menuCategories.removeWhere((cat) => cat['id'] == categoryId);
-    Get.snackbar('Success', 'Category deleted successfully');
+    ToastMessage.success('Category deleted successfully');
   }
 
   // Rate configuration functions
   void updateRate(String mealType, double newRate) {
     currentRates[mealType] = newRate;
-    Get.snackbar('Success', 'Rate updated successfully');
+    ToastMessage.success('Rate updated successfully');
   }
 
   // Analytics functions
@@ -298,7 +299,7 @@ class AdminController extends GetxController {
     List<String> recipients,
   ) {
     // Implementation for sending bulk notifications
-    Get.snackbar('Success', 'Notification sent to ${recipients.length} users');
+    ToastMessage.success('Notification sent to ${recipients.length} users');
   }
 
   // Filter functions

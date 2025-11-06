@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/theme/app_decorations.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/toast_message.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../widgets/common/reusable_button.dart';
 import '../../../widgets/common/reusable_text_field.dart';
@@ -573,14 +574,8 @@ class _StaffAttendancePageState extends State<StaffAttendancePage>
   }
 
   void _showSuccessSnackbar(bool isPresent) {
-    Get.snackbar(
-      'Success',
+    ToastMessage.success(
       'All students marked as ${isPresent ? 'present' : 'absent'}',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: AppColors.success.withOpacity(0.1),
-      colorText: AppColors.success,
-      icon: Icon(FontAwesomeIcons.check, color: AppColors.success),
-      duration: const Duration(seconds: 3),
     );
   }
 

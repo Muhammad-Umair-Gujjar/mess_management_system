@@ -7,6 +7,7 @@ import '../../../../core/theme/app_decorations.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../../../core/utils/toast_message.dart';
 import '../../../widgets/custom_grid_view.dart';
 
 import '../student_controller.dart';
@@ -621,12 +622,6 @@ class StudentHomePage extends StatelessWidget {
   }
 
   void _markAttendance(StudentController controller, String mealType) {
-    Get.snackbar(
-      'Success',
-      'Attendance marked for $mealType',
-      backgroundColor: AppColors.success.withOpacity(0.9),
-      colorText: Colors.white,
-      snackPosition: SnackPosition.TOP,
-    );
+    ToastMessage.success('Attendance marked for $mealType');
   }
 }
