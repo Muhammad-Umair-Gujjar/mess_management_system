@@ -11,7 +11,6 @@ import '../../../core/utils/responsive_helper.dart';
 import '../../widgets/common/responsive_dashboard_layout.dart';
 import 'pages/staff_attendance_page.dart';
 import 'pages/staff_student_management_page.dart';
-import 'pages/staff_menu_planning_page.dart';
 import 'pages/staff_reports_page.dart';
 import 'staff_controller.dart';
 
@@ -150,8 +149,6 @@ class StaffDashboard extends StatelessWidget {
       case 2:
         return const StaffStudentManagementPage();
       case 3:
-        return const StaffMenuPlanningPage();
-      case 4:
         return const StaffReportsPage();
       default:
         return _buildOverviewPage();
@@ -348,10 +345,10 @@ class StaffDashboard extends StatelessWidget {
                         SizedBox(width: 16.w),
                         Expanded(
                           child: _buildActionCard(
-                            'Plan Menu',
-                            'Update daily meal menu',
-                            FontAwesomeIcons.utensils,
-                            AppColors.warning,
+                            'View Reports',
+                            'Check analytics and reports',
+                            FontAwesomeIcons.chartLine,
+                            AppColors.success,
                             () => controller.changePage(3),
                           ),
                         ),
@@ -376,10 +373,10 @@ class StaffDashboard extends StatelessWidget {
                         ),
                         SizedBox(height: 16.h),
                         _buildActionCard(
-                          'Plan Menu',
-                          'Update daily meal menu',
-                          FontAwesomeIcons.utensils,
-                          AppColors.warning,
+                          'View Reports',
+                          'Check analytics and reports',
+                          FontAwesomeIcons.chartLine,
+                          AppColors.success,
                           () => controller.changePage(3),
                         ),
                       ],

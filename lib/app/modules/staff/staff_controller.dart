@@ -40,11 +40,6 @@ class StaffController extends GetxController {
       route: '/staff/students',
     ),
     const NavigationItem(
-      icon: FontAwesomeIcons.utensils,
-      title: 'Menu Planning',
-      route: '/staff/menu',
-    ),
-    const NavigationItem(
       icon: FontAwesomeIcons.chartLine,
       title: 'Reports',
       route: '/staff/reports',
@@ -426,8 +421,6 @@ class StaffController extends GetxController {
       case 2:
         return 'Student Management';
       case 3:
-        return 'Menu Planning';
-      case 4:
         return 'Reports & Analytics';
       default:
         return 'Staff Dashboard';
@@ -443,8 +436,6 @@ class StaffController extends GetxController {
       case 2:
         return 'Manage student accounts';
       case 3:
-        return 'Plan weekly menus';
-      case 4:
         return 'View detailed analytics';
       default:
         return 'Welcome to MessMaster Staff Panel';

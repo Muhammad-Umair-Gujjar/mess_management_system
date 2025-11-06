@@ -127,32 +127,51 @@ class _StaffReportsPageState extends State<StaffReportsPage>
           SizedBox(height: 20.h),
 
           // Tab Selector
-          TabBar(
-            controller: _tabController,
-            isScrollable: isMobile,
-            indicator: BoxDecoration(
-              gradient: AppColors.successGradient,
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.background,
               borderRadius: BorderRadius.circular(12.r),
             ),
-            labelColor: Colors.white,
-            unselectedLabelColor: AppColors.textSecondary,
-            labelStyle: AppTextStyles.body1.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-            unselectedLabelStyle: AppTextStyles.body2,
-            tabs: [
-              Tab(
-                child: _buildTabItem(FontAwesomeIcons.userCheck, 'Attendance'),
+            child: TabBar(
+              controller: _tabController,
+              isScrollable: isMobile,
+              indicator: BoxDecoration(
+                gradient: AppColors.primaryGradient,
+                borderRadius: BorderRadius.circular(10.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-              Tab(child: _buildTabItem(FontAwesomeIcons.receipt, 'Billing')),
-              Tab(
-                child: _buildTabItem(
-                  FontAwesomeIcons.chartLine,
-                  'Menu Analytics',
+              indicatorSize: TabBarIndicatorSize.tab,
+              indicatorPadding: EdgeInsets.all(4.r),
+              labelColor: Colors.white,
+              unselectedLabelColor: AppColors.textSecondary,
+              labelStyle: AppTextStyles.body2.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+              unselectedLabelStyle: AppTextStyles.body2,
+              dividerColor: Colors.transparent,
+              tabs: [
+                Tab(
+                  child: _buildTabItem(
+                    FontAwesomeIcons.userCheck,
+                    'Attendance',
+                  ),
                 ),
-              ),
-              Tab(child: _buildTabItem(FontAwesomeIcons.users, 'Students')),
-            ],
+                Tab(child: _buildTabItem(FontAwesomeIcons.receipt, 'Billing')),
+                Tab(
+                  child: _buildTabItem(
+                    FontAwesomeIcons.chartLine,
+                    'Menu Analytics',
+                  ),
+                ),
+                Tab(child: _buildTabItem(FontAwesomeIcons.users, 'Students')),
+              ],
+            ),
           ),
         ],
       ),
@@ -160,14 +179,19 @@ class _StaffReportsPageState extends State<StaffReportsPage>
   }
 
   Widget _buildTabItem(IconData icon, String text) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 16.sp),
-        SizedBox(width: 8.w),
-        Text(text),
-      ],
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14.sp),
+          SizedBox(width: 6.w),
+          Flexible(
+            child: Text(text, overflow: TextOverflow.ellipsis, maxLines: 1),
+          ),
+        ],
+      ),
     );
   }
 
@@ -279,7 +303,7 @@ class _StaffReportsPageState extends State<StaffReportsPage>
         crossAxisCount: isMobile ? 2 : 4,
         crossAxisSpacing: 16.w,
         mainAxisSpacing: 16.h,
-        childAspectRatio: isMobile ? 1.2 : 1.5,
+        childAspectRatio: isMobile ? 1.5 : 1.7,
       ),
       itemCount: summaryData.length,
       itemBuilder: (context, index) {
@@ -303,7 +327,7 @@ class _StaffReportsPageState extends State<StaffReportsPage>
     int index,
   ) {
     return Container(
-          padding: EdgeInsets.all(20.r),
+          padding: EdgeInsets.all(12.r),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [color.withOpacity(0.1), color.withOpacity(0.05)],
@@ -315,38 +339,48 @@ class _StaffReportsPageState extends State<StaffReportsPage>
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(12.r),
+                    padding: EdgeInsets.all(6.r),
                     decoration: BoxDecoration(
                       color: color.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12.r),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
-                    child: Icon(icon, size: 20.sp, color: color),
+                    child: Icon(icon, size: 14.sp, color: color),
                   ),
                   const Spacer(),
                   Icon(
                     FontAwesomeIcons.arrowTrendUp,
-                    size: 14.sp,
+                    size: 10.sp,
                     color: color,
                   ),
                 ],
               ),
-              const Spacer(),
-              Text(
-                value,
-                style: AppTextStyles.heading4.copyWith(
-                  color: color,
-                  fontWeight: FontWeight.bold,
+              SizedBox(height: 6.h),
+              Flexible(
+                child: Text(
+                  value,
+                  style: AppTextStyles.heading5.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.sp,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              SizedBox(height: 4.h),
-              Text(
-                title,
-                style: AppTextStyles.body2.copyWith(
-                  color: AppColors.textSecondary,
+              SizedBox(height: 1.h),
+              Flexible(
+                child: Text(
+                  title,
+                  style: AppTextStyles.caption.copyWith(
+                    color: AppColors.textSecondary,
+                    fontSize: 10.sp,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
               ),
             ],
@@ -452,33 +486,36 @@ class _StaffReportsPageState extends State<StaffReportsPage>
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
                         children: [
                           Expanded(
                             child: Text(
                               record['name']!,
-                              style: AppTextStyles.subtitle1.copyWith(
+                              style: AppTextStyles.body2.copyWith(
                                 fontWeight: FontWeight.w600,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 8.w,
-                              vertical: 4.h,
+                              vertical: 2.h,
                             ),
                             decoration: BoxDecoration(
                               color: isPresent
                                   ? AppColors.success
                                   : AppColors.error,
-                              borderRadius: BorderRadius.circular(12.r),
+                              borderRadius: BorderRadius.circular(10.r),
                             ),
                             child: Text(
                               record['status']!,
                               style: AppTextStyles.caption.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
+                                fontSize: 10.sp,
                               ),
                             ),
                           ),
@@ -489,20 +526,30 @@ class _StaffReportsPageState extends State<StaffReportsPage>
                         children: [
                           Icon(
                             FontAwesomeIcons.doorOpen,
-                            size: 12.sp,
+                            size: 10.sp,
                             color: AppColors.textSecondary,
                           ),
                           SizedBox(width: 4.w),
-                          Text(record['room']!, style: AppTextStyles.caption),
+                          Text(
+                            record['room']!,
+                            style: AppTextStyles.caption.copyWith(
+                              fontSize: 10.sp,
+                            ),
+                          ),
                           if (isPresent) ...[
-                            SizedBox(width: 16.w),
+                            SizedBox(width: 12.w),
                             Icon(
                               FontAwesomeIcons.clock,
-                              size: 12.sp,
+                              size: 10.sp,
                               color: AppColors.textSecondary,
                             ),
                             SizedBox(width: 4.w),
-                            Text(record['time']!, style: AppTextStyles.caption),
+                            Text(
+                              record['time']!,
+                              style: AppTextStyles.caption.copyWith(
+                                fontSize: 10.sp,
+                              ),
+                            ),
                           ],
                         ],
                       ),
@@ -580,7 +627,7 @@ class _StaffReportsPageState extends State<StaffReportsPage>
         crossAxisCount: isMobile ? 2 : 4,
         crossAxisSpacing: 16.w,
         mainAxisSpacing: 16.h,
-        childAspectRatio: isMobile ? 1.2 : 1.5,
+        childAspectRatio: isMobile ? 1.4 : 1.6,
       ),
       itemCount: billingData.length,
       itemBuilder: (context, index) {
@@ -627,22 +674,25 @@ class _StaffReportsPageState extends State<StaffReportsPage>
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      FontAwesomeIcons.chartBar,
-                      size: 48.sp,
-                      color: AppColors.success.withOpacity(0.5),
-                    ),
-                    SizedBox(height: 16.h),
-                    Text(
-                      'Revenue chart will be displayed here',
-                      style: AppTextStyles.body1.copyWith(
-                        color: AppColors.textSecondary,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.chartBar,
+                        size: 36.sp,
+                        color: AppColors.success.withOpacity(0.5),
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 10.h),
+                      Text(
+                        'Revenue chart will be displayed here',
+                        style: AppTextStyles.body1.copyWith(
+                          color: AppColors.textSecondary,
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -660,63 +710,74 @@ class _StaffReportsPageState extends State<StaffReportsPage>
     ];
 
     return Container(
-      padding: EdgeInsets.all(20.r),
+      padding: EdgeInsets.all(16.r),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Payment Status', style: AppTextStyles.heading5),
-          SizedBox(height: 20.h),
-          Expanded(
-            child: Column(
-              children: paymentData
-                  .map(
-                    (data) => Container(
-                      margin: EdgeInsets.only(bottom: 16.h),
-                      padding: EdgeInsets.all(16.r),
-                      decoration: BoxDecoration(
-                        color: (data['color'] as Color).withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12.r),
+          Text(
+            'Payment Status',
+            style: AppTextStyles.heading5.copyWith(fontSize: 14.sp),
+          ),
+          SizedBox(height: 12.h),
+          Flexible(
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: paymentData.length,
+              itemBuilder: (context, index) {
+                final data = paymentData[index];
+                return Container(
+                  margin: EdgeInsets.only(bottom: 8.h),
+                  padding: EdgeInsets.all(10.r),
+                  decoration: BoxDecoration(
+                    color: (data['color'] as Color).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 28.w,
+                        height: 28.h,
+                        decoration: BoxDecoration(
+                          color: data['color'] as Color,
+                          borderRadius: BorderRadius.circular(14.r),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '${data['count']}',
+                            style: AppTextStyles.caption.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 9.sp,
+                            ),
+                          ),
+                        ),
                       ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 40.w,
-                            height: 40.h,
-                            decoration: BoxDecoration(
-                              color: data['color'] as Color,
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            child: Center(
-                              child: Text(
-                                '${data['count']}',
-                                style: AppTextStyles.body2.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
+                      SizedBox(width: 8.w),
+                      Expanded(
+                        child: Text(
+                          data['status'] as String,
+                          style: AppTextStyles.body2.copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12.sp,
                           ),
-                          SizedBox(width: 16.w),
-                          Text(
-                            data['status'] as String,
-                            style: AppTextStyles.subtitle1.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            '${((data['count'] as int) / 234 * 100).toInt()}%',
-                            style: AppTextStyles.body2.copyWith(
-                              color: data['color'] as Color,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
-                  )
-                  .toList(),
+                      Text(
+                        '${((data['count'] as int) / 234 * 100).toInt()}%',
+                        style: AppTextStyles.caption.copyWith(
+                          color: data['color'] as Color,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 10.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ],
