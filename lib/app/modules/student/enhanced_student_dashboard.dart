@@ -55,7 +55,7 @@ class EnhancedStudentDashboard extends StatelessWidget {
   Widget _buildTopAppBar(StudentController controller) {
     return Container(
       height: 80.h,
-      padding: EdgeInsets.symmetric(horizontal: 32.w,),
+      padding: EdgeInsets.symmetric(horizontal: 32.w),
       child: GlassmorphicContainer(
         width: double.infinity,
         height: double.infinity,
@@ -131,50 +131,83 @@ class EnhancedStudentDashboard extends StatelessWidget {
   }
 
   Widget _buildPlaceholderPage(String title, IconData icon, Color color) {
+    // Responsive scaling for mobile
+    final isMobile = ScreenUtil().screenWidth < 600;
+    final double outerPadding = isMobile ? 16.r : 40.r;
+    final double innerPadding = isMobile ? 40.r : 48.r;
+    final double iconContainerPadding = isMobile ? 40.r : 24.r;
+    final double iconSize = isMobile ? 112.sp : 64.sp;
+    final double titleFontSize = isMobile
+        ? 42.sp
+        : AppTextStyles.heading3.fontSize ?? 28.sp;
+    final double subtitleFontSize = isMobile
+        ? 26.sp
+        : AppTextStyles.subtitle1.fontSize ?? 16.sp;
+    final double bodyFontSize = isMobile
+        ? 20.sp
+        : AppTextStyles.body2.fontSize ?? 14.sp;
+    final double gap1 = isMobile ? 36.h : 24.h;
+    final double gap2 = isMobile ? 24.h : 12.h;
+    final double gap3 = isMobile ? 36.h : 24.h;
+    final double chipHorizontal = isMobile ? 36.w : 24.w;
+    final double chipVertical = isMobile ? 22.h : 12.h;
+    final double chipRadius = isMobile ? 32.r : 20.r;
+
     return Container(
-      padding: EdgeInsets.all(40.r),
+      padding: EdgeInsets.all(outerPadding),
       child: Center(
         child: Container(
-          padding: EdgeInsets.all(48.r),
+          padding: EdgeInsets.all(innerPadding),
           decoration: AppDecorations.glassmorphicContainer(),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: EdgeInsets.all(24.r),
+                padding: EdgeInsets.all(iconContainerPadding),
                 decoration: AppDecorations.gradientContainer(
                   gradient: LinearGradient(
                     colors: [color, color.withOpacity(0.7)],
                   ),
                 ),
-                child: Icon(icon, size: 64.sp, color: Colors.white),
+                child: Icon(icon, size: iconSize, color: Colors.white),
               ).animate().scale(duration: 600.ms),
 
-              SizedBox(height: 24.h),
+              SizedBox(height: gap1),
 
               Text(
                 title,
-                style: AppTextStyles.heading3.copyWith(color: color),
+                style: AppTextStyles.heading3.copyWith(
+                  color: color,
+                  fontSize: titleFontSize,
+                ),
               ).animate().fadeIn(delay: 300.ms),
 
-              SizedBox(height: 12.h),
+              SizedBox(height: gap2),
 
               Text(
                 'Coming Soon!',
-                style: AppTextStyles.subtitle1,
+                style: AppTextStyles.subtitle1.copyWith(
+                  fontSize: subtitleFontSize,
+                ),
               ).animate().fadeIn(delay: 500.ms),
 
-              SizedBox(height: 24.h),
+              SizedBox(height: gap3),
 
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+                padding: EdgeInsets.symmetric(
+                  horizontal: chipHorizontal,
+                  vertical: chipVertical,
+                ),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(20.r),
+                  borderRadius: BorderRadius.circular(chipRadius),
                 ),
                 child: Text(
                   'Advanced features are under development',
-                  style: AppTextStyles.body2.copyWith(color: color),
+                  style: AppTextStyles.body2.copyWith(
+                    color: color,
+                    fontSize: bodyFontSize,
+                  ),
                 ),
               ).animate().fadeIn(delay: 700.ms).slideY(begin: 0.3),
             ],

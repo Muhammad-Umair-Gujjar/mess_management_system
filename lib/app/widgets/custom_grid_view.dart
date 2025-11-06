@@ -79,11 +79,12 @@ class CustomGridView extends StatelessWidget {
     int currentCrossAxisCount = crossAxisCount;
     double currentAspectRatio = childAspectRatio;
 
-    if (isMobile && mobileCrossAxisCount != null) {
-      currentCrossAxisCount = mobileCrossAxisCount!;
+    // Always use 2 columns for mobile, 3 for tablet, ignoring overrides
+    if (isMobile) {
+      currentCrossAxisCount = 2;
       currentAspectRatio = mobileAspectRatio ?? childAspectRatio;
-    } else if (isTablet && tabletCrossAxisCount != null) {
-      currentCrossAxisCount = tabletCrossAxisCount!;
+    } else if (isTablet) {
+      currentCrossAxisCount = 3;
       currentAspectRatio = tabletAspectRatio ?? childAspectRatio;
     }
 
@@ -146,13 +147,18 @@ class CustomGridView extends StatelessWidget {
   }
 
   Widget _buildElevatedCard(GridCardData item, int index) {
+    // Responsive padding for mobile devices
+    final isMobile = ScreenUtil().screenWidth < 600;
+    final double cardPadding = isMobile ? 24.r : 18.r;
+    final double borderRadius = isMobile ? 20.r : 16.r;
+
     return GestureDetector(
       onTap: item.onTap,
       child: Container(
-        padding: EdgeInsets.all(18.r),
+        padding: EdgeInsets.all(cardPadding),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(borderRadius),
           boxShadow: [
             BoxShadow(
               color: item.color.withOpacity(0.1),
@@ -168,13 +174,18 @@ class CustomGridView extends StatelessWidget {
   }
 
   Widget _buildOutlinedCard(GridCardData item, int index) {
+    // Responsive padding for mobile devices
+    final isMobile = ScreenUtil().screenWidth < 600;
+    final double cardPadding = isMobile ? 24.r : 18.r;
+    final double borderRadius = isMobile ? 20.r : 16.r;
+
     return GestureDetector(
       onTap: item.onTap,
       child: Container(
-        padding: EdgeInsets.all(18.r),
+        padding: EdgeInsets.all(cardPadding),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(borderRadius),
           border: Border.all(color: item.color.withOpacity(0.3), width: 2),
         ),
         child: _buildCardContent(item),
@@ -183,10 +194,15 @@ class CustomGridView extends StatelessWidget {
   }
 
   Widget _buildGradientCard(GridCardData item, int index) {
+    // Responsive padding for mobile devices
+    final isMobile = ScreenUtil().screenWidth < 600;
+    final double cardPadding = isMobile ? 24.r : 18.r;
+    final double borderRadius = isMobile ? 20.r : 16.r;
+
     return GestureDetector(
       onTap: item.onTap,
       child: Container(
-        padding: EdgeInsets.all(18.r),
+        padding: EdgeInsets.all(cardPadding),
         decoration: BoxDecoration(
           gradient:
               item.gradient ??
@@ -197,7 +213,7 @@ class CustomGridView extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(borderRadius),
           border: Border.all(color: item.color.withOpacity(0.2), width: 1),
         ),
         child: _buildCardContent(item),
@@ -206,13 +222,18 @@ class CustomGridView extends StatelessWidget {
   }
 
   Widget _buildMinimalCard(GridCardData item, int index) {
+    // Responsive padding for mobile devices
+    final isMobile = ScreenUtil().screenWidth < 600;
+    final double cardPadding = isMobile ? 24.r : 18.r;
+    final double borderRadius = isMobile ? 16.r : 12.r;
+
     return GestureDetector(
       onTap: item.onTap,
       child: Container(
-        padding: EdgeInsets.all(18.r),
+        padding: EdgeInsets.all(cardPadding),
         decoration: BoxDecoration(
           color: item.color.withOpacity(0.05),
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: _buildCardContent(item),
       ),
@@ -220,13 +241,18 @@ class CustomGridView extends StatelessWidget {
   }
 
   Widget _buildGlassmorphismCard(GridCardData item, int index) {
+    // Responsive padding for mobile devices
+    final isMobile = ScreenUtil().screenWidth < 600;
+    final double cardPadding = isMobile ? 24.r : 18.r;
+    final double borderRadius = isMobile ? 20.r : 16.r;
+
     return GestureDetector(
       onTap: item.onTap,
       child: Container(
-        padding: EdgeInsets.all(18.r),
+        padding: EdgeInsets.all(cardPadding),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(borderRadius),
           border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
           boxShadow: [
             BoxShadow(
@@ -246,6 +272,21 @@ class CustomGridView extends StatelessWidget {
       return item.customContent!;
     }
 
+    // Responsive sizing for mobile devices
+    final isMobile = ScreenUtil().screenWidth < 600;
+    final double iconPadding = isMobile ? 12.r : 8.r;
+    final double iconSize = isMobile ? 32.sp : 25.sp;
+    final double iconBorderRadius = isMobile ? 12.r : 8.r;
+    final double trendIconSize = isMobile ? 24.sp : 20.sp;
+    final double trendFontSize = isMobile ? 18.sp : 16.sp;
+    final double valueSpacing = isMobile ? 18.h : 14.h;
+    final double valueFontSize = isMobile ? 32.sp : 25.sp;
+    final double titleSpacing = isMobile ? 8.h : 6.h;
+    final double titleFontSize = isMobile ? 24.sp : 20.sp;
+    final double subtitleSpacing = isMobile ? 4.h : 3.h;
+    final double subtitleFontSize = isMobile ? 18.sp : 16.sp;
+    final double trendSpacing = isMobile ? 4.w : 3.w;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -254,12 +295,12 @@ class CustomGridView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              padding: EdgeInsets.all(8.r),
+              padding: EdgeInsets.all(iconPadding),
               decoration: BoxDecoration(
                 color: item.color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8.r),
+                borderRadius: BorderRadius.circular(iconBorderRadius),
               ),
-              child: Icon(item.icon, size: 25.sp, color: item.color),
+              child: Icon(item.icon, size: iconSize, color: item.color),
             ),
             if (item.trend != null || item.trendIcon != null)
               Row(
@@ -268,17 +309,17 @@ class CustomGridView extends StatelessWidget {
                   if (item.trendIcon != null)
                     Icon(
                       item.trendIcon,
-                      size: 20.sp,
+                      size: trendIconSize,
                       color: item.trendColor ?? AppColors.success,
                     ),
                   if (item.trend != null) ...[
-                    if (item.trendIcon != null) SizedBox(width: 3.w),
+                    if (item.trendIcon != null) SizedBox(width: trendSpacing),
                     Text(
                       item.trend!,
                       style: AppTextStyles.caption.copyWith(
                         color: item.trendColor ?? AppColors.success,
                         fontWeight: FontWeight.w600,
-                        fontSize: 16.sp,
+                        fontSize: trendFontSize,
                       ),
                     ),
                   ],
@@ -287,7 +328,7 @@ class CustomGridView extends StatelessWidget {
           ],
         ),
 
-        SizedBox(height: 14.h),
+        SizedBox(height: valueSpacing),
 
         // Value
         Text(
@@ -295,13 +336,13 @@ class CustomGridView extends StatelessWidget {
           style: AppTextStyles.heading4.copyWith(
             color: item.color,
             fontWeight: FontWeight.bold,
-            fontSize: 25.sp,
+            fontSize: valueFontSize,
           ),
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
 
-        SizedBox(height: 6.h),
+        SizedBox(height: titleSpacing),
 
         // Title and subtitle
         Column(
@@ -313,18 +354,18 @@ class CustomGridView extends StatelessWidget {
               style: AppTextStyles.body2.copyWith(
                 color: AppColors.textPrimary,
                 fontWeight: FontWeight.w600,
-                fontSize: 20.sp,
+                fontSize: titleFontSize,
               ),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),
             if (item.subtitle != null) ...[
-              SizedBox(height: 3.h),
+              SizedBox(height: subtitleSpacing),
               Text(
                 item.subtitle!,
                 style: AppTextStyles.caption.copyWith(
                   color: AppColors.textSecondary,
-                  fontSize: 16.sp,
+                  fontSize: subtitleFontSize,
                 ),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,

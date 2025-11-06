@@ -3,11 +3,42 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:glassmorphism/glassmorphism.dart';
 
 import '../../core/theme/app_decorations.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/app_theme.dart';
+
+class ResponsiveDashboardNavigation extends StatelessWidget {
+  final String userRole;
+  final String userName;
+  final String userEmail;
+  final RxInt currentIndex;
+  final Function(int) onItemSelected;
+  final List<NavigationItem> menuItems;
+
+  const ResponsiveDashboardNavigation({
+    super.key,
+    required this.userRole,
+    required this.userName,
+    required this.userEmail,
+    required this.currentIndex,
+    required this.onItemSelected,
+    required this.menuItems,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Always show menu icon; tapping opens Drawer with navigation
+    return Builder(
+      builder: (context) => IconButton(
+        icon: const Icon(Icons.menu),
+        onPressed: () {
+          Scaffold.of(context).openDrawer();
+        },
+      ),
+    );
+  }
+}
 
 class DashboardNavigation extends StatelessWidget {
   final String userRole;

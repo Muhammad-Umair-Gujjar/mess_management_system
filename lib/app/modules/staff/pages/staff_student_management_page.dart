@@ -3,13 +3,11 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_decorations.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/responsive_helper.dart';
-import '../../../../core/utils/toast_message.dart';
 import '../../../widgets/common/reusable_button.dart';
 import '../../../widgets/common/reusable_text_field.dart';
 import '../../../widgets/custom_tab_bar.dart';
@@ -64,7 +62,6 @@ class _StaffStudentManagementPageState extends State<StaffStudentManagementPage>
               index: selectedTabIndex,
               children: [
                 _buildActiveStudentsTab(controller, isMobile),
-                _buildPendingApprovalsTab(controller, isMobile),
                 _buildStudentStatsTab(controller, isMobile),
               ],
             ),
@@ -89,10 +86,6 @@ class _StaffStudentManagementPageState extends State<StaffStudentManagementPage>
           CustomTabBarItem(
             label: 'Active Students',
             icon: FontAwesomeIcons.users,
-          ),
-          CustomTabBarItem(
-            label: 'Pending Approvals',
-            icon: FontAwesomeIcons.clock,
           ),
           CustomTabBarItem(
             label: 'Statistics',
@@ -402,176 +395,6 @@ class _StaffStudentManagementPageState extends State<StaffStudentManagementPage>
         .slideX(begin: 0.3);
   }
 
-  Widget _buildPendingApprovalsTab(StaffController controller, bool isMobile) {
-    return Container(
-      padding: EdgeInsets.all(24.r),
-      decoration: AppDecorations.floatingCard(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text('Pending Approvals', style: AppTextStyles.heading5),
-              const Spacer(),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                decoration: BoxDecoration(
-                  color: AppColors.warning.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(20.r),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      FontAwesomeIcons.clock,
-                      size: 12.sp,
-                      color: AppColors.warning,
-                    ),
-                    SizedBox(width: 6.w),
-                    Obx(
-                      () => Text(
-                        '${controller.getPendingApprovals().length} pending',
-                        style: AppTextStyles.caption.copyWith(
-                          color: AppColors.warning,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(height: 24.h),
-
-          Expanded(
-            child: Obx(() {
-              final pendingStudents = controller.getPendingApprovals();
-
-              if (pendingStudents.isEmpty) {
-                return _buildEmptyState('No pending approvals');
-              }
-
-              return ListView.builder(
-                itemCount: pendingStudents.length,
-                itemBuilder: (context, index) {
-                  final student = pendingStudents[index];
-                  return _buildPendingApprovalCard(student, index, controller);
-                },
-              );
-            }),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPendingApprovalCard(
-    dynamic student,
-    int index,
-    StaffController controller,
-  ) {
-    return Container(
-          margin: EdgeInsets.only(bottom: 16.h),
-          padding: EdgeInsets.all(20.r),
-          decoration: BoxDecoration(
-            color: AppColors.cardBackground,
-            borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(color: AppColors.warning.withOpacity(0.3)),
-            boxShadow: AppShadows.light,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 24.r,
-                    backgroundColor: AppColors.warning.withOpacity(0.1),
-                    child: Text(
-                      student['name']?.substring(0, 1).toUpperCase() ?? 'S',
-                      style: AppTextStyles.body1.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.warning,
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(width: 16.w),
-
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          student['name'] ?? 'Unknown Student',
-                          style: AppTextStyles.subtitle1.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text(
-                          'Registration Date: ${DateFormat('MMM d, yyyy').format(DateTime.now().subtract(Duration(days: index + 1)))}',
-                          style: AppTextStyles.body2.copyWith(
-                            color: AppColors.textLight,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 6.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.warning.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    child: Text(
-                      'Pending',
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.warning,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 16.h),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: ReusableButton(
-                      text: 'Approve',
-                      icon: FontAwesomeIcons.check,
-                      type: ButtonType.success,
-                      size: ButtonSize.medium,
-                      onPressed: () => _approveStudent(student, controller),
-                    ),
-                  ),
-                  SizedBox(width: 12.w),
-                  Expanded(
-                    child: ReusableButton(
-                      text: 'Reject',
-                      icon: FontAwesomeIcons.xmark,
-                      type: ButtonType.danger,
-                      size: ButtonSize.medium,
-                      onPressed: () => _rejectStudent(student, controller),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        )
-        .animate(delay: Duration(milliseconds: 100 * index))
-        .fadeIn(duration: 600.ms)
-        .slideX(begin: 0.3);
-  }
-
   Widget _buildStudentStatsTab(StaffController controller, bool isMobile) {
     return Container(
       padding: EdgeInsets.all(24.r),
@@ -839,53 +662,5 @@ class _StaffStudentManagementPageState extends State<StaffStudentManagementPage>
         ],
       ),
     );
-  }
-
-  void _approveStudent(dynamic student, StaffController controller) {
-    Get.dialog(
-      AlertDialog(
-        title: Text('Approve Student', style: AppTextStyles.heading5),
-        content: Text('Are you sure you want to approve ${student['name']}?'),
-        actions: [
-          TextButton(onPressed: () => Get.back(), child: Text('Cancel')),
-          ReusableButton(
-            text: 'Approve',
-            type: ButtonType.success,
-            size: ButtonSize.small,
-            onPressed: () {
-              // controller.approveStudent(student['id']);
-              Get.back();
-              _showSuccessSnackbar('Student approved successfully');
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _rejectStudent(dynamic student, StaffController controller) {
-    Get.dialog(
-      AlertDialog(
-        title: Text('Reject Student', style: AppTextStyles.heading5),
-        content: Text('Are you sure you want to reject ${student['name']}?'),
-        actions: [
-          TextButton(onPressed: () => Get.back(), child: Text('Cancel')),
-          ReusableButton(
-            text: 'Reject',
-            type: ButtonType.danger,
-            size: ButtonSize.small,
-            onPressed: () {
-              // controller.rejectStudent(student['id']);
-              Get.back();
-              _showSuccessSnackbar('Student rejected');
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showSuccessSnackbar(String message) {
-    ToastMessage.success(message);
   }
 }

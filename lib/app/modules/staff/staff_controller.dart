@@ -40,11 +40,12 @@ class StaffController extends GetxController {
       title: 'Students',
       route: '/staff/students',
     ),
-    const NavigationItem(
-      icon: FontAwesomeIcons.chartLine,
-      title: 'Reports',
-      route: '/staff/reports',
-    ),
+    // Commented out - can be enabled later
+    // const NavigationItem(
+    //   icon: FontAwesomeIcons.chartLine,
+    //   title: 'Reports',
+    //   route: '/staff/reports',
+    // ),
   ];
 
   @override
@@ -415,8 +416,8 @@ class StaffController extends GetxController {
         return 'Attendance Management';
       case 2:
         return 'Student Management';
-      case 3:
-        return 'Reports & Analytics';
+      // case 3:
+      //   return 'Reports & Analytics'; // Commented out - can be enabled later
       default:
         return 'Staff Dashboard';
     }
@@ -430,8 +431,8 @@ class StaffController extends GetxController {
         return 'Mark daily meal attendance';
       case 2:
         return 'Manage student accounts';
-      case 3:
-        return 'View detailed analytics';
+      // case 3:
+      //   return 'View detailed analytics'; // Commented out - can be enabled later
       default:
         return 'Welcome to MessMaster Staff Panel';
     }

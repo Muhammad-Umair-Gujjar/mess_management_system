@@ -269,13 +269,14 @@ class StudentHomePage extends StatelessWidget {
       return CustomGridView(
         data: gridData,
         crossAxisCount: 4, // Desktop: 4 columns
-        mobileCrossAxisCount: 2, // Mobile: 2 columns
-        tabletCrossAxisCount: 3, // Tablet: 3 columns
+        mobileCrossAxisCount: 1, // Mobile: 1 column for better readability
+        tabletCrossAxisCount: 2, // Tablet: 2 columns
         crossAxisSpacing: 16.0,
         mainAxisSpacing: 16.0,
-        childAspectRatio: 1.5, // Increased for larger content
-        mobileAspectRatio: 1.4, // Increased for larger content
-        tabletAspectRatio: 1.45, // Increased for larger content
+        childAspectRatio: 1.5, // Desktop aspect ratio
+        mobileAspectRatio:
+            2.0, // Mobile: wider cards for better content display
+        tabletAspectRatio: 1.6, // Tablet: slightly wider cards
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         cardStyle: CustomGridCardStyle.elevated,

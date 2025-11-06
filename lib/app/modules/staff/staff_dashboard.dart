@@ -11,7 +11,7 @@ import '../../../core/utils/responsive_helper.dart';
 import '../../widgets/common/responsive_dashboard_layout.dart';
 import 'pages/staff_attendance_page.dart';
 import 'pages/staff_student_management_page.dart';
-import 'pages/staff_reports_page.dart';
+// import 'pages/staff_reports_page.dart'; // Commented out - can be enabled later
 import 'staff_controller.dart';
 
 class StaffDashboard extends StatelessWidget {
@@ -148,8 +148,8 @@ class StaffDashboard extends StatelessWidget {
         return const StaffAttendancePage();
       case 2:
         return const StaffStudentManagementPage();
-      case 3:
-        return const StaffReportsPage();
+      // case 3:
+      //   return const StaffReportsPage(); // Commented out - can be enabled later
       default:
         return _buildOverviewPage();
     }
@@ -342,16 +342,17 @@ class StaffDashboard extends StatelessWidget {
                             () => controller.changePage(2),
                           ),
                         ),
-                        SizedBox(width: 16.w),
-                        Expanded(
-                          child: _buildActionCard(
-                            'View Reports',
-                            'Check analytics and reports',
-                            FontAwesomeIcons.chartLine,
-                            AppColors.success,
-                            () => controller.changePage(3),
-                          ),
-                        ),
+                        // Commented out - can be enabled later
+                        // SizedBox(width: 16.w),
+                        // Expanded(
+                        //   child: _buildActionCard(
+                        //     'View Reports',
+                        //     'Check analytics and reports',
+                        //     FontAwesomeIcons.chartLine,
+                        //     AppColors.success,
+                        //     () => controller.changePage(3),
+                        //   ),
+                        // ),
                       ],
                     )
                   : Column(
@@ -371,14 +372,15 @@ class StaffDashboard extends StatelessWidget {
                           AppColors.info,
                           () => controller.changePage(2),
                         ),
-                        SizedBox(height: 16.h),
-                        _buildActionCard(
-                          'View Reports',
-                          'Check analytics and reports',
-                          FontAwesomeIcons.chartLine,
-                          AppColors.success,
-                          () => controller.changePage(3),
-                        ),
+                        // Commented out - can be enabled later
+                        // SizedBox(height: 16.h),
+                        // _buildActionCard(
+                        //   'View Reports',
+                        //   'Check analytics and reports',
+                        //   FontAwesomeIcons.chartLine,
+                        //   AppColors.success,
+                        //   () => controller.changePage(3),
+                        // ),
                       ],
                     ),
 

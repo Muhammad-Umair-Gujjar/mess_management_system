@@ -61,14 +61,18 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = ResponsiveHelper.isMobile(context);
-    final isTablet = ResponsiveHelper.isTablet(context);
-    final showSideNav = !isMobile && !isTablet;
+    final isDesktop = ResponsiveHelper.isDesktop(context);
+    final showSideNav = isDesktop; // Only show sidebar on desktop
 
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: AppColors.background,
-      drawer: (isMobile || isTablet) ? _buildResponsiveDrawer() : null,
+      drawer: (!isDesktop)
+          ? _buildResponsiveDrawer()
+          : null, // Only provide drawer for mobile/tablet
+      appBar: (!isDesktop)
+          ? _buildResponsiveAppBar()
+          : null, // Only show AppBar for mobile/tablet
       body: Container(
         decoration: AppDecorations.backgroundGradient(),
         child: Row(
@@ -77,19 +81,13 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
             if (showSideNav)
               SizedBox(
                 width: 320.w,
-                child: DashboardNavigation(
-                  userRole: widget.userRole,
-                  userName: widget.userName,
-                  userEmail: widget.userEmail,
-                  currentIndex: widget.currentIndex,
-                  onItemSelected: widget.onItemSelected,
-                  menuItems: widget.menuItems,
-                ),
+                child: _buildDesktopSidebar(),
               ).animate().slideX(begin: -1.0, duration: 600.ms),
 
             // Main Content Area
             Expanded(
-              child: Container(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
                 margin: EdgeInsets.all(
                   ResponsiveHelper.isMobile(context) ? 16.r : 24.r,
                 ),
@@ -104,9 +102,13 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
 
                     // Main Page Content
                     Expanded(
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: widget.child,
+                      child: AnimatedScale(
+                        scale: ResponsiveHelper.isMobile(context) ? 1.0 : 1.0,
+                        duration: const Duration(milliseconds: 300),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: widget.child,
+                        ),
                       ),
                     ),
                   ],
@@ -119,102 +121,163 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
     );
   }
 
-  Widget _buildResponsiveDrawer() {
-    return Drawer(
-      backgroundColor: AppColors.cardBackground,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(20.r),
-          bottomRight: Radius.circular(20.r),
-        ),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              AppColors.cardBackground,
-              AppColors.cardBackground.withOpacity(0.95),
+  AppBar _buildResponsiveAppBar() {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      leading: Builder(
+        builder: (context) => Container(
+          margin: EdgeInsets.all(8.r),
+          decoration: BoxDecoration(
+            color: AppColors.cardBackground.withOpacity(0.8),
+            borderRadius: BorderRadius.circular(12.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 8.r,
+                offset: Offset(0, 2.h),
+              ),
             ],
           ),
-        ),
-        child: Column(
-          children: [
-            // Drawer Header
-            _buildDrawerHeader(),
-
-            // Navigation Items
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                itemCount: widget.menuItems.length,
-                itemBuilder: (context, index) {
-                  final item = widget.menuItems[index];
-                  return Obx(() {
-                        final isSelected = widget.currentIndex.value == index;
-                        return _buildDrawerMenuItem(item, index, isSelected);
-                      })
-                      .animate(delay: Duration(milliseconds: 100 * index))
-                      .slideX(begin: -0.5)
-                      .fadeIn();
-                },
-              ),
+          child: IconButton(
+            icon: Icon(
+              Icons.menu,
+              color: _getRoleColor(widget.userRole),
+              size: 24.sp,
             ),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
+      ),
+      // Keep header minimal - only menu icon, no other actions
+    );
+  }
 
-            // Drawer Footer
-            _buildDrawerFooter(),
-          ],
+  Widget _buildDesktopSidebar() {
+    return DashboardNavigation(
+      userRole: widget.userRole,
+      userName: widget.userName,
+      userEmail: widget.userEmail,
+      currentIndex: widget.currentIndex,
+      onItemSelected: widget.onItemSelected,
+      menuItems: widget.menuItems,
+    );
+  }
+
+  Widget _buildResponsiveDrawer() {
+    final isMobile = ResponsiveHelper.isMobile(context);
+    final drawerWidth = isMobile
+        ? 330
+              .w // Increased width for phones for better visibility
+        : 360.w; // Larger on tablet for better readability
+
+    return SizedBox(
+      width: drawerWidth,
+      child: Drawer(
+        backgroundColor: AppColors.cardBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(20.r),
+            bottomRight: Radius.circular(20.r),
+          ),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppColors.cardBackground,
+                AppColors.cardBackground.withOpacity(0.95),
+              ],
+            ),
+          ),
+          child: Column(
+            children: [
+              // Drawer Header
+              _buildDrawerHeader(),
+
+              // Navigation Items
+              Expanded(
+                child: ListView.builder(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: ResponsiveHelper.isMobile(context)
+                        ? 16.w
+                        : 20.w,
+                    vertical: ResponsiveHelper.isMobile(context) ? 8.h : 12.h,
+                  ),
+                  itemCount: widget.menuItems.length,
+                  itemBuilder: (context, index) {
+                    final item = widget.menuItems[index];
+                    return Obx(() {
+                          final isSelected = widget.currentIndex.value == index;
+                          return _buildDrawerMenuItem(item, index, isSelected);
+                        })
+                        .animate(delay: Duration(milliseconds: 100 * index))
+                        .slideX(begin: -0.5)
+                        .fadeIn();
+                  },
+                ),
+              ),
+
+              // Drawer Footer
+              _buildDrawerFooter(),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildDrawerHeader() {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
     return Container(
-      padding: EdgeInsets.all(24.r),
-      margin: EdgeInsets.all(16.r),
+      padding: EdgeInsets.all(
+        isMobile ? 28.r : 24.r,
+      ), // Larger padding on mobile
+      margin: EdgeInsets.all(isMobile ? 18.r : 16.r), // Larger margin on mobile
       decoration: AppDecorations.gradientContainer(
         gradient: _getRoleGradient(widget.userRole),
       ),
       child: Column(
         children: [
           CircleAvatar(
-            radius: 32.r,
+            radius: isMobile ? 36.r : 32.r, // Larger avatar on mobile
             backgroundColor: Colors.white.withOpacity(0.2),
             child: Text(
               widget.userName.substring(0, 1).toUpperCase(),
               style: TextStyle(
-                fontSize: 24.sp,
+                fontSize: isMobile ? 28.sp : 24.sp, // Larger text on mobile
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: isMobile ? 20.h : 16.h), // More spacing on mobile
           Text(
             widget.userName,
             style: TextStyle(
-              fontSize: 18.sp,
+              fontSize: isMobile ? 20.sp : 18.sp, // Larger text on mobile
               fontWeight: FontWeight.w600,
               color: Colors.white,
             ),
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: isMobile ? 6.h : 4.h), // More spacing on mobile
           Text(
             widget.userRole.toUpperCase(),
             style: TextStyle(
-              fontSize: 12.sp,
+              fontSize: isMobile ? 14.sp : 12.sp, // Larger text on mobile
               fontWeight: FontWeight.w500,
               color: Colors.white.withOpacity(0.8),
               letterSpacing: 1.2,
             ),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: isMobile ? 10.h : 8.h), // More spacing on mobile
           Text(
             widget.userEmail,
             style: TextStyle(
-              fontSize: 12.sp,
+              fontSize: isMobile ? 14.sp : 12.sp, // Larger email text on mobile
               color: Colors.white.withOpacity(0.7),
             ),
             textAlign: TextAlign.center,
@@ -227,8 +290,12 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
   }
 
   Widget _buildDrawerMenuItem(NavigationItem item, int index, bool isActive) {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
     return Container(
-      margin: EdgeInsets.only(bottom: 8.h),
+      margin: EdgeInsets.only(
+        bottom: isMobile ? 12.h : 12.h,
+      ), // Consistent spacing
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -239,7 +306,9 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
           },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            padding: EdgeInsets.all(16.r),
+            padding: EdgeInsets.all(
+              isMobile ? 20.r : 18.r,
+            ), // Larger padding on mobile
             decoration: BoxDecoration(
               gradient: isActive ? _getRoleGradient(widget.userRole) : null,
               color: isActive ? null : Colors.transparent,
@@ -258,7 +327,9 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
               children: [
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  padding: EdgeInsets.all(8.r),
+                  padding: EdgeInsets.all(
+                    isMobile ? 10.r : 8.r,
+                  ), // Larger padding on mobile
                   decoration: BoxDecoration(
                     color: isActive
                         ? Colors.white.withOpacity(0.2)
@@ -267,18 +338,22 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
                   ),
                   child: Icon(
                     item.icon,
-                    size: 20.sp,
+                    size: isMobile ? 24.sp : 22.sp, // Larger icons on mobile
                     color: isActive
                         ? Colors.white
                         : _getRoleColor(widget.userRole),
                   ),
                 ),
-                SizedBox(width: 16.w),
+                SizedBox(
+                  width: isMobile ? 20.w : 18.w,
+                ), // More spacing on mobile
                 Expanded(
                   child: Text(
                     item.title,
                     style: TextStyle(
-                      fontSize: 16.sp,
+                      fontSize: isMobile
+                          ? 18.sp
+                          : 17.sp, // Larger text on mobile
                       fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
                       color: isActive ? Colors.white : AppColors.textPrimary,
                     ),
@@ -318,12 +393,17 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
   }
 
   Widget _buildDrawerFooter() {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
     return Container(
-      padding: EdgeInsets.all(16.r),
+      padding: EdgeInsets.all(
+        isMobile ? 20.r : 16.r,
+      ), // Larger padding on mobile
       child: Column(
         children: [
           Divider(color: AppColors.textLight.withOpacity(0.2)),
-          SizedBox(height: 16.h),
+          SizedBox(height: isMobile ? 20.h : 16.h), // More spacing on mobile
+          // Quick Action Buttons
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -344,7 +424,59 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
               ),
             ],
           ),
+
+          SizedBox(height: 20.h),
+
+          // Logout Button
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12.r),
+              onTap: () {
+                if (widget.onLogoutPressed != null) {
+                  widget.onLogoutPressed!();
+                }
+              },
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(
+                  vertical: isMobile ? 16.h : 12.h, // Larger padding on mobile
+                  horizontal: isMobile ? 20.w : 16.w,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(color: Colors.red.withOpacity(0.3)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.logout,
+                      size: isMobile ? 20.sp : 16.sp, // Larger icon on mobile
+                      color: Colors.red,
+                    ),
+                    SizedBox(
+                      width: isMobile ? 10.w : 8.w,
+                    ), // More spacing on mobile
+                    Text(
+                      'Logout',
+                      style: TextStyle(
+                        fontSize: isMobile
+                            ? 16.sp
+                            : 14.sp, // Larger text on mobile
+                        fontWeight: FontWeight.w600,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
           SizedBox(height: 16.h),
+
           Text(
             'MessMaster v1.0.0',
             style: TextStyle(fontSize: 12.sp, color: AppColors.textLight),
@@ -355,21 +487,32 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
   }
 
   Widget _buildQuickActionButton(IconData icon, String label, Color color) {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.all(12.r),
+          padding: EdgeInsets.all(
+            isMobile ? 14.r : 12.r,
+          ), // Larger padding on mobile
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(color: color.withOpacity(0.3)),
           ),
-          child: Icon(icon, size: 20.sp, color: color),
+          child: Icon(
+            icon,
+            size: isMobile ? 22.sp : 20.sp, // Larger icons on mobile
+            color: color,
+          ),
         ),
-        SizedBox(height: 6.h),
+        SizedBox(height: isMobile ? 8.h : 6.h), // More spacing on mobile
         Text(
           label,
-          style: TextStyle(fontSize: 10.sp, color: AppColors.textLight),
+          style: TextStyle(
+            fontSize: isMobile ? 12.sp : 10.sp, // Larger text on mobile
+            color: AppColors.textLight,
+          ),
         ),
       ],
     );
