@@ -11,6 +11,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../data/models/menu.dart';
 import '../../../data/models/attendance.dart';
+import '../../../widgets/custom_tab_bar.dart';
 import '../student_controller.dart';
 
 class StudentMenuPage extends StatefulWidget {
@@ -20,21 +21,13 @@ class StudentMenuPage extends StatefulWidget {
   State<StudentMenuPage> createState() => _StudentMenuPageState();
 }
 
-class _StudentMenuPageState extends State<StudentMenuPage>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _StudentMenuPageState extends State<StudentMenuPage> {
   int selectedDay = DateTime.now().weekday - 1; // Monday is 0
+  int selectedTabIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
   }
 
   @override
@@ -267,55 +260,41 @@ class _StudentMenuPageState extends State<StudentMenuPage>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Tab Bar
+          // Custom Tab Bar
           Container(
             margin: EdgeInsets.all(20.r),
-            decoration: BoxDecoration(
-              color: AppColors.background,
+            child: CustomTabBar(
+              selectedIndex: selectedTabIndex,
+              onTap: (index) {
+                setState(() {
+                  selectedTabIndex = index;
+                });
+              },
+              tabs: [
+                CustomTabBarItem(
+                  label: 'Breakfast',
+                  icon: FontAwesomeIcons.sun,
+                ),
+                CustomTabBarItem(label: 'Dinner', icon: FontAwesomeIcons.moon),
+              ],
+              selectedColor: Colors.white,
+              unselectedColor: AppColors.textSecondary,
+              selectedBackgroundColor: AppColors.primary,
+              unselectedBackgroundColor: AppColors.background,
               borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: TabBar(
-              controller: _tabController,
-              indicator: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              labelColor: Colors.white,
-              unselectedLabelColor: AppColors.textSecondary,
-              labelStyle: AppTextStyles.subtitle1.copyWith(
+              tabHeight: 48.h,
+              selectedTextStyle: AppTextStyles.subtitle1.copyWith(
                 fontWeight: FontWeight.w600,
               ),
-              unselectedLabelStyle: AppTextStyles.subtitle1,
-              tabs: [
-                Tab(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(FontAwesomeIcons.sun, size: 16.sp),
-                      SizedBox(width: 8.w),
-                      const Text('Breakfast'),
-                    ],
-                  ),
-                ),
-                Tab(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(FontAwesomeIcons.moon, size: 16.sp),
-                      SizedBox(width: 8.w),
-                      const Text('Dinner'),
-                    ],
-                  ),
-                ),
-              ],
+              unselectedTextStyle: AppTextStyles.subtitle1,
             ),
           ),
 
           // Tab Content - Fixed height to avoid unbounded constraints
           SizedBox(
             height: 400.h, // Fixed height instead of Expanded
-            child: TabBarView(
-              controller: _tabController,
+            child: IndexedStack(
+              index: selectedTabIndex,
               children: [
                 _buildMealTab(controller, MealType.breakfast),
                 _buildMealTab(controller, MealType.dinner),

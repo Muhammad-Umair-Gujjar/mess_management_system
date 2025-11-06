@@ -11,6 +11,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../widgets/common/reusable_button.dart';
 import '../../../widgets/common/reusable_text_field.dart';
+import '../../../widgets/custom_tab_bar.dart';
 import '../staff_controller.dart';
 
 class StaffStudentManagementPage extends StatefulWidget {
@@ -23,13 +24,12 @@ class StaffStudentManagementPage extends StatefulWidget {
 
 class _StaffStudentManagementPageState extends State<StaffStudentManagementPage>
     with TickerProviderStateMixin {
-  late TabController _tabController;
+  int selectedTabIndex = 0;
   late AnimationController _listAnimationController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
     _listAnimationController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
@@ -39,7 +39,6 @@ class _StaffStudentManagementPageState extends State<StaffStudentManagementPage>
 
   @override
   void dispose() {
-    _tabController.dispose();
     _listAnimationController.dispose();
     super.dispose();
   }
@@ -60,8 +59,8 @@ class _StaffStudentManagementPageState extends State<StaffStudentManagementPage>
 
           // Main Content
           Expanded(
-            child: TabBarView(
-              controller: _tabController,
+            child: IndexedStack(
+              index: selectedTabIndex,
               children: [
                 _buildActiveStudentsTab(controller, isMobile),
                 _buildPendingApprovalsTab(controller, isMobile),
@@ -78,48 +77,36 @@ class _StaffStudentManagementPageState extends State<StaffStudentManagementPage>
     return Container(
       padding: EdgeInsets.all(20.r),
       decoration: AppDecorations.floatingCard(),
-      child: TabBar(
-        controller: _tabController,
-        indicator: BoxDecoration(
-          gradient: AppColors.successGradient,
-          borderRadius: BorderRadius.circular(12.r),
-        ),
-        labelColor: Colors.white,
-        unselectedLabelColor: AppColors.textSecondary,
-        labelStyle: AppTextStyles.body1.copyWith(fontWeight: FontWeight.w600),
-        unselectedLabelStyle: AppTextStyles.body2,
+      child: CustomTabBar(
+        selectedIndex: selectedTabIndex,
+        onTap: (index) {
+          setState(() {
+            selectedTabIndex = index;
+          });
+        },
         tabs: [
-          Tab(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(FontAwesomeIcons.users, size: 16.sp),
-                SizedBox(width: 8.w),
-                Text('Active Students'),
-              ],
-            ),
+          CustomTabBarItem(
+            label: 'Active Students',
+            icon: FontAwesomeIcons.users,
           ),
-          Tab(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(FontAwesomeIcons.clock, size: 16.sp),
-                SizedBox(width: 8.w),
-                Text('Pending Approvals'),
-              ],
-            ),
+          CustomTabBarItem(
+            label: 'Pending Approvals',
+            icon: FontAwesomeIcons.clock,
           ),
-          Tab(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(FontAwesomeIcons.chartBar, size: 16.sp),
-                SizedBox(width: 8.w),
-                Text('Statistics'),
-              ],
-            ),
+          CustomTabBarItem(
+            label: 'Statistics',
+            icon: FontAwesomeIcons.chartBar,
           ),
         ],
+        selectedColor: Colors.white,
+        unselectedColor: AppColors.textSecondary,
+        selectedBackgroundColor: AppColors.success,
+        unselectedBackgroundColor: Colors.transparent,
+        borderRadius: BorderRadius.circular(12.r),
+        selectedTextStyle: AppTextStyles.body1.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedTextStyle: AppTextStyles.body2,
       ),
     ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.3);
   }

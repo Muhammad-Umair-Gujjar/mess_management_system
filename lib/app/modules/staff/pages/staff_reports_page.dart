@@ -10,6 +10,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../widgets/common/reusable_button.dart';
+import '../../../widgets/custom_tab_bar.dart';
 
 import '../staff_controller.dart';
 
@@ -20,24 +21,10 @@ class StaffReportsPage extends StatefulWidget {
   State<StaffReportsPage> createState() => _StaffReportsPageState();
 }
 
-class _StaffReportsPageState extends State<StaffReportsPage>
-    with TickerProviderStateMixin {
-  late TabController _tabController;
+class _StaffReportsPageState extends State<StaffReportsPage> {
+  int _selectedTabIndex = 0;
   DateTime _startDate = DateTime.now().subtract(const Duration(days: 30));
   DateTime _endDate = DateTime.now();
-  // String _selectedReportType = 'attendance';
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 4, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +42,8 @@ class _StaffReportsPageState extends State<StaffReportsPage>
 
           // Report Tabs
           Expanded(
-            child: TabBarView(
-              controller: _tabController,
+            child: IndexedStack(
+              index: _selectedTabIndex,
               children: [
                 _buildAttendanceReportsTab(controller, isMobile),
                 _buildBillingReportsTab(controller, isMobile),
@@ -127,72 +114,32 @@ class _StaffReportsPageState extends State<StaffReportsPage>
           SizedBox(height: 20.h),
 
           // Tab Selector
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.background,
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: TabBar(
-              controller: _tabController,
-              isScrollable: isMobile,
-              indicator: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(10.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+          CustomTabBar(
+            tabs: [
+              CustomTabBarItem(
+                label: 'Attendance',
+                icon: FontAwesomeIcons.userCheck,
               ),
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicatorPadding: EdgeInsets.all(4.r),
-              labelColor: Colors.white,
-              unselectedLabelColor: AppColors.textSecondary,
-              labelStyle: AppTextStyles.body2.copyWith(
-                fontWeight: FontWeight.w600,
+              CustomTabBarItem(
+                label: 'Billing',
+                icon: FontAwesomeIcons.receipt,
               ),
-              unselectedLabelStyle: AppTextStyles.body2,
-              dividerColor: Colors.transparent,
-              tabs: [
-                Tab(
-                  child: _buildTabItem(
-                    FontAwesomeIcons.userCheck,
-                    'Attendance',
-                  ),
-                ),
-                Tab(child: _buildTabItem(FontAwesomeIcons.receipt, 'Billing')),
-                Tab(
-                  child: _buildTabItem(
-                    FontAwesomeIcons.chartLine,
-                    'Menu Analytics',
-                  ),
-                ),
-                Tab(child: _buildTabItem(FontAwesomeIcons.users, 'Students')),
-              ],
-            ),
+              CustomTabBarItem(
+                label: 'Menu Analytics',
+                icon: FontAwesomeIcons.chartLine,
+              ),
+              CustomTabBarItem(label: 'Students', icon: FontAwesomeIcons.users),
+            ],
+            selectedIndex: _selectedTabIndex,
+            onTap: (index) => setState(() => _selectedTabIndex = index),
+            selectedColor: Colors.white,
+            selectedBackgroundColor: AppColors.staffRole,
+            unselectedColor: AppColors.textSecondary,
+            showIcons: true,
           ),
         ],
       ),
     ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.3);
-  }
-
-  Widget _buildTabItem(IconData icon, String text) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14.sp),
-          SizedBox(width: 6.w),
-          Flexible(
-            child: Text(text, overflow: TextOverflow.ellipsis, maxLines: 1),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _buildDatePicker(

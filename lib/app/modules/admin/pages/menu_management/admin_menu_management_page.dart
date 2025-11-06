@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../core/theme/app_decorations.dart';
+import '../../../../../core/constants/app_colors.dart';
 import '../../../../widgets/common/reusable_text_field.dart';
+import '../../../../widgets/custom_tab_bar.dart';
 
 // Import all menu management components
 import 'components/menu_header.dart';
-import 'components/menu_tab_bar.dart';
 import 'components/menu_filters.dart';
 import 'components/menu_item_card.dart';
 import 'components/menu_item_dialog.dart';
@@ -26,10 +28,9 @@ class AdminMenuManagementPage extends StatefulWidget {
       _AdminMenuManagementPageState();
 }
 
-class _AdminMenuManagementPageState extends State<AdminMenuManagementPage>
-    with SingleTickerProviderStateMixin {
+class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
   // Controllers
-  late TabController _tabController;
+  int selectedTabIndex = 0;
   final _searchController = TextEditingController();
   final _categoryController = TextEditingController();
   final _itemNameController = TextEditingController();
@@ -135,12 +136,10 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
     _searchController.dispose();
     _categoryController.dispose();
     _itemNameController.dispose();
@@ -160,10 +159,42 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage>
       child: Column(
         children: [
           MenuHeader(onAddItem: () => _showAddItemDialog()),
-          MenuTabBar(tabController: _tabController),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+            decoration: AppDecorations.floatingCard(),
+            child: CustomTabBar(
+              selectedIndex: selectedTabIndex,
+              onTap: (index) {
+                setState(() {
+                  selectedTabIndex = index;
+                });
+              },
+              tabs: [
+                CustomTabBarItem(
+                  label: 'Menu Items',
+                  icon: FontAwesomeIcons.plateWheat,
+                ),
+                CustomTabBarItem(
+                  label: 'Categories',
+                  icon: FontAwesomeIcons.layerGroup,
+                ),
+                CustomTabBarItem(
+                  label: 'Nutrition',
+                  icon: FontAwesomeIcons.heartPulse,
+                ),
+              ],
+              selectedColor: AppColors.adminRole,
+              unselectedColor: AppColors.textSecondary,
+              selectedBackgroundColor: AppColors.adminRole,
+              unselectedBackgroundColor: Colors.transparent,
+              showIndicator: true,
+              indicatorColor: AppColors.adminRole,
+              indicatorHeight: 3,
+            ),
+          ),
           Expanded(
-            child: TabBarView(
-              controller: _tabController,
+            child: IndexedStack(
+              index: selectedTabIndex,
               children: [
                 _buildMenuItemsTab(),
                 _buildCategoriesTab(),

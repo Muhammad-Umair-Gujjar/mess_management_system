@@ -12,6 +12,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../widgets/common/reusable_button.dart';
 import '../../../widgets/common/reusable_text_field.dart';
+import '../../../widgets/custom_tab_bar.dart';
 import '../staff_controller.dart';
 
 class StaffAttendancePage extends StatefulWidget {
@@ -23,7 +24,7 @@ class StaffAttendancePage extends StatefulWidget {
 
 class _StaffAttendancePageState extends State<StaffAttendancePage>
     with TickerProviderStateMixin {
-  late TabController _tabController;
+  int selectedTabIndex = 0;
   late AnimationController _markAllController;
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
@@ -32,7 +33,6 @@ class _StaffAttendancePageState extends State<StaffAttendancePage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
     _markAllController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -41,7 +41,6 @@ class _StaffAttendancePageState extends State<StaffAttendancePage>
 
   @override
   void dispose() {
-    _tabController.dispose();
     _markAllController.dispose();
     super.dispose();
   }
@@ -62,8 +61,8 @@ class _StaffAttendancePageState extends State<StaffAttendancePage>
 
           // Main Content
           Expanded(
-            child: TabBarView(
-              controller: _tabController,
+            child: IndexedStack(
+              index: selectedTabIndex,
               children: [
                 _buildAttendanceMarkingView(controller, isMobile),
                 _buildCalendarView(controller),
@@ -82,40 +81,32 @@ class _StaffAttendancePageState extends State<StaffAttendancePage>
       child: Row(
         children: [
           Expanded(
-            child: TabBar(
-              controller: _tabController,
-              indicator: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              labelColor: Colors.white,
-              unselectedLabelColor: AppColors.textSecondary,
-              labelStyle: AppTextStyles.body1.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-              unselectedLabelStyle: AppTextStyles.body2,
+            child: CustomTabBar(
+              selectedIndex: selectedTabIndex,
+              onTap: (index) {
+                setState(() {
+                  selectedTabIndex = index;
+                });
+              },
               tabs: [
-                Tab(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(FontAwesomeIcons.userCheck, size: 16.sp),
-                      SizedBox(width: 8.w),
-                      Text('Mark Attendance'),
-                    ],
-                  ),
+                CustomTabBarItem(
+                  label: 'Mark Attendance',
+                  icon: FontAwesomeIcons.userCheck,
                 ),
-                Tab(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(FontAwesomeIcons.calendar, size: 16.sp),
-                      SizedBox(width: 8.w),
-                      Text('Calendar View'),
-                    ],
-                  ),
+                CustomTabBarItem(
+                  label: 'Calendar View',
+                  icon: FontAwesomeIcons.calendar,
                 ),
               ],
+              selectedColor: Colors.white,
+              unselectedColor: AppColors.textSecondary,
+              selectedBackgroundColor: AppColors.primary,
+              unselectedBackgroundColor: Colors.transparent,
+              borderRadius: BorderRadius.circular(12.r),
+              selectedTextStyle: AppTextStyles.body1.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+              unselectedTextStyle: AppTextStyles.body2,
             ),
           ),
           SizedBox(width: 20.w),
