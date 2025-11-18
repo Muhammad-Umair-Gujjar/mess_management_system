@@ -1,0 +1,51 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../../../../../../core/constants/app_colors.dart';
+import '../../../../../../core/theme/app_decorations.dart';
+import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../widgets/custom_tab_bar.dart';
+
+class ManagementTabSelector extends StatelessWidget {
+  final int selectedTabIndex;
+  final Function(int) onTabChanged;
+
+  const ManagementTabSelector({
+    super.key,
+    required this.selectedTabIndex,
+    required this.onTabChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(20.r),
+      decoration: AppDecorations.floatingCard(),
+      child: CustomTabBar(
+        selectedIndex: selectedTabIndex,
+        onTap: onTabChanged,
+        tabs: [
+          CustomTabBarItem(
+            label: 'Active Students',
+            icon: FontAwesomeIcons.users,
+          ),
+          CustomTabBarItem(
+            label: 'Statistics',
+            icon: FontAwesomeIcons.chartBar,
+          ),
+        ],
+        selectedColor: Colors.white,
+        unselectedColor: AppColors.textSecondary,
+        selectedBackgroundColor: AppColors.success,
+        unselectedBackgroundColor: Colors.transparent,
+        borderRadius: BorderRadius.circular(12.r),
+        selectedTextStyle: AppTextStyles.body1.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedTextStyle: AppTextStyles.body2,
+      ),
+    ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.3);
+  }
+}

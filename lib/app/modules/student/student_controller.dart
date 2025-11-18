@@ -197,6 +197,59 @@ class StudentController extends GetxController {
     };
   }
 
+  Map<String, dynamic> getStudentStats() {
+    final monthlyStats = getMonthlyStats();
+
+    return {
+      'currentBill': monthlyBilling.value.toInt(),
+      'attendancePercentage': attendanceRate.value.toInt(),
+      'pendingDues': 150, // Mock value
+      'daysRemaining': 15, // Mock value
+    };
+  }
+
+  Map<String, Map<String, dynamic>> getTodaysMenu() {
+    // Mock today's menu data
+    return {
+      'Breakfast': {
+        'items': ['Idli', 'Sambhar', 'Chutney', 'Tea'],
+      },
+      'Dinner': {
+        'items': ['Rice', 'Dal', 'Sabji', 'Roti'],
+      },
+    };
+  }
+
+  List<Map<String, dynamic>> getRecentActivities() {
+    // Mock recent activities data
+    return [
+      {
+        'title': 'Breakfast Attendance Marked',
+        'description': 'You attended breakfast today',
+        'time': '2h ago',
+        'type': 'attendance',
+      },
+      {
+        'title': 'Bill Payment Due',
+        'description': 'Monthly bill payment is due',
+        'time': '1d ago',
+        'type': 'payment',
+      },
+      {
+        'title': 'Menu Updated',
+        'description': 'This week\'s menu has been updated',
+        'time': '2d ago',
+        'type': 'meal',
+      },
+      {
+        'title': 'Feedback Submitted',
+        'description': 'Your feedback has been received',
+        'time': '3d ago',
+        'type': 'complaint',
+      },
+    ];
+  }
+
   // Navigation methods
   void changePage(int index) {
     currentPageIndex.value = index;

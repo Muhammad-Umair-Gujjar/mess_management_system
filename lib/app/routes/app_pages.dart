@@ -2,9 +2,9 @@ import 'package:get/get.dart';
 import '../modules/auth/splash_screen.dart';
 import '../modules/auth/landing_page.dart';
 import '../modules/auth/simple_login_page.dart';
-import '../modules/student/enhanced_student_dashboard.dart';
-import '../modules/staff/staff_dashboard.dart';
-import '../modules/admin/admin_dashboard.dart';
+import '../modules/student/pages/enhanced_student_dashboard.dart';
+import '../modules/staff/pages/staff_dashboard.dart';
+import '../modules/admin/pages/admin_dashboard.dart';
 
 class AppPages {
   static final routes = [

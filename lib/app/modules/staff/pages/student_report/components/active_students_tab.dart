@@ -1,0 +1,102 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../../../../../../core/constants/app_colors.dart';
+import '../../../../../../core/theme/app_decorations.dart';
+import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
+import '../../../../../widgets/common/reusable_text_field.dart';
+import '../../../staff_controller.dart';
+import 'students_grid_view.dart';
+import 'students_list_view.dart';
+
+class ActiveStudentsTab extends StatelessWidget {
+  final StaffController controller;
+  final bool isMobile;
+
+  const ActiveStudentsTab({
+    super.key,
+    required this.controller,
+    required this.isMobile,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(24.r),
+      decoration: AppDecorations.floatingCard(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header with search
+          Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Active Students', style: AppTextStyles.heading5),
+                  Obx(
+                    () => Text(
+                      '${controller.filteredStudents.length} students enrolled',
+                      style: AppTextStyles.body2.copyWith(
+                        color: AppColors.textLight,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              SizedBox(
+                width: isMobile ? 200.w : 300.w,
+                child: ReusableTextField(
+                  hintText: 'Search students...',
+                  type: TextFieldType.search,
+                  onChanged: controller.filterStudents,
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 24.h),
+
+          // Students Grid/List
+          Expanded(
+            child: Obx(() {
+              final students = controller.filteredStudents;
+
+              if (students.isEmpty) {
+                return _buildEmptyState('No active students found');
+              }
+
+              return isMobile
+                  ? StudentsListView(students: students, controller: controller)
+                  : StudentsGridView(
+                      students: students,
+                      controller: controller,
+                    );
+            }),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 800.ms).slideX(begin: -0.3);
+  }
+
+  Widget _buildEmptyState(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(FontAwesomeIcons.users, size: 64.sp, color: AppColors.textLight),
+          SizedBox(height: 24.h),
+          Text(
+            message,
+            style: AppTextStyles.heading5.copyWith(color: AppColors.textLight),
+          ),
+        ],
+      ),
+    );
+  }
+}

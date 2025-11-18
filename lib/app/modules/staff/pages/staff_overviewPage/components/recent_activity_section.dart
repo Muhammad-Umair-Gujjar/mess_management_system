@@ -1,0 +1,55 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../../../../../../core/constants/app_colors.dart';
+import '../../../../../../core/theme/app_decorations.dart';
+import '../../../../../../core/theme/app_theme.dart';
+import 'activity_item.dart';
+
+class RecentActivitySection extends StatelessWidget {
+  final Map<String, dynamic> todayStats;
+
+  const RecentActivitySection({super.key, required this.todayStats});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(24.r),
+      decoration: AppDecorations.floatingCard(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Recent Activity',
+            style: AppTextStyles.heading5.copyWith(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 16.h),
+          ActivityItem(
+            title:
+                'Attendance marked for ${todayStats['breakfastPresent']} students',
+            time: 'Breakfast - Today',
+            icon: FontAwesomeIcons.check,
+            color: AppColors.success,
+          ),
+          SizedBox(height: 12.h),
+          ActivityItem(
+            title: 'Menu updated for tomorrow',
+            time: '2 hours ago',
+            icon: FontAwesomeIcons.utensils,
+            color: AppColors.info,
+          ),
+          SizedBox(height: 12.h),
+          ActivityItem(
+            title: 'New student registered',
+            time: 'Yesterday',
+            icon: FontAwesomeIcons.userPlus,
+            color: AppColors.primary,
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 800.ms, delay: 200.ms);
+  }
+}
