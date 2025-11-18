@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ResponsiveHelper {
+  // Device type detection
   static bool isMobile(BuildContext context) =>
       MediaQuery.of(context).size.width < 768;
 
@@ -15,6 +16,7 @@ class ResponsiveHelper {
   static bool isSmallScreen(BuildContext context) =>
       MediaQuery.of(context).size.width < 600;
 
+  // Enhanced responsive sizing methods
   static double getResponsiveFontSize(
     BuildContext context, {
     required double mobile,
@@ -24,6 +26,28 @@ class ResponsiveHelper {
     if (isMobile(context)) return mobile.sp;
     if (isTablet(context)) return tablet.sp;
     return desktop.sp;
+  }
+
+  static double getResponsiveIconSize(
+    BuildContext context, {
+    required double mobile,
+    required double tablet,
+    required double desktop,
+  }) {
+    if (isMobile(context)) return mobile.sp;
+    if (isTablet(context)) return tablet.sp;
+    return desktop.sp;
+  }
+
+  static double getResponsiveSpacing(
+    BuildContext context, {
+    required double mobile,
+    required double tablet,
+    required double desktop,
+  }) {
+    if (isMobile(context)) return mobile.h;
+    if (isTablet(context)) return tablet.h;
+    return desktop.h;
   }
 
   static EdgeInsets getResponsivePadding(
@@ -37,6 +61,18 @@ class ResponsiveHelper {
     return desktop ?? EdgeInsets.all(32.r);
   }
 
+  static EdgeInsets getResponsiveMargin(
+    BuildContext context, {
+    EdgeInsets? mobile,
+    EdgeInsets? tablet,
+    EdgeInsets? desktop,
+  }) {
+    if (isMobile(context)) return mobile ?? EdgeInsets.all(12.r);
+    if (isTablet(context)) return tablet ?? EdgeInsets.all(16.r);
+    return desktop ?? EdgeInsets.all(20.r);
+  }
+
+  // Grid configuration methods
   static int getGridCrossAxisCount(
     BuildContext context, {
     int mobile = 1,
@@ -87,6 +123,7 @@ class ResponsiveHelper {
     return (screenWidth - 96.w) / 3;
   }
 
+  // Layout builder method
   static Widget buildResponsiveLayout({
     required BuildContext context,
     required Widget mobile,
@@ -96,5 +133,30 @@ class ResponsiveHelper {
     if (isMobile(context)) return mobile;
     if (isTablet(context)) return tablet ?? mobile;
     return desktop;
+  }
+
+  // Quick access methods for common responsive patterns
+  static T getValue<T>(
+    BuildContext context, {
+    required T mobile,
+    required T tablet,
+    required T desktop,
+  }) {
+    if (isMobile(context)) return mobile;
+    if (isTablet(context)) return tablet;
+    return desktop;
+  }
+
+  // Responsive container sizing
+  static double getContainerWidth(
+    BuildContext context, {
+    double mobileRatio = 1.0,
+    double tabletRatio = 0.8,
+    double desktopRatio = 0.6,
+  }) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    if (isMobile(context)) return screenWidth * mobileRatio;
+    if (isTablet(context)) return screenWidth * tabletRatio;
+    return screenWidth * desktopRatio;
   }
 }

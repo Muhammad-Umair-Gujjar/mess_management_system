@@ -12,6 +12,7 @@ import '../../../../core/utils/responsive_helper.dart';
 import '../../../../core/utils/toast_message.dart';
 import '../../../widgets/common/reusable_button.dart';
 import '../../../widgets/common/reusable_text_field.dart';
+import '../../../widgets/custom_grid_view.dart';
 import '../staff_controller.dart';
 
 class StaffMenuPlanningPage extends StatefulWidget {
@@ -586,110 +587,103 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
       {'name': 'Chai', 'category': 'Beverages', 'calories': 50, 'price': 20},
     ];
 
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: ResponsiveHelper.isMobile(context) ? 2 : 3,
-        crossAxisSpacing: 16.w,
-        mainAxisSpacing: 16.h,
-        childAspectRatio: 0.85,
-      ),
-      itemCount: menuItems.length,
-      itemBuilder: (context, index) {
-        final item = menuItems[index];
-        return _buildMenuItemTile(item, index);
-      },
+    // Convert menu items to GridCardData format
+    final gridData = menuItems
+        .map(
+          (item) => GridCardData(
+            title: item['name'] as String,
+            value: '${item['calories']} cal',
+            icon: FontAwesomeIcons.utensils,
+            color: AppColors.primary,
+            subtitle: item['category'] as String,
+            customContent: _buildMenuItemContent(item),
+          ),
+        )
+        .toList();
+
+    return CustomGridView(
+      data: gridData,
+      crossAxisCount: 4, // Desktop: 4 columns
+      tabletCrossAxisCount: 3, // Tablet: 3 columns
+      mobileCrossAxisCount: 2, // Mobile: 2 columns
+      crossAxisSpacing: 16.w,
+      mainAxisSpacing: 16.h,
+      childAspectRatio: 0.85,
+      mobileAspectRatio: 0.85,
+      tabletAspectRatio: 0.85,
+      cardStyle: CustomGridCardStyle.elevated,
+      showAnimation: true,
     );
   }
 
-  Widget _buildMenuItemTile(Map<String, dynamic> item, int index) {
-    return Container(
-          padding: EdgeInsets.all(16.r),
+  Widget _buildMenuItemContent(Map<String, dynamic> item) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                item['name'] as String,
+                style: AppTextStyles.subtitle1.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            PopupMenuButton(
+              icon: Icon(FontAwesomeIcons.ellipsisVertical, size: 16.sp),
+              itemBuilder: (context) => [
+                const PopupMenuItem(child: Text('Edit')),
+                const PopupMenuItem(child: Text('Delete')),
+              ],
+            ),
+          ],
+        ),
+        SizedBox(height: 8.h),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
           decoration: BoxDecoration(
-            color: AppColors.cardBackground,
-            borderRadius: BorderRadius.circular(16.r),
-            boxShadow: AppShadows.light,
+            color: AppColors.info.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12.r),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      item['name'],
-                      style: AppTextStyles.subtitle1.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  PopupMenuButton(
-                    icon: Icon(FontAwesomeIcons.ellipsisVertical, size: 16.sp),
-                    itemBuilder: (context) => [
-                      PopupMenuItem(child: Text('Edit')),
-                      PopupMenuItem(child: Text('Delete')),
-                    ],
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 8.h),
-
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                decoration: BoxDecoration(
-                  color: AppColors.info.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Text(
-                  item['category'],
-                  style: AppTextStyles.caption.copyWith(
-                    color: AppColors.info,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-
-              const Spacer(),
-
-              Row(
-                children: [
-                  Icon(
-                    FontAwesomeIcons.fire,
-                    size: 12.sp,
-                    color: AppColors.warning,
-                  ),
-                  SizedBox(width: 4.w),
-                  Text('${item['calories']} cal', style: AppTextStyles.caption),
-                ],
-              ),
-
-              SizedBox(height: 4.h),
-
-              Row(
-                children: [
-                  Icon(
-                    FontAwesomeIcons.indianRupee,
-                    size: 12.sp,
-                    color: AppColors.success,
-                  ),
-                  SizedBox(width: 4.w),
-                  Text(
-                    '₹${item['price']}',
-                    style: AppTextStyles.body2.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.success,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+          child: Text(
+            item['category'] as String,
+            style: AppTextStyles.caption.copyWith(
+              color: AppColors.info,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        )
-        .animate(delay: Duration(milliseconds: 100 * index))
-        .fadeIn(duration: 600.ms)
-        .scale(begin: const Offset(0.8, 0.8));
+        ),
+        const Spacer(),
+        Row(
+          children: [
+            Icon(FontAwesomeIcons.fire, size: 12.sp, color: AppColors.warning),
+            SizedBox(width: 4.w),
+            Text('${item['calories']} cal', style: AppTextStyles.caption),
+          ],
+        ),
+        SizedBox(height: 4.h),
+        Row(
+          children: [
+            Icon(
+              FontAwesomeIcons.indianRupee,
+              size: 12.sp,
+              color: AppColors.success,
+            ),
+            SizedBox(width: 4.w),
+            Text(
+              '₹${item['price']}',
+              style: AppTextStyles.body2.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppColors.success,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   String _getWeekRangeText() {

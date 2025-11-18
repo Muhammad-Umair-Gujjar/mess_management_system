@@ -25,10 +25,10 @@ class StudentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-          padding: EdgeInsets.all(20.r),
+          padding: EdgeInsets.all(16.r), // Reduced from 20.r
           decoration: BoxDecoration(
             color: AppColors.cardBackground,
-            borderRadius: BorderRadius.circular(20.r),
+            borderRadius: BorderRadius.circular(16.r), // Reduced from 20.r
             boxShadow: AppShadows.light,
             border: Border.all(color: AppColors.staffRole.withOpacity(0.1)),
           ),
@@ -38,23 +38,26 @@ class StudentCard extends StatelessWidget {
               Row(
                 children: [
                   CircleAvatar(
-                    radius: 24.r,
+                    radius: 20.r, // Reduced from 24.r
                     backgroundColor: AppColors.staffRole.withOpacity(0.1),
                     child: Text(
                       student['name'].substring(0, 1).toUpperCase(),
-                      style: AppTextStyles.heading5.copyWith(
+                      style: AppTextStyles.body1.copyWith(
+                        // Changed from heading5
                         color: AppColors.staffRole,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
-                  SizedBox(width: 12.w),
+                  SizedBox(width: 10.w), // Reduced from 12.w
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           student['name'],
-                          style: AppTextStyles.subtitle1.copyWith(
+                          style: AppTextStyles.subtitle2.copyWith(
+                            // Changed from subtitle1
                             fontWeight: FontWeight.w600,
                           ),
                           maxLines: 1,
@@ -62,7 +65,8 @@ class StudentCard extends StatelessWidget {
                         ),
                         Text(
                           'ID: ${student['id']}',
-                          style: AppTextStyles.body2.copyWith(
+                          style: AppTextStyles.caption.copyWith(
+                            // Changed from body2
                             color: AppColors.textLight,
                           ),
                         ),
@@ -72,39 +76,43 @@ class StudentCard extends StatelessWidget {
                 ],
               ),
 
-              SizedBox(height: 16.h),
+              SizedBox(height: 12.h), // Reduced from 16.h
+
+              SizedBox(height: 12.h), // Reduced from 16.h
 
               Row(
                 children: [
                   Icon(
                     FontAwesomeIcons.doorOpen,
-                    size: 14.sp,
+                    size: 12.sp, // Reduced from 14.sp
                     color: AppColors.textLight,
                   ),
-                  SizedBox(width: 8.w),
+                  SizedBox(width: 6.w), // Reduced from 8.w
                   Text(
                     'Room: ${student['room']}',
-                    style: AppTextStyles.body2.copyWith(
+                    style: AppTextStyles.caption.copyWith(
+                      // Changed from body2
                       color: AppColors.textSecondary,
                     ),
                   ),
                 ],
               ),
 
-              SizedBox(height: 8.h),
+              SizedBox(height: 6.h), // Reduced from 8.h
 
               Row(
                 children: [
                   Icon(
                     FontAwesomeIcons.envelope,
-                    size: 14.sp,
+                    size: 12.sp, // Reduced from 14.sp
                     color: AppColors.textLight,
                   ),
-                  SizedBox(width: 8.w),
+                  SizedBox(width: 6.w), // Reduced from 8.w
                   Expanded(
                     child: Text(
                       student['email'],
-                      style: AppTextStyles.body2.copyWith(
+                      style: AppTextStyles.caption.copyWith(
+                        // Changed from body2
                         color: AppColors.textSecondary,
                       ),
                       maxLines: 1,
@@ -120,23 +128,25 @@ class StudentCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: ReusableButton(
-                      text: 'View Details',
+                      text: 'Details', // Shortened text
                       type: ButtonType.outline,
                       size: ButtonSize.small,
                       onPressed: () =>
                           StudentDetailsDialog.show(context, student),
                     ),
                   ),
-                  SizedBox(width: 8.w),
+                  SizedBox(width: 6.w), // Reduced from 8.w
                   Container(
-                    padding: EdgeInsets.all(6.r),
+                    padding: EdgeInsets.all(4.r), // Reduced from 6.r
                     decoration: BoxDecoration(
                       color: AppColors.success.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(6.r),
+                      borderRadius: BorderRadius.circular(
+                        4.r,
+                      ), // Reduced from 6.r
                     ),
                     child: Icon(
                       FontAwesomeIcons.check,
-                      size: 12.sp,
+                      size: 10.sp, // Reduced from 12.sp
                       color: AppColors.success,
                     ),
                   ),

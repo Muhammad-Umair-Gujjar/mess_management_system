@@ -4,9 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
-import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
-import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/constants/responsive_constants.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
+import '../../../../../widgets/custom_grid_view.dart';
+import '../../../../../widgets/responsive/responsive_widgets.dart';
 import '../../../student_controller.dart';
 
 class QuickActionsCard extends StatelessWidget {
@@ -16,14 +18,13 @@ class QuickActionsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(24.r),
-      decoration: AppDecorations.floatingCard(),
+    return ResponsiveCard(
+      paddingType: 'large',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(),
-          SizedBox(height: 20.h),
+          ResponsiveSpacing(spacingType: 'sectionMargin'),
           _buildActionsGrid(context),
         ],
       ),
@@ -33,28 +34,59 @@ class QuickActionsCard extends StatelessWidget {
   Widget _buildHeader() {
     return Row(
       children: [
-        Icon(FontAwesomeIcons.bolt, color: AppColors.warning, size: 20.sp),
-        SizedBox(width: 12.w),
-        Text('Quick Actions', style: AppTextStyles.heading5),
+        ResponsiveIcon(
+          icon: FontAwesomeIcons.bolt,
+          sizeType: 'medium',
+          color: AppColors.warning,
+        ),
+        ResponsiveSpacing(spacingType: 'itemSpacing', isVertical: false),
+        ResponsiveText(text: 'Quick Actions', styleType: 'heading5'),
       ],
     );
   }
 
   Widget _buildActionsGrid(BuildContext context) {
     final actions = _getQuickActions();
+    final gridConfig = ResponsiveConstants.getGridConfig('quickActions')!;
 
-    return GridView.builder(
+    // Convert actions to GridCardData format
+    final gridData = actions
+        .map(
+          (action) => GridCardData(
+            title: action['title'],
+            value: '', // Not used for action cards
+            icon: action['icon'],
+            color: action['color'],
+            onTap: action['onTap'],
+            customContent: _buildQuickActionContent(action),
+          ),
+        )
+        .toList();
+
+    return CustomGridView(
+      data: gridData,
+      crossAxisCount: gridConfig['desktop']!, // Desktop: 2 columns
+      tabletCrossAxisCount: gridConfig['tablet']!, // Tablet: 4 columns
+      mobileCrossAxisCount: gridConfig['mobile']!, // Mobile: 2 columns
+      crossAxisSpacing: ResponsiveHelper.getResponsiveSpacing(
+        context,
+        mobile: 8,
+        tablet: 12,
+        desktop: 16,
+      ).w,
+      mainAxisSpacing: ResponsiveHelper.getResponsiveSpacing(
+        context,
+        mobile: 8,
+        tablet: 12,
+        desktop: 16,
+      ).h,
+      childAspectRatio: 1.3,
+      mobileAspectRatio: 1.3,
+      tabletAspectRatio: 1.1,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 12.w,
-        mainAxisSpacing: 12.h,
-        childAspectRatio: 1.2,
-      ),
-      itemCount: actions.length,
-      itemBuilder: (context, index) =>
-          _QuickActionTile(action: actions[index], index: index),
+      cardStyle: CustomGridCardStyle.minimal,
+      showAnimation: true,
     );
   }
 
@@ -86,54 +118,59 @@ class QuickActionsCard extends StatelessWidget {
       },
     ];
   }
-}
 
-class _QuickActionTile extends StatelessWidget {
-  final Map<String, dynamic> action;
-  final int index;
+  Widget _buildQuickActionContent(Map<String, dynamic> action) {
+    return Builder(
+      builder: (context) {
+        final iconConfig = ResponsiveConstants.getIconSizes('large')!;
 
-  const _QuickActionTile({required this.action, required this.index});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: action['onTap'],
-      child: Container(
-        padding: EdgeInsets.all(16.r),
-        decoration: BoxDecoration(
-          color: (action['color'] as Color).withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(
-            color: (action['color'] as Color).withOpacity(0.3),
-            width: 1,
-          ),
-        ),
-        child: Column(
+        return Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 40.w,
-              height: 40.h,
+              width: ResponsiveHelper.getResponsiveIconSize(
+                context,
+                mobile: iconConfig['mobile']! + 8,
+                tablet: iconConfig['tablet']! + 8,
+                desktop: iconConfig['desktop']! + 8,
+              ),
+              height: ResponsiveHelper.getResponsiveIconSize(
+                context,
+                mobile: iconConfig['mobile']! + 8,
+                tablet: iconConfig['tablet']! + 8,
+                desktop: iconConfig['desktop']! + 8,
+              ),
               decoration: BoxDecoration(
                 color: action['color'],
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.circular(
+                  ResponsiveHelper.getValue(
+                    context,
+                    mobile: 6.0,
+                    tablet: 8.0,
+                    desktop: 10.0,
+                  ).r,
+                ),
               ),
-              child: Icon(action['icon'], color: Colors.white, size: 18.sp),
+              child: ResponsiveIcon(
+                icon: action['icon'],
+                sizeType: 'medium',
+                color: Colors.white,
+              ),
             ),
-            SizedBox(height: 12.h),
-            Text(
-              action['title'],
-              style: AppTextStyles.caption.copyWith(
-                fontWeight: FontWeight.w600,
+            ResponsiveSpacing(spacingType: 'itemSpacing'),
+            Flexible(
+              child: ResponsiveText(
+                text: action['title'],
+                styleType: 'caption',
                 color: action['color'],
+                fontWeight: FontWeight.w600,
+                maxLines: 2,
               ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
             ),
           ],
-        ),
-      ),
-    ).animate(delay: (index * 100).ms).scale(begin: const Offset(0.8, 0.8));
+        );
+      },
+    );
   }
 }

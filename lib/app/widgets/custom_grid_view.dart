@@ -79,12 +79,12 @@ class CustomGridView extends StatelessWidget {
     int currentCrossAxisCount = crossAxisCount;
     double currentAspectRatio = childAspectRatio;
 
-    // Always use 2 columns for mobile, 3 for tablet, ignoring overrides
+    // Use responsive cross axis counts with proper fallbacks
     if (isMobile) {
-      currentCrossAxisCount = 2;
+      currentCrossAxisCount = mobileCrossAxisCount ?? 2;
       currentAspectRatio = mobileAspectRatio ?? childAspectRatio;
     } else if (isTablet) {
-      currentCrossAxisCount = 3;
+      currentCrossAxisCount = tabletCrossAxisCount ?? 3;
       currentAspectRatio = tabletAspectRatio ?? childAspectRatio;
     }
 
