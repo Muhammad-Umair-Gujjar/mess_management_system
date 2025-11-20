@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/utils/responsive_helper.dart';
+import '../../../../../widgets/responsive/responsive_widgets.dart';
 
 class StatCard extends StatelessWidget {
   final String title;

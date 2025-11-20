@@ -224,6 +224,7 @@ class DashboardNavigation extends StatelessWidget {
                     style: AppTextStyles.navMenuItem.copyWith(
                       color: isActive ? Colors.white : AppColors.textPrimary,
                       fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                      fontSize: 18.sp, // Enhanced for better mobile readability
                     ),
                   ),
                 ),

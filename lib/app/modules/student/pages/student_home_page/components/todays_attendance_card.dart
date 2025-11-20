@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../../core/utils/toast_message.dart';
 import '../../../student_controller.dart';
 
@@ -18,13 +19,13 @@ class TodaysAttendanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(24.r),
+      padding: ResponsiveHelper.getPadding(context, 'cardPadding'),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(),
-          SizedBox(height: 20.h),
+          _buildHeader(context),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
           Obx(() {
             final todayStats = controller.getTodaysStats();
             return Column(
@@ -34,7 +35,9 @@ class TodaysAttendanceCard extends StatelessWidget {
                   isAttended: todayStats['breakfastAttended'] == 1,
                   onTap: () => _markAttendance(controller, 'breakfast'),
                 ),
-                SizedBox(height: 16.h),
+                SizedBox(
+                  height: ResponsiveHelper.getSpacing(context, 'sectionMargin'),
+                ),
                 _AttendanceItem(
                   meal: '🌙 Dinner',
                   isAttended: todayStats['dinnerAttended'] == 1,
@@ -48,16 +51,21 @@ class TodaysAttendanceCard extends StatelessWidget {
     ).animate().fadeIn(delay: 600.ms).slideX(begin: 0.3);
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Row(
       children: [
         Icon(
           FontAwesomeIcons.calendarCheck,
           color: AppColors.success,
-          size: 20.sp,
+          size: ResponsiveHelper.getIconSize(context, 'medium'),
         ),
-        SizedBox(width: 12.w),
-        Text('Today\'s Attendance', style: AppTextStyles.heading5),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'itemSpacing')),
+        Text(
+          'Today\'s Attendance',
+          style: AppTextStyles.heading5.copyWith(
+            fontSize: ResponsiveHelper.getFontSize(context, 'heading5'),
+          ),
+        ),
       ],
     );
   }
@@ -81,12 +89,14 @@ class _AttendanceItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.r),
+      padding: ResponsiveHelper.getPadding(context, 'sectionMargin'),
       decoration: BoxDecoration(
         color: isAttended
             ? AppColors.success.withOpacity(0.1)
             : Colors.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getBorderRadius(context, 'medium'),
+        ),
         border: Border.all(
           color: isAttended ? AppColors.success : Colors.grey.withOpacity(0.3),
         ),
@@ -96,9 +106,11 @@ class _AttendanceItem extends StatelessWidget {
           Icon(
             isAttended ? FontAwesomeIcons.circleCheck : FontAwesomeIcons.circle,
             color: isAttended ? AppColors.success : Colors.grey,
-            size: 20.sp,
+            size: ResponsiveHelper.getIconSize(context, 'medium'),
           ),
-          SizedBox(width: 16.w),
+          SizedBox(
+            width: ResponsiveHelper.getSpacing(context, 'sectionMargin'),
+          ),
           Expanded(
             child: Text(
               meal,

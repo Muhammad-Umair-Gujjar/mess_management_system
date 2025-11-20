@@ -21,7 +21,7 @@ class WelcomeCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(ResponsiveHelper.isMobile(context) ? 20.r : 32.r),
+      padding: ResponsiveHelper.getPadding(context, 'cardPadding'),
       decoration: AppDecorations.gradientContainer(
         gradient: AppColors.primaryGradient,
       ),
@@ -56,12 +56,7 @@ class WelcomeCard extends StatelessWidget {
             '$greeting 👋',
             style: AppTextStyles.heading5.copyWith(
               color: Colors.white.withOpacity(0.9),
-              fontSize: ResponsiveHelper.getResponsiveFontSize(
-                context,
-                mobile: 16,
-                tablet: 18,
-                desktop: 20,
-              ),
+              fontSize: ResponsiveHelper.getFontSize(context, 'heading5'),
             ),
           ),
           SizedBox(height: 8.h),
@@ -69,12 +64,7 @@ class WelcomeCard extends StatelessWidget {
             student?.name ?? 'Loading...',
             style: AppTextStyles.heading2.copyWith(
               color: Colors.white,
-              fontSize: ResponsiveHelper.getResponsiveFontSize(
-                context,
-                mobile: 24,
-                tablet: 28,
-                desktop: 32,
-              ),
+              fontSize: ResponsiveHelper.getFontSize(context, 'heading2'),
             ),
           ),
           SizedBox(height: 16.h),
@@ -82,7 +72,9 @@ class WelcomeCard extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(20.r),
+              borderRadius: BorderRadius.circular(
+                ResponsiveHelper.getBorderRadius(context, 'large'),
+              ),
             ),
             child: Text(
               student?.hostelName != null && student?.roomNumber != null
@@ -90,26 +82,16 @@ class WelcomeCard extends StatelessWidget {
                   : 'Loading hostel info...',
               style: AppTextStyles.body1.copyWith(
                 color: Colors.white.withOpacity(0.9),
-                fontSize: ResponsiveHelper.getResponsiveFontSize(
-                  context,
-                  mobile: 12,
-                  tablet: 14,
-                  desktop: 14,
-                ),
+                fontSize: ResponsiveHelper.getFontSize(context, 'body2'),
               ),
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 12.h),
           Text(
             'Welcome back! Check your meal attendance, view today\'s menu, and manage your billing.',
             style: AppTextStyles.body1.copyWith(
               color: Colors.white.withOpacity(0.8),
-              fontSize: ResponsiveHelper.getResponsiveFontSize(
-                context,
-                mobile: 14,
-                tablet: 16,
-                desktop: 16,
-              ),
+              fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
             ),
           ),
         ],
@@ -119,14 +101,16 @@ class WelcomeCard extends StatelessWidget {
 
   Widget _buildWelcomeAvatar(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(ResponsiveHelper.isMobile(context) ? 16.r : 24.r),
+      padding: ResponsiveHelper.getPadding(context, 'padding'),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getBorderRadius(context, 'large'),
+        ),
       ),
       child: Icon(
         FontAwesomeIcons.graduationCap,
-        size: ResponsiveHelper.isMobile(context) ? 32.sp : 48.sp,
+        size: ResponsiveHelper.getIconSize(context, 'xlarge'),
         color: Colors.white,
       ),
     ).animate().scale(delay: 500.ms);

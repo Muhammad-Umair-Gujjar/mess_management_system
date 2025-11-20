@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/app_decorations.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/responsive_helper.dart';
 import 'reusable_button.dart';
 
 enum StudentCardType {
@@ -44,14 +45,18 @@ class UnifiedStudentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final responsiveBorderRadius = ResponsiveHelper.getBorderRadius(
+      context,
+      type == StudentCardType.details ? 'large' : 'card',
+    );
+
     return Container(
-          padding: padding ?? EdgeInsets.all(16.r),
+          padding:
+              padding ?? ResponsiveHelper.getPadding(context, 'cardPadding'),
           decoration: BoxDecoration(
             color: AppColors.cardBackground,
-            borderRadius: BorderRadius.circular(
-              type == StudentCardType.details ? 20.r : 16.r,
-            ),
-            border: _getBorder(),
+            borderRadius: BorderRadius.circular(responsiveBorderRadius),
+            border: _getBorder(context),
             boxShadow: AppShadows.light,
           ),
           child: _buildCardContent(),
@@ -66,12 +71,19 @@ class UnifiedStudentCard extends StatelessWidget {
         );
   }
 
-  Border? _getBorder() {
+  Border? _getBorder(BuildContext context) {
+    final borderWidth = ResponsiveHelper.getResponsiveSpacing(
+      context,
+      mobile: 1.5,
+      tablet: 2.0,
+      desktop: 2.0,
+    );
+
     if (type == StudentCardType.attendance && isPresent != null) {
       final color = isPresent!
           ? AppColors.success.withOpacity(0.5)
           : AppColors.error.withOpacity(0.5);
-      return Border.all(color: color, width: 2.w);
+      return Border.all(color: color, width: borderWidth);
     }
 
     if (borderColor != null) {

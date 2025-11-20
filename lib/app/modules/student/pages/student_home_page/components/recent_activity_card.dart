@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../student_controller.dart';
 
 class RecentActivityCard extends StatelessWidget {
@@ -17,20 +18,22 @@ class RecentActivityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(24.r),
+      padding: ResponsiveHelper.getPadding(context, 'cardPadding'),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(),
-          SizedBox(height: 16.h),
-          _buildActivitiesList(),
+          _buildHeader(context),
+          SizedBox(
+            height: ResponsiveHelper.getSpacing(context, 'sectionMargin'),
+          ),
+          _buildActivitiesList(context),
         ],
       ),
     ).animate().fadeIn(delay: 700.ms).slideX(begin: -0.3);
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -39,25 +42,38 @@ class RecentActivityCard extends StatelessWidget {
             Icon(
               FontAwesomeIcons.clockRotateLeft,
               color: AppColors.primary,
-              size: 20.sp,
+              size: ResponsiveHelper.getIconSize(context, 'medium'),
             ),
-            SizedBox(width: 12.w),
-            Text('Recent Activity', style: AppTextStyles.heading5),
+            SizedBox(
+              width: ResponsiveHelper.getSpacing(context, 'itemSpacing'),
+            ),
+            Text(
+              'Recent Activity',
+              style: AppTextStyles.heading5.copyWith(
+                fontSize: ResponsiveHelper.getFontSize(context, 'heading5'),
+              ),
+            ),
           ],
         ),
         TextButton(
           onPressed: () => Get.toNamed('/student/activity'),
-          child: Text('View All'),
+          child: Text(
+            'View All',
+            style: TextStyle(
+              fontSize: ResponsiveHelper.getFontSize(context, 'button'),
+              color: AppColors.primary,
+            ),
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildActivitiesList() {
+  Widget _buildActivitiesList(BuildContext context) {
     final activities = controller.getRecentActivities().take(4).toList();
 
     if (activities.isEmpty) {
-      return _buildEmptyState();
+      return _buildEmptyState(context);
     }
 
     return Column(
@@ -71,17 +87,19 @@ class RecentActivityCard extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(32.r),
+      padding: ResponsiveHelper.getPadding(context, 'padding'),
       child: Column(
         children: [
           Icon(
             FontAwesomeIcons.clockRotateLeft,
             color: Colors.grey,
-            size: 40.sp,
+            size: ResponsiveHelper.getIconSize(context, 'xlarge'),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(
+            height: ResponsiveHelper.getSpacing(context, 'sectionMargin'),
+          ),
           Text(
             'No recent activity',
             style: AppTextStyles.subtitle2.copyWith(
@@ -103,11 +121,15 @@ class _ActivityItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 12.h),
+      margin: EdgeInsets.only(
+        bottom: ResponsiveHelper.getSpacing(context, 'itemSpacing'),
+      ),
       child: Row(
         children: [
-          _buildActivityIcon(),
-          SizedBox(width: 16.w),
+          _buildActivityIcon(context),
+          SizedBox(
+            width: ResponsiveHelper.getSpacing(context, 'sectionMargin'),
+          ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,7 +140,7 @@ class _ActivityItem extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 4.h),
+                SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
                 Text(
                   activity['description'] ?? '',
                   style: AppTextStyles.caption.copyWith(
@@ -141,7 +163,7 @@ class _ActivityItem extends StatelessWidget {
     ).animate(delay: (index * 100).ms).fadeIn().slideX(begin: 0.2);
   }
 
-  Widget _buildActivityIcon() {
+  Widget _buildActivityIcon(BuildContext context) {
     final type = activity['type'] ?? '';
     IconData icon;
     Color color;
@@ -168,14 +190,21 @@ class _ActivityItem extends StatelessWidget {
         color = AppColors.primary;
     }
 
+    final iconSize = ResponsiveHelper.getIconSize(context, 'medium');
     return Container(
-      width: 36.w,
-      height: 36.h,
+      width: iconSize + 4.w,
+      height: iconSize + 4.h,
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getBorderRadius(context, 'small'),
+        ),
       ),
-      child: Icon(icon, color: color, size: 16.sp),
+      child: Icon(
+        icon,
+        color: color,
+        size: ResponsiveHelper.getIconSize(context, 'small'),
+      ),
     );
   }
 }

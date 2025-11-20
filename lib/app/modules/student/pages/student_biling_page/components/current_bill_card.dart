@@ -54,7 +54,7 @@ class CurrentBillCard extends StatelessWidget {
           ),
           child: Icon(
             FontAwesomeIcons.receipt,
-            size: 28.sp,
+            size: 32.sp,
             color: Colors.white,
           ),
         ),
@@ -67,7 +67,7 @@ class CurrentBillCard extends StatelessWidget {
               style: AppTextStyles.heading5.copyWith(
                 fontSize: ResponsiveHelper.getResponsiveFontSize(
                   context,
-                  mobile: 18,
+                  mobile: 30,
                   tablet: 20,
                   desktop: 22,
                 ),
@@ -105,7 +105,7 @@ class CurrentBillCard extends StatelessWidget {
               style: AppTextStyles.heading1.copyWith(
                 fontSize: ResponsiveHelper.getResponsiveFontSize(
                   context,
-                  mobile: 36,
+                  mobile: 48,
                   tablet: 42,
                   desktop: 48,
                 ),

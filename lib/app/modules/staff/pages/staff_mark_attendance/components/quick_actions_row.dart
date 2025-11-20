@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../widgets/common/reusable_button.dart';
 import '../../../staff_controller.dart';
 
@@ -20,6 +21,39 @@ class QuickActionsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
+    return isMobile
+        ? _buildMobileLayout(context)
+        : _buildDesktopLayout(context);
+  }
+
+  /// Mobile layout - compact buttons with smaller text
+  Widget _buildMobileLayout(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        ReusableButton(
+          text: 'Mark All Present',
+          icon: FontAwesomeIcons.check,
+          type: ButtonType.success,
+          size: ButtonSize.small,
+          onPressed: onMarkAllPresent,
+        ),
+        SizedBox(height: 8.h),
+        ReusableButton(
+          text: 'Mark All Absent',
+          icon: FontAwesomeIcons.xmark,
+          type: ButtonType.danger,
+          size: ButtonSize.small,
+          onPressed: onMarkAllAbsent,
+        ),
+      ],
+    );
+  }
+
+  /// Desktop layout - original horizontal layout
+  Widget _buildDesktopLayout(BuildContext context) {
     return Row(
       children: [
         ReusableButton(

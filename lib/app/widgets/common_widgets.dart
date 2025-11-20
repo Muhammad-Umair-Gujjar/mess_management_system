@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/responsive_helper.dart';
+import 'responsive/responsive_widgets.dart';
 
 class GlassCard extends StatelessWidget {
   final Widget child;
@@ -9,7 +12,7 @@ class GlassCard extends StatelessWidget {
   final double? height;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
-  final double borderRadius;
+  final double? borderRadius;
   final VoidCallback? onTap;
 
   const GlassCard({
@@ -19,12 +22,17 @@ class GlassCard extends StatelessWidget {
     this.height,
     this.padding,
     this.margin,
-    this.borderRadius = 24,
+    this.borderRadius,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final responsiveBorderRadius =
+        borderRadius ?? ResponsiveHelper.getBorderRadius(context, 'card');
+    final responsivePadding =
+        padding ?? ResponsiveHelper.getCardPadding(context);
+
     return Container(
       width: width,
       height: height,
@@ -34,10 +42,20 @@ class GlassCard extends StatelessWidget {
         child: GlassmorphicContainer(
           width: width ?? double.infinity,
           height: height ?? double.infinity,
-          borderRadius: borderRadius,
-          blur: 20,
+          borderRadius: responsiveBorderRadius,
+          blur: ResponsiveHelper.getResponsiveSpacing(
+            context,
+            mobile: 15.0,
+            tablet: 18.0,
+            desktop: 20.0,
+          ),
           alignment: Alignment.bottomCenter,
-          border: 2,
+          border: ResponsiveHelper.getResponsiveSpacing(
+            context,
+            mobile: 1.5,
+            tablet: 1.8,
+            desktop: 2.0,
+          ),
           linearGradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -54,10 +72,7 @@ class GlassCard extends StatelessWidget {
               AppColors.glassBorder.withOpacity(0.1),
             ],
           ),
-          child: Padding(
-            padding: padding ?? const EdgeInsets.all(24),
-            child: child,
-          ),
+          child: Padding(padding: responsivePadding, child: child),
         ),
       ),
     ).animate().fadeIn(duration: 600.ms).scale(delay: 300.ms);
@@ -96,10 +111,19 @@ class _AnimatedCardState extends State<AnimatedCard>
 
   @override
   Widget build(BuildContext context) {
+    final responsivePadding =
+        widget.padding ?? ResponsiveHelper.getCardPadding(context);
+    final responsiveMargin =
+        widget.margin ?? ResponsiveHelper.getMargin(context, 'small');
+    final responsiveBorderRadius = ResponsiveHelper.getBorderRadius(
+      context,
+      'card',
+    );
+
     return Container(
       width: widget.width,
       height: widget.height,
-      margin: widget.margin,
+      margin: responsiveMargin,
       child: MouseRegion(
         onEnter: (_) => setState(() => _isHovered = true),
         onExit: (_) => setState(() => _isHovered = false),
@@ -107,8 +131,7 @@ class _AnimatedCardState extends State<AnimatedCard>
           onTap: widget.onTap,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            transform: Matrix4.identity()
-              ..scale(_isHovered ? 1.05 : 1.0),
+            transform: Matrix4.identity()..scale(_isHovered ? 1.05 : 1.0),
             decoration: BoxDecoration(
               color: widget.color ?? AppColors.cardBackground,
               gradient: widget.gradientColors != null
@@ -118,21 +141,45 @@ class _AnimatedCardState extends State<AnimatedCard>
                       colors: widget.gradientColors!,
                     )
                   : null,
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(responsiveBorderRadius),
               boxShadow: [
                 BoxShadow(
-                  color: _isHovered 
+                  color: _isHovered
                       ? AppColors.primary.withOpacity(0.2)
                       : AppColors.shadowLight,
-                  blurRadius: _isHovered ? 20 : 8,
-                  offset: Offset(0, _isHovered ? 8 : 4),
+                  blurRadius: _isHovered
+                      ? ResponsiveHelper.getResponsiveSpacing(
+                          context,
+                          mobile: 16.0,
+                          tablet: 18.0,
+                          desktop: 20.0,
+                        )
+                      : ResponsiveHelper.getResponsiveSpacing(
+                          context,
+                          mobile: 6.0,
+                          tablet: 7.0,
+                          desktop: 8.0,
+                        ),
+                  offset: Offset(
+                    0,
+                    _isHovered
+                        ? ResponsiveHelper.getResponsiveSpacing(
+                            context,
+                            mobile: 6.0,
+                            tablet: 7.0,
+                            desktop: 8.0,
+                          )
+                        : ResponsiveHelper.getResponsiveSpacing(
+                            context,
+                            mobile: 3.0,
+                            tablet: 3.5,
+                            desktop: 4.0,
+                          ),
+                  ),
                 ),
               ],
             ),
-            child: Padding(
-              padding: widget.padding ?? const EdgeInsets.all(24),
-              child: widget.child,
-            ),
+            child: Padding(padding: responsivePadding, child: widget.child),
           ),
         ),
       ),
@@ -162,10 +209,7 @@ class StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedCard(
       onTap: onTap,
-      gradientColors: [
-        color.withOpacity(0.1),
-        color.withOpacity(0.05),
-      ],
+      gradientColors: [color.withOpacity(0.1), color.withOpacity(0.05)],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -173,47 +217,51 @@ class StatCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: ResponsiveHelper.getPadding(context, 'small'),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(
+                    ResponsiveHelper.getBorderRadius(context, 'medium'),
+                  ),
                 ),
-                child: Icon(
-                  icon,
+                child: ResponsiveIcon(
+                  icon: icon,
                   color: color,
-                  size: 24,
+                  sizeType: 'medium',
                 ),
               ),
               if (onTap != null)
-                Icon(
-                  Icons.arrow_forward_ios,
+                ResponsiveIcon(
+                  icon: Icons.arrow_forward_ios,
                   color: AppColors.textLight,
-                  size: 16,
+                  sizeType: 'small',
                 ),
             ],
           ),
-          const SizedBox(height: 16),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
+
+          ResponsiveSpacing(spacingType: 'sectionMargin'),
+
+          ResponsiveText(
+            text: value,
+            styleType: 'heading3',
+            color: color,
+            fontWeight: FontWeight.bold,
           ).animate().fadeIn(delay: 400.ms).slideX(begin: 0.3),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: AppColors.textSecondary,
-            ),
+
+          ResponsiveSpacing(spacingType: 'itemSpacing'),
+
+          ResponsiveText(
+            text: title,
+            styleType: 'subtitle2',
+            color: AppColors.textSecondary,
           ),
+
           if (subtitle != null) ...[
-            const SizedBox(height: 4),
-            Text(
-              subtitle!,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.textLight,
-              ),
+            ResponsiveSpacing(spacingType: 'xs'),
+            ResponsiveText(
+              text: subtitle!,
+              styleType: 'caption',
+              color: AppColors.textLight,
             ),
           ],
         ],
@@ -252,6 +300,14 @@ class _GradientButtonState extends State<GradientButton>
 
   @override
   Widget build(BuildContext context) {
+    final responsiveHeight =
+        widget.height ??
+        ResponsiveHelper.getComponentDimension(context, 'buttonHeight');
+    final responsiveBorderRadius = ResponsiveHelper.getBorderRadius(
+      context,
+      'button',
+    );
+
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -260,55 +316,94 @@ class _GradientButtonState extends State<GradientButton>
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           width: widget.width,
-          height: widget.height ?? 56,
-          transform: Matrix4.identity()
-            ..scale(_isHovered ? 1.05 : 1.0),
+          height: responsiveHeight,
+          transform: Matrix4.identity()..scale(_isHovered ? 1.05 : 1.0),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: widget.gradientColors ?? [
-                AppColors.primary,
-                AppColors.secondary,
-              ],
+              colors:
+                  widget.gradientColors ??
+                  [AppColors.primary, AppColors.secondary],
             ),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(responsiveBorderRadius),
             boxShadow: [
               BoxShadow(
                 color: (widget.gradientColors?.first ?? AppColors.primary)
                     .withOpacity(0.3),
-                blurRadius: _isHovered ? 16 : 8,
-                offset: Offset(0, _isHovered ? 6 : 3),
+                blurRadius: _isHovered
+                    ? ResponsiveHelper.getResponsiveSpacing(
+                        context,
+                        mobile: 12.0,
+                        tablet: 14.0,
+                        desktop: 16.0,
+                      )
+                    : ResponsiveHelper.getResponsiveSpacing(
+                        context,
+                        mobile: 6.0,
+                        tablet: 7.0,
+                        desktop: 8.0,
+                      ),
+                offset: Offset(
+                  0,
+                  _isHovered
+                      ? ResponsiveHelper.getResponsiveSpacing(
+                          context,
+                          mobile: 4.0,
+                          tablet: 5.0,
+                          desktop: 6.0,
+                        )
+                      : ResponsiveHelper.getResponsiveSpacing(
+                          context,
+                          mobile: 2.0,
+                          tablet: 2.5,
+                          desktop: 3.0,
+                        ),
+                ),
               ),
             ],
           ),
           child: Center(
             child: widget.isLoading
-                ? const SizedBox(
-                    width: 24,
-                    height: 24,
+                ? SizedBox(
+                    width: ResponsiveHelper.getResponsiveIconSize(
+                      context,
+                      mobile: 20.0,
+                      tablet: 22.0,
+                      desktop: 24.0,
+                    ),
+                    height: ResponsiveHelper.getResponsiveIconSize(
+                      context,
+                      mobile: 20.0,
+                      tablet: 22.0,
+                      desktop: 24.0,
+                    ),
                     child: CircularProgressIndicator(
                       color: Colors.white,
-                      strokeWidth: 2,
+                      strokeWidth: ResponsiveHelper.getResponsiveSpacing(
+                        context,
+                        mobile: 1.8,
+                        tablet: 2.0,
+                        desktop: 2.2,
+                      ),
                     ),
                   )
                 : Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (widget.icon != null) ...[
-                        Icon(
-                          widget.icon,
+                        ResponsiveIcon(
+                          icon: widget.icon!,
                           color: Colors.white,
-                          size: 20,
+                          sizeType: 'buttonIcon',
                         ),
-                        const SizedBox(width: 8),
+                        ResponsiveSpacing(spacingType: 'itemSpacing'),
                       ],
-                      Text(
-                        widget.text,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      ResponsiveText(
+                        text: widget.text,
+                        styleType: 'button',
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
                       ),
                     ],
                   ),

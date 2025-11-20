@@ -64,8 +64,8 @@ class AttendanceCalendarCard extends StatelessWidget {
               style: AppTextStyles.heading4.copyWith(
                 fontSize: ResponsiveHelper.getResponsiveFontSize(
                   context,
-                  mobile: 20,
-                  tablet: 22,
+                  mobile: 22,
+                  tablet: 24,
                   desktop: 24,
                 ),
               ),
@@ -73,7 +73,15 @@ class AttendanceCalendarCard extends StatelessWidget {
             SizedBox(height: 4.h),
             Text(
               'Track your daily meal attendance',
-              style: AppTextStyles.body2.copyWith(color: AppColors.textLight),
+              style: AppTextStyles.body2.copyWith(
+                color: AppColors.textLight,
+                fontSize: ResponsiveHelper.getResponsiveFontSize(
+                  context,
+                  mobile: 16,
+                  tablet: 16,
+                  desktop: 14,
+                ),
+              ),
             ),
           ],
         ),

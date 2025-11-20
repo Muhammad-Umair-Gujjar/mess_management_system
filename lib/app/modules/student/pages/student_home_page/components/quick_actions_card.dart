@@ -36,11 +36,11 @@ class QuickActionsCard extends StatelessWidget {
       children: [
         ResponsiveIcon(
           icon: FontAwesomeIcons.bolt,
-          sizeType: 'medium',
+          sizeType: 'large',
           color: AppColors.warning,
         ),
         ResponsiveSpacing(spacingType: 'itemSpacing', isVertical: false),
-        ResponsiveText(text: 'Quick Actions', styleType: 'heading5'),
+        ResponsiveText(text: 'Quick Actions', styleType: 'heading2'),
       ],
     );
   }
@@ -162,10 +162,11 @@ class QuickActionsCard extends StatelessWidget {
             Flexible(
               child: ResponsiveText(
                 text: action['title'],
-                styleType: 'caption',
+                styleType: 'body1',
                 color: action['color'],
                 fontWeight: FontWeight.w600,
                 maxLines: 2,
+                textAlign: TextAlign.center,
               ),
             ),
           ],

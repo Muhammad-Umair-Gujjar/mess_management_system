@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mess_management/core/utils/responsive_helper.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../widgets/custom_grid_view.dart';
@@ -93,15 +93,31 @@ class SystemStatsGrid extends StatelessWidget {
 
       return CustomGridView(
         data: gridData,
-        crossAxisCount: 4, // Desktop: 4 columns
-        mobileCrossAxisCount: 1, // Mobile: 1 column for better readability
-        tabletCrossAxisCount: 2, // Tablet: 2 columns
-        crossAxisSpacing: 12.0,
-        mainAxisSpacing: 12.0,
-        childAspectRatio: 1.6, // Desktop aspect ratio
-        mobileAspectRatio:
-            2.0, // Mobile: wider cards for better content display
-        tabletAspectRatio: 1.7, // Tablet: wider cards
+         crossAxisCount: ResponsiveHelper.getGridCrossAxisCount(
+          context,
+          configType: 'statsCards',
+        ),
+        mobileCrossAxisCount: ResponsiveHelper.getGridCrossAxisCount(
+          context,
+          mobile: 2,
+          configType: 'statsCards',
+        ),
+        tabletCrossAxisCount: ResponsiveHelper.getGridCrossAxisCount(
+          context,
+          tablet: 3,
+          configType: 'statsCards',
+        ),
+        crossAxisSpacing: ResponsiveHelper.getSpacing(context, 'itemSpacing'),
+        mainAxisSpacing: ResponsiveHelper.getSpacing(context, 'itemSpacing'),
+         childAspectRatio: ResponsiveHelper.getAspectRatio(context, 'statsCard'),
+        mobileAspectRatio: ResponsiveHelper.getAspectRatio(
+          context,
+          'statsCard',
+        ),
+        tabletAspectRatio: ResponsiveHelper.getAspectRatio(
+          context,
+          'statsCard',
+        ),// Tablet: wider cards
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         cardStyle: CustomGridCardStyle.gradient,

@@ -75,6 +75,8 @@ class AdminDashboard extends StatelessWidget {
           // System Stats
           Obx(() {
             final stats = controller.getSystemOverview();
+            final isMobile = ResponsiveHelper.isMobile(Get.context!);
+
             return Row(
               children: [
                 _buildQuickStat(
@@ -82,28 +84,35 @@ class AdminDashboard extends StatelessWidget {
                   '${stats['totalUsers']}',
                   FontAwesomeIcons.users,
                   AppColors.adminRole,
+                  isMobile: isMobile,
                 ),
-                SizedBox(width: 24.w),
+                SizedBox(width: isMobile ? 12.w : 24.w),
                 _buildQuickStat(
                   'Pending',
                   '${stats['pendingApprovals']}',
                   FontAwesomeIcons.clock,
                   AppColors.warning,
+                  isMobile: isMobile,
                 ),
-                SizedBox(width: 24.w),
+                SizedBox(width: isMobile ? 12.w : 24.w),
                 _buildQuickStat(
                   'Revenue',
                   '₹${(stats['monthlyRevenue'] / 1000).toStringAsFixed(0)}K',
                   FontAwesomeIcons.chartLine,
                   AppColors.success,
+                  isMobile: isMobile,
                 ),
-                SizedBox(width: 24.w),
-                _buildQuickStat(
-                  'Uptime',
-                  '${stats['systemUptime']}%',
-                  FontAwesomeIcons.server,
-                  AppColors.info,
-                ),
+                // Only show uptime on tablet and desktop
+                if (!isMobile) ...[
+                  SizedBox(width: 24.w),
+                  _buildQuickStat(
+                    'Uptime',
+                    '${stats['systemUptime']}%',
+                    FontAwesomeIcons.server,
+                    AppColors.info,
+                    isMobile: false,
+                  ),
+                ],
               ],
             );
           }),
@@ -116,34 +125,75 @@ class AdminDashboard extends StatelessWidget {
     String label,
     String value,
     IconData icon,
-    Color color,
-  ) {
+    Color color, {
+    bool isMobile = false,
+  }) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      constraints: isMobile
+          ? BoxConstraints(maxWidth: 100.w, minHeight: 60.h)
+          : null,
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 8.w : 16.w,
+        vertical: isMobile ? 8.h : 12.h,
+      ),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(isMobile ? 8.r : 12.r),
         border: Border.all(color: color.withOpacity(0.3)),
       ),
-      child: Row(
-        children: [
-          Icon(icon, size: 18.sp, color: color),
-          SizedBox(width: 8.w),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label, style: AppTextStyles.caption.copyWith(color: color)),
-              Text(
-                value,
-                style: AppTextStyles.subtitle1.copyWith(
-                  color: color,
-                  fontWeight: FontWeight.w700,
+      child: isMobile
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 14.sp, color: color),
+                SizedBox(height: 2.h),
+                Text(
+                  label,
+                  style: AppTextStyles.caption.copyWith(
+                    color: color,
+                    fontSize: 10.sp,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
+                Text(
+                  value,
+                  style: AppTextStyles.subtitle1.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12.sp,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            )
+          : Row(
+              children: [
+                Icon(icon, size: 18.sp, color: color),
+                SizedBox(width: 8.w),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: AppTextStyles.caption.copyWith(color: color),
+                    ),
+                    Text(
+                      value,
+                      style: AppTextStyles.subtitle1.copyWith(
+                        color: color,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
     );
   }
 

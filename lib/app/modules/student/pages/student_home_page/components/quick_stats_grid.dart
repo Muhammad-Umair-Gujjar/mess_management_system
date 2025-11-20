@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../widgets/custom_grid_view.dart';
 import '../../../student_controller.dart';
 
@@ -63,15 +64,31 @@ class QuickStatsGrid extends StatelessWidget {
 
       return CustomGridView(
         data: gridData,
-        crossAxisCount: 4, // Desktop: 4 columns
-        mobileCrossAxisCount: 3, // Mobile: 1 column for better readability
-        tabletCrossAxisCount: 3, // Tablet: 2 columns
-        crossAxisSpacing: 16.0,
-        mainAxisSpacing: 16.0,
-        childAspectRatio: 1.5, // Desktop aspect ratio
-        mobileAspectRatio:
-            1.5, // Mobile: wider cards for better content display
-        tabletAspectRatio: 1.6, // Tablet: slightly wider cards
+        crossAxisCount: ResponsiveHelper.getGridCrossAxisCount(
+          context,
+          configType: 'statsCards',
+        ),
+        mobileCrossAxisCount: ResponsiveHelper.getGridCrossAxisCount(
+          context,
+          mobile: 2,
+          configType: 'statsCards',
+        ),
+        tabletCrossAxisCount: ResponsiveHelper.getGridCrossAxisCount(
+          context,
+          tablet: 3,
+          configType: 'statsCards',
+        ),
+        crossAxisSpacing: ResponsiveHelper.getSpacing(context, 'itemSpacing'),
+        mainAxisSpacing: ResponsiveHelper.getSpacing(context, 'itemSpacing'),
+        childAspectRatio: ResponsiveHelper.getAspectRatio(context, 'statsCard'),
+        mobileAspectRatio: ResponsiveHelper.getAspectRatio(
+          context,
+          'statsCard',
+        ),
+        tabletAspectRatio: ResponsiveHelper.getAspectRatio(
+          context,
+          'statsCard',
+        ),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         cardStyle: CustomGridCardStyle.elevated,

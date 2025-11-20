@@ -125,14 +125,14 @@ class CustomTabBar extends StatelessWidget {
                                 ? AppTextStyles.body2.copyWith(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w700,
-                                    fontSize: 17.sp,
+                                    fontSize: 19.sp, // Enhanced from 17sp
                                   )
                                 : (unselectedTextStyle ??
                                       AppTextStyles.body2.copyWith(
                                         color:
                                             unselectedColor ??
                                             AppColors.textSecondary,
-                                        fontSize: 15.sp,
+                                        fontSize: 17.sp, // Enhanced from 15sp
                                       )),
                             textAlign: TextAlign.center,
                             overflow: TextOverflow.ellipsis,
@@ -232,12 +232,12 @@ class CustomVerticalTabBar extends StatelessWidget {
                             ? AppTextStyles.body2.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,
-                                fontSize: 17.sp,
+                                fontSize: 19.sp, // Enhanced from 17sp
                               )
                             : AppTextStyles.body2.copyWith(
                                 color:
                                     unselectedColor ?? AppColors.textSecondary,
-                                fontSize: 15.sp,
+                                fontSize: 17.sp, // Enhanced from 15sp
                               ),
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,

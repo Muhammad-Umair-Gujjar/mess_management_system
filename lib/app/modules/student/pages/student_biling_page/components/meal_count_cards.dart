@@ -107,7 +107,7 @@ class _MealCountCard extends StatelessWidget {
                       color: color,
                       fontSize: ResponsiveHelper.getResponsiveFontSize(
                         context,
-                        mobile: 28,
+                        mobile: 35,
                         tablet: 32,
                         desktop: 36,
                       ),

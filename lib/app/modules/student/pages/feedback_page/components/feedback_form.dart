@@ -149,13 +149,21 @@ class _FeedbackFormState extends State<FeedbackForm> {
                                 SizedBox(height: 8.h),
                                 Text(
                                   emojiData['label'],
-                                  style: AppTextStyles.caption.copyWith(
+                                  style: AppTextStyles.body2.copyWith(
+                                    // Changed from caption to body2
                                     color: isSelected
                                         ? emojiData['color']
                                         : AppColors.textLight,
                                     fontWeight: isSelected
                                         ? FontWeight.w600
                                         : FontWeight.normal,
+                                    fontSize:
+                                        ResponsiveHelper.getResponsiveFontSize(
+                                          context,
+                                          mobile: 16, // Larger text on mobile
+                                          tablet: 15,
+                                          desktop: 14,
+                                        ),
                                   ),
                                 ),
                               ],

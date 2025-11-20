@@ -100,7 +100,7 @@ class CustomGridView extends StatelessWidget {
       itemCount: data.length,
       itemBuilder: (context, index) {
         final item = data[index];
-        return _buildGridCard(item, index);
+        return _buildGridCard(context, item, index);
       },
     );
 
@@ -111,24 +111,24 @@ class CustomGridView extends StatelessWidget {
     return gridView;
   }
 
-  Widget _buildGridCard(GridCardData item, int index) {
+  Widget _buildGridCard(BuildContext context, GridCardData item, int index) {
     Widget card;
 
     switch (cardStyle) {
       case CustomGridCardStyle.elevated:
-        card = _buildElevatedCard(item, index);
+        card = _buildElevatedCard(context, item, index);
         break;
       case CustomGridCardStyle.outlined:
-        card = _buildOutlinedCard(item, index);
+        card = _buildOutlinedCard(context, item, index);
         break;
       case CustomGridCardStyle.gradient:
-        card = _buildGradientCard(item, index);
+        card = _buildGradientCard(context, item, index);
         break;
       case CustomGridCardStyle.minimal:
-        card = _buildMinimalCard(item, index);
+        card = _buildMinimalCard(context, item, index);
         break;
       case CustomGridCardStyle.glassmorphism:
-        card = _buildGlassmorphismCard(item, index);
+        card = _buildGlassmorphismCard(context, item, index);
         break;
     }
 
@@ -146,11 +146,22 @@ class CustomGridView extends StatelessWidget {
     return card;
   }
 
-  Widget _buildElevatedCard(GridCardData item, int index) {
-    // Responsive padding for mobile devices
-    final isMobile = ScreenUtil().screenWidth < 600;
-    final double cardPadding = isMobile ? 24.r : 18.r;
-    final double borderRadius = isMobile ? 20.r : 16.r;
+  Widget _buildElevatedCard(
+    BuildContext context,
+    GridCardData item,
+    int index,
+  ) {
+    // Responsive padding and border radius
+    final double cardPadding = ResponsiveHelper.getResponsiveSpacing(
+      context,
+      mobile: 18.0,
+      tablet: 20.0,
+      desktop: 24.0,
+    );
+    final double borderRadius = ResponsiveHelper.getBorderRadius(
+      context,
+      'card',
+    );
 
     return GestureDetector(
       onTap: item.onTap,
@@ -162,22 +173,54 @@ class CustomGridView extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: item.color.withOpacity(0.1),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
+              blurRadius: ResponsiveHelper.getResponsiveSpacing(
+                context,
+                mobile: 16.0,
+                tablet: 18.0,
+                desktop: 20.0,
+              ),
+              offset: Offset(
+                0,
+                ResponsiveHelper.getResponsiveSpacing(
+                  context,
+                  mobile: 6.0,
+                  tablet: 7.0,
+                  desktop: 8.0,
+                ),
+              ),
             ),
           ],
-          border: Border.all(color: item.color.withOpacity(0.1), width: 1),
+          border: Border.all(
+            color: item.color.withOpacity(0.1),
+            width: ResponsiveHelper.getResponsiveSpacing(
+              context,
+              mobile: 0.8,
+              tablet: 0.9,
+              desktop: 1.0,
+            ),
+          ),
         ),
-        child: _buildCardContent(item),
+        child: _buildCardContent(context, item),
       ),
     );
   }
 
-  Widget _buildOutlinedCard(GridCardData item, int index) {
-    // Responsive padding for mobile devices
-    final isMobile = ScreenUtil().screenWidth < 600;
-    final double cardPadding = isMobile ? 24.r : 18.r;
-    final double borderRadius = isMobile ? 20.r : 16.r;
+  Widget _buildOutlinedCard(
+    BuildContext context,
+    GridCardData item,
+    int index,
+  ) {
+    // Responsive padding and border radius
+    final double cardPadding = ResponsiveHelper.getResponsiveSpacing(
+      context,
+      mobile: 18.0,
+      tablet: 20.0,
+      desktop: 24.0,
+    );
+    final double borderRadius = ResponsiveHelper.getBorderRadius(
+      context,
+      'card',
+    );
 
     return GestureDetector(
       onTap: item.onTap,
@@ -186,18 +229,37 @@ class CustomGridView extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(borderRadius),
-          border: Border.all(color: item.color.withOpacity(0.3), width: 2),
+          border: Border.all(
+            color: item.color.withOpacity(0.3),
+            width: ResponsiveHelper.getResponsiveSpacing(
+              context,
+              mobile: 1.5,
+              tablet: 1.8,
+              desktop: 2.0,
+            ),
+          ),
         ),
-        child: _buildCardContent(item),
+        child: _buildCardContent(context, item),
       ),
     );
   }
 
-  Widget _buildGradientCard(GridCardData item, int index) {
-    // Responsive padding for mobile devices
-    final isMobile = ScreenUtil().screenWidth < 600;
-    final double cardPadding = isMobile ? 24.r : 18.r;
-    final double borderRadius = isMobile ? 20.r : 16.r;
+  Widget _buildGradientCard(
+    BuildContext context,
+    GridCardData item,
+    int index,
+  ) {
+    // Responsive padding and border radius
+    final double cardPadding = ResponsiveHelper.getResponsiveSpacing(
+      context,
+      mobile: 18.0,
+      tablet: 20.0,
+      desktop: 24.0,
+    );
+    final double borderRadius = ResponsiveHelper.getBorderRadius(
+      context,
+      'card',
+    );
 
     return GestureDetector(
       onTap: item.onTap,
@@ -214,18 +276,33 @@ class CustomGridView extends StatelessWidget {
                 end: Alignment.bottomRight,
               ),
           borderRadius: BorderRadius.circular(borderRadius),
-          border: Border.all(color: item.color.withOpacity(0.2), width: 1),
+          border: Border.all(
+            color: item.color.withOpacity(0.2),
+            width: ResponsiveHelper.getResponsiveSpacing(
+              context,
+              mobile: 0.8,
+              tablet: 0.9,
+              desktop: 1.0,
+            ),
+          ),
         ),
-        child: _buildCardContent(item),
+        child: _buildCardContent(context, item),
       ),
     );
   }
 
-  Widget _buildMinimalCard(GridCardData item, int index) {
-    // Responsive padding for mobile devices
-    final isMobile = ScreenUtil().screenWidth < 600;
-    final double cardPadding = isMobile ? 24.r : 18.r;
-    final double borderRadius = isMobile ? 16.r : 12.r;
+  Widget _buildMinimalCard(BuildContext context, GridCardData item, int index) {
+    // Responsive padding and border radius
+    final double cardPadding = ResponsiveHelper.getResponsiveSpacing(
+      context,
+      mobile: 16.0,
+      tablet: 18.0,
+      desktop: 24.0,
+    );
+    final double borderRadius = ResponsiveHelper.getBorderRadius(
+      context,
+      'small',
+    );
 
     return GestureDetector(
       onTap: item.onTap,
@@ -235,16 +312,33 @@ class CustomGridView extends StatelessWidget {
           color: item.color.withOpacity(0.05),
           borderRadius: BorderRadius.circular(borderRadius),
         ),
-        child: _buildCardContent(item),
+        child: _buildCardContent(context, item),
       ),
     );
   }
 
-  Widget _buildGlassmorphismCard(GridCardData item, int index) {
-    // Responsive padding for mobile devices
-    final isMobile = ScreenUtil().screenWidth < 600;
-    final double cardPadding = isMobile ? 24.r : 18.r;
-    final double borderRadius = isMobile ? 20.r : 16.r;
+  Widget _buildGlassmorphismCard(
+    BuildContext context,
+    GridCardData item,
+    int index,
+  ) {
+    // Responsive padding and border radius
+    final double cardPadding = ResponsiveHelper.getResponsiveSpacing(
+      context,
+      mobile: 18.0,
+      tablet: 20.0,
+      desktop: 24.0,
+    );
+    final double borderRadius = ResponsiveHelper.getBorderRadius(
+      context,
+      'card',
+    );
+    final double blurRadius = ResponsiveHelper.getResponsiveSpacing(
+      context,
+      mobile: 8.0,
+      tablet: 9.0,
+      desktop: 10.0,
+    );
 
     return GestureDetector(
       onTap: item.onTap,
@@ -253,39 +347,80 @@ class CustomGridView extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.1),
           borderRadius: BorderRadius.circular(borderRadius),
-          border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.2),
+            width: ResponsiveHelper.getResponsiveSpacing(
+              context,
+              mobile: 0.8,
+              tablet: 0.9,
+              desktop: 1.0,
+            ),
+          ),
           boxShadow: [
             BoxShadow(
               color: item.color.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              blurRadius: blurRadius,
+              offset: Offset(
+                0,
+                ResponsiveHelper.getResponsiveSpacing(
+                  context,
+                  mobile: 3.0,
+                  tablet: 3.5,
+                  desktop: 4.0,
+                ),
+              ),
             ),
           ],
         ),
-        child: _buildCardContent(item),
+        child: _buildCardContent(context, item),
       ),
     );
   }
 
-  Widget _buildCardContent(GridCardData item) {
+  Widget _buildCardContent(BuildContext context, GridCardData item) {
     if (item.customContent != null) {
       return item.customContent!;
     }
 
-    // Responsive sizing for mobile devices
-    final isMobile = ScreenUtil().screenWidth < 600;
-    final double iconPadding = isMobile ? 12.r : 8.r;
-    final double iconSize = isMobile ? 32.sp : 25.sp;
-    final double iconBorderRadius = isMobile ? 12.r : 8.r;
-    final double trendIconSize = isMobile ? 24.sp : 20.sp;
-    final double trendFontSize = isMobile ? 18.sp : 16.sp;
-    final double valueSpacing = isMobile ? 18.h : 14.h;
-    final double valueFontSize = isMobile ? 32.sp : 25.sp;
-    final double titleSpacing = isMobile ? 8.h : 6.h;
-    final double titleFontSize = isMobile ? 24.sp : 20.sp;
-    final double subtitleSpacing = isMobile ? 4.h : 3.h;
-    final double subtitleFontSize = isMobile ? 18.sp : 16.sp;
-    final double trendSpacing = isMobile ? 4.w : 3.w;
+    // Responsive sizing using ResponsiveHelper
+    final double iconPadding = ResponsiveHelper.getResponsiveSpacing(
+      context,
+      mobile: 10.0,
+      tablet: 9.0,
+      desktop: 8.0,
+    );
+    final double iconSize = ResponsiveHelper.getIconSize(context, 'large');
+    final double iconBorderRadius = ResponsiveHelper.getBorderRadius(
+      context,
+      'small',
+    );
+    final double trendIconSize = ResponsiveHelper.getIconSize(
+      context,
+      'medium',
+    );
+    final double trendFontSize = ResponsiveHelper.getFontSize(context, 'body2');
+    final double valueSpacing = ResponsiveHelper.getSpacing(
+      context,
+      'sectionMargin',
+    );
+    final double valueFontSize = ResponsiveHelper.getFontSize(
+      context,
+      'heading2',
+    );
+    final double titleSpacing = ResponsiveHelper.getSpacing(
+      context,
+      'itemSpacing',
+    );
+    final double titleFontSize = ResponsiveHelper.getFontSize(
+      context,
+      'subtitle1',
+    );
+    final double subtitleSpacing = ResponsiveHelper.getSpacing(context, 'xs');
+    final double subtitleFontSize = ResponsiveHelper.getFontSize(
+      context,
+      'body2',
+    );
+    final double trendSpacing = ResponsiveHelper.getSpacing(context, 'xs');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
