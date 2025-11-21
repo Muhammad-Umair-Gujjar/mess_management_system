@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../../../core/utils/toast_message.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../widgets/common/reusable_button.dart';
 import '../../../../../widgets/common/reusable_text_field.dart';
 
@@ -33,7 +33,10 @@ class AddUserDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 400.w,
+      width: ResponsiveHelper.getContainerWidthFromConfig(
+        context,
+        'dialogWidth',
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -41,13 +44,13 @@ class AddUserDialog extends StatelessWidget {
             label: 'Full Name',
             hintText: 'Enter full name',
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
           const ReusableTextField(
             label: 'Email',
             type: TextFieldType.email,
             hintText: 'Enter email address',
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
           DropdownButtonFormField<String>(
             decoration: const InputDecoration(
               labelText: 'Role',
@@ -58,7 +61,7 @@ class AddUserDialog extends StatelessWidget {
             }).toList(),
             onChanged: (value) {},
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
           const ReusableTextField(
             label: 'Room Number (for students)',
             hintText: 'e.g., A-201',

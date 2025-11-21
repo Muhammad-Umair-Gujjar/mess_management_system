@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../widgets/common/reusable_button.dart';
 import '../../../staff_controller.dart';
 import 'student_details_dialog.dart';
@@ -24,16 +24,20 @@ class StudentListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-          padding: EdgeInsets.all(16.r),
+          padding: EdgeInsets.all(
+            ResponsiveHelper.getSpacing(context, 'medium'),
+          ),
           decoration: BoxDecoration(
             color: AppColors.cardBackground,
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getSpacing(context, 'medium'),
+            ),
             boxShadow: AppShadows.light,
           ),
           child: Row(
             children: [
               CircleAvatar(
-                radius: 20.r,
+                radius: ResponsiveHelper.getSpacing(context, 'medium'),
                 backgroundColor: AppColors.staffRole.withOpacity(0.1),
                 child: Text(
                   student['name'].substring(0, 1).toUpperCase(),
@@ -44,7 +48,7 @@ class StudentListTile extends StatelessWidget {
                 ),
               ),
 
-              SizedBox(width: 16.w),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
 
               Expanded(
                 child: Column(

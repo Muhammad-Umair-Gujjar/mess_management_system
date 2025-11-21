@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../widgets/common/reusable_text_field.dart';
@@ -29,27 +28,29 @@ class SearchAndFilterRow extends StatelessWidget {
           type: TextFieldType.search,
           onChanged: controller.filterStudents,
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
 
         // Filter dropdown - full width
         DropdownButtonFormField<String>(
           decoration: InputDecoration(
             labelText: 'Filter by Status',
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16.r),
+              borderRadius: BorderRadius.circular(
+                ResponsiveHelper.getSpacing(context, 'medium'),
+              ),
             ),
             contentPadding: EdgeInsets.symmetric(
-              horizontal: 12.w,
-              vertical: 8.h,
+              horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+              vertical: ResponsiveHelper.getSpacing(context, 'xsmall'),
             ),
-            labelStyle: TextStyle(fontSize: 12.sp),
+            labelStyle: const TextStyle(fontSize: 12),
           ),
-          style: TextStyle(fontSize: 12.sp),
+          style: const TextStyle(fontSize: 12),
           value: 'All',
           items: ['All', 'Present', 'Absent', 'Not Marked'].map((status) {
             return DropdownMenuItem(
               value: status,
-              child: Text(status, style: TextStyle(fontSize: 12.sp)),
+              child: Text(status, style: const TextStyle(fontSize: 12)),
             );
           }).toList(),
           onChanged: (value) => controller.filterByStatus(value ?? 'All'),
@@ -70,13 +71,15 @@ class SearchAndFilterRow extends StatelessWidget {
             onChanged: controller.filterStudents,
           ),
         ),
-        SizedBox(width: 16.w),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
         Expanded(
           child: DropdownButtonFormField<String>(
             decoration: InputDecoration(
               labelText: 'Filter by Status',
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16.r),
+                borderRadius: BorderRadius.circular(
+                  ResponsiveHelper.getSpacing(context, 'medium'),
+                ),
               ),
             ),
             value: 'All',

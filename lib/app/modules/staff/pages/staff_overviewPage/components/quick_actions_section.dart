@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
@@ -23,7 +22,7 @@ class QuickActionsSection extends StatelessWidget {
           'Quick Actions',
           style: AppTextStyles.heading5.copyWith(fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
         ResponsiveHelper.isDesktop(Get.context!)
             ? Row(
@@ -37,7 +36,9 @@ class QuickActionsSection extends StatelessWidget {
                       onTap: () => controller.changePage(1),
                     ),
                   ),
-                  SizedBox(width: 16.w),
+                  SizedBox(
+                    width: ResponsiveHelper.getSpacing(context, 'medium'),
+                  ),
                   Expanded(
                     child: ActionCard(
                       title: 'Manage Students',
@@ -69,7 +70,9 @@ class QuickActionsSection extends StatelessWidget {
                     color: AppColors.primary,
                     onTap: () => controller.changePage(1),
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(
+                    height: ResponsiveHelper.getSpacing(context, 'medium'),
+                  ),
                   ActionCard(
                     title: 'Manage Students',
                     subtitle: 'Add or update student information',

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -45,8 +44,10 @@ class StaffDashboard extends StatelessWidget {
   Widget _buildHeader(StaffController controller) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: ResponsiveHelper.isMobile(Get.context!) ? 16.w : 32.w,
-        vertical: 24.h,
+        horizontal: ResponsiveHelper.isMobile(Get.context!)
+            ? ResponsiveHelper.getSpacing(Get.context!, 'medium')
+            : ResponsiveHelper.getSpacing(Get.context!, 'xlarge'),
+        vertical: ResponsiveHelper.getSpacing(Get.context!, 'large'),
       ),
       decoration: AppDecorations.floatingCard(),
       child: Row(
@@ -57,15 +58,13 @@ class StaffDashboard extends StatelessWidget {
               Text(
                 controller.getCurrentPageTitle(),
                 style: AppTextStyles.heading4.copyWith(
-                  fontSize: ResponsiveHelper.getResponsiveFontSize(
+                  fontSize: ResponsiveHelper.getFontSize(
                     Get.context!,
-                    mobile: 24,
-                    tablet: 28,
-                    desktop: 32,
+                    'heading4',
                   ),
                 ),
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: ResponsiveHelper.getSpacing(Get.context!, 'xs')),
               Text(
                 controller.getCurrentPageSubtitle(),
                 style: AppTextStyles.body2.copyWith(color: AppColors.textLight),
@@ -76,30 +75,43 @@ class StaffDashboard extends StatelessWidget {
           // Quick Stats
           () {
             final stats = controller.getTodayStats();
-            return Row(
-              children: [
-                _buildQuickStat(
-                  'Students',
-                  '${stats['totalStudents']}',
-                  FontAwesomeIcons.users,
-                  AppColors.primary,
-                ),
-                SizedBox(width: 24.w),
-                _buildQuickStat(
-                  'Breakfast',
-                  '${stats['breakfastPresent']}/${stats['totalStudents']}',
-                  FontAwesomeIcons.sun,
-                  AppColors.warning,
-                ),
-                SizedBox(width: 24.w),
-                _buildQuickStat(
-                  'Dinner',
-                  '${stats['dinnerPresent']}/${stats['totalStudents']}',
-                  FontAwesomeIcons.moon,
-                  AppColors.info,
-                ),
-              ],
-            );
+            if (ResponsiveHelper.isMobile(Get.context!)) {
+              return _buildQuickStat(
+                'Students',
+                '${stats['totalStudents']}',
+                FontAwesomeIcons.users,
+                AppColors.primary,
+              );
+            } else {
+              return Row(
+                children: [
+                  _buildQuickStat(
+                    'Students',
+                    '${stats['totalStudents']}',
+                    FontAwesomeIcons.users,
+                    AppColors.primary,
+                  ),
+                  SizedBox(
+                    width: ResponsiveHelper.getSpacing(Get.context!, 'large'),
+                  ),
+                  _buildQuickStat(
+                    'Breakfast',
+                    '${stats['breakfastPresent']}/${stats['totalStudents']}',
+                    FontAwesomeIcons.sun,
+                    AppColors.warning,
+                  ),
+                  SizedBox(
+                    width: ResponsiveHelper.getSpacing(Get.context!, 'large'),
+                  ),
+                  _buildQuickStat(
+                    'Dinner',
+                    '${stats['dinnerPresent']}/${stats['totalStudents']}',
+                    FontAwesomeIcons.moon,
+                    AppColors.info,
+                  ),
+                ],
+              );
+            }
           }(),
         ],
       ),
@@ -113,16 +125,25 @@ class StaffDashboard extends StatelessWidget {
     Color color,
   ) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.getSpacing(Get.context!, 'medium'),
+        vertical: ResponsiveHelper.getSpacing(Get.context!, 'small'),
+      ),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getBorderRadius(Get.context!, 'small'),
+        ),
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Row(
         children: [
-          Icon(icon, size: 18.sp, color: color),
-          SizedBox(width: 8.w),
+          Icon(
+            icon,
+            size: ResponsiveHelper.getIconSize(Get.context!, 'tiny'),
+            color: color,
+          ),
+          SizedBox(width: ResponsiveHelper.getSpacing(Get.context!, 'xsmall')),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

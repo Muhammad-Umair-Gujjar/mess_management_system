@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 
 class WelcomeSection extends StatelessWidget {
   const WelcomeSection({super.key});
@@ -14,7 +14,7 @@ class WelcomeSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(24.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
       decoration: AppDecorations.floatingCard().copyWith(
         gradient: AppColors.primaryGradient,
       ),
@@ -23,8 +23,12 @@ class WelcomeSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(FontAwesomeIcons.sun, size: 32.sp, color: Colors.white),
-              SizedBox(width: 16.w),
+              Icon(
+                FontAwesomeIcons.sun,
+                size: ResponsiveHelper.getIconSize(context, 'large'),
+                color: Colors.white,
+              ),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,7 +40,9 @@ class WelcomeSection extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 4.h),
+                    SizedBox(
+                      height: ResponsiveHelper.getSpacing(context, 'xs'),
+                    ),
                     Text(
                       'Welcome back, Sarah. Here\'s your daily overview.',
                       style: AppTextStyles.body1.copyWith(

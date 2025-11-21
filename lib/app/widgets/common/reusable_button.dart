@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/responsive_constants.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/app_decorations.dart';
 import '../../../core/utils/responsive_helper.dart';
@@ -115,30 +115,66 @@ class _ReusableButtonState extends State<ReusableButton>
       case ButtonSize.small:
         return ResponsiveHelper.getResponsivePadding(
           context,
-          mobile: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-          tablet: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
-          desktop: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          mobile: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+            vertical: ResponsiveHelper.getSpacing(context, 'xsmall'),
+          ),
+          tablet: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+            vertical: ResponsiveHelper.getSpacing(context, 'small'),
+          ),
+          desktop: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+            vertical: ResponsiveHelper.getSpacing(context, 'small'),
+          ),
         );
       case ButtonSize.medium:
         return ResponsiveHelper.getResponsivePadding(
           context,
-          mobile: EdgeInsets.symmetric(horizontal: 18.w, vertical: 10.h),
-          tablet: EdgeInsets.symmetric(horizontal: 21.w, vertical: 11.h),
-          desktop: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+          mobile: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+            vertical: ResponsiveHelper.getSpacing(context, 'small'),
+          ),
+          tablet: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+            vertical: ResponsiveHelper.getSpacing(context, 'medium'),
+          ),
+          desktop: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+            vertical: ResponsiveHelper.getSpacing(context, 'medium'),
+          ),
         );
       case ButtonSize.large:
         return ResponsiveHelper.getResponsivePadding(
           context,
-          mobile: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-          tablet: EdgeInsets.symmetric(horizontal: 28.w, vertical: 14.h),
-          desktop: EdgeInsets.symmetric(horizontal: 32.w, vertical: 16.h),
+          mobile: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+            vertical: ResponsiveHelper.getSpacing(context, 'medium'),
+          ),
+          tablet: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'xlarge'),
+            vertical: ResponsiveHelper.getSpacing(context, 'medium'),
+          ),
+          desktop: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'xlarge'),
+            vertical: ResponsiveHelper.getSpacing(context, 'medium'),
+          ),
         );
       case ButtonSize.extraLarge:
         return ResponsiveHelper.getResponsivePadding(
           context,
-          mobile: EdgeInsets.symmetric(horizontal: 32.w, vertical: 16.h),
-          tablet: EdgeInsets.symmetric(horizontal: 36.w, vertical: 18.h),
-          desktop: EdgeInsets.symmetric(horizontal: 40.w, vertical: 20.h),
+          mobile: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'xlarge'),
+            vertical: ResponsiveHelper.getSpacing(context, 'medium'),
+          ),
+          tablet: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'xlarge'),
+            vertical: ResponsiveHelper.getSpacing(context, 'large'),
+          ),
+          desktop: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'xlarge'),
+            vertical: ResponsiveHelper.getSpacing(context, 'large'),
+          ),
         );
     }
   }
@@ -194,7 +230,11 @@ class _ReusableButtonState extends State<ReusableButton>
               : LinearGradient(
                   colors: [AppColors.textLight, AppColors.textLight],
                 ),
-          borderRadius: widget.borderRadius ?? BorderRadius.circular(16.r),
+          borderRadius:
+              widget.borderRadius ??
+              BorderRadius.circular(
+                ResponsiveHelper.getBorderRadius(context, 'button'),
+              ),
           boxShadow: isEnabled && _isHovered
               ? AppShadows.coloredShadow(AppColors.secondary)
               : AppShadows.light,
@@ -205,10 +245,19 @@ class _ReusableButtonState extends State<ReusableButton>
           color: _isHovered
               ? AppColors.primary.withOpacity(0.1)
               : Colors.transparent,
-          borderRadius: widget.borderRadius ?? BorderRadius.circular(16.r),
+          borderRadius:
+              widget.borderRadius ??
+              BorderRadius.circular(
+                ResponsiveHelper.getBorderRadius(context, 'button'),
+              ),
           border: Border.all(
             color: isEnabled ? AppColors.primary : AppColors.textLight,
-            width: 2.w,
+            width: ResponsiveHelper.getResponsiveSpacing(
+              context,
+              mobile: 2.0,
+              tablet: 2.0,
+              desktop: 2.0,
+            ),
           ),
           boxShadow: _isHovered ? AppShadows.light : null,
         );
@@ -232,7 +281,11 @@ class _ReusableButtonState extends State<ReusableButton>
               : LinearGradient(
                   colors: [AppColors.textLight, AppColors.textLight],
                 ),
-          borderRadius: widget.borderRadius ?? BorderRadius.circular(16.r),
+          borderRadius:
+              widget.borderRadius ??
+              BorderRadius.circular(
+                ResponsiveHelper.getBorderRadius(context, 'button'),
+              ),
           boxShadow: isEnabled && _isHovered
               ? AppShadows.coloredShadow(AppColors.error)
               : AppShadows.light,
@@ -257,7 +310,11 @@ class _ReusableButtonState extends State<ReusableButton>
               : LinearGradient(
                   colors: [AppColors.textLight, AppColors.textLight],
                 ),
-          borderRadius: widget.borderRadius ?? BorderRadius.circular(16.r),
+          borderRadius:
+              widget.borderRadius ??
+              BorderRadius.circular(
+                ResponsiveHelper.getBorderRadius(context, 'button'),
+              ),
           boxShadow: isEnabled && _isHovered
               ? AppShadows.coloredShadow(AppColors.success)
               : AppShadows.light,
@@ -282,7 +339,11 @@ class _ReusableButtonState extends State<ReusableButton>
               : LinearGradient(
                   colors: [AppColors.textLight, AppColors.textLight],
                 ),
-          borderRadius: widget.borderRadius ?? BorderRadius.circular(16.r),
+          borderRadius:
+              widget.borderRadius ??
+              BorderRadius.circular(
+                ResponsiveHelper.getBorderRadius(context, 'button'),
+              ),
           boxShadow: isEnabled && _isHovered
               ? AppShadows.coloredShadow(AppColors.warning)
               : AppShadows.light,
@@ -291,7 +352,11 @@ class _ReusableButtonState extends State<ReusableButton>
       case ButtonType.ghost:
         return BoxDecoration(
           color: _isHovered ? AppColors.cardBackground : Colors.transparent,
-          borderRadius: widget.borderRadius ?? BorderRadius.circular(16.r),
+          borderRadius:
+              widget.borderRadius ??
+              BorderRadius.circular(
+                ResponsiveHelper.getBorderRadius(context, 'button'),
+              ),
         );
     }
   }
@@ -309,7 +374,12 @@ class _ReusableButtonState extends State<ReusableButton>
       width: _getIconSize(),
       height: _getIconSize(),
       child: CircularProgressIndicator(
-        strokeWidth: 2.w,
+        strokeWidth: ResponsiveHelper.getResponsiveSpacing(
+          context,
+          mobile: 2.0,
+          tablet: 2.0,
+          desktop: 2.0,
+        ),
         valueColor: AlwaysStoppedAnimation<Color>(_getTextColor()),
       ),
     );
@@ -342,7 +412,7 @@ class _ReusableButtonState extends State<ReusableButton>
       case ButtonSize.small:
         return ResponsiveHelper.getIconSize(context, 'small');
       case ButtonSize.medium:
-        return ResponsiveHelper.getIconSize(context, 'buttonIcon');
+        return ResponsiveHelper.getIconSize(context, 'small');
       case ButtonSize.large:
         return ResponsiveHelper.getResponsiveIconSize(
           context,

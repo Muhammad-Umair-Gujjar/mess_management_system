@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/app_decorations.dart';
+import '../../../core/utils/responsive_helper.dart';
 
 enum TextFieldType { normal, email, password, search, number, phone }
 
@@ -104,7 +104,7 @@ class _ReusableTextFieldState extends State<ReusableTextField>
               color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'xsmall')),
         ],
         AnimatedBuilder(
           animation: _scaleAnimation,
@@ -114,14 +114,21 @@ class _ReusableTextFieldState extends State<ReusableTextField>
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(
-                    widget.borderRadius ?? 16.r,
+                    widget.borderRadius ??
+                        ResponsiveHelper.getBorderRadius(context, 'medium'),
                   ),
                   boxShadow: _isFocused
                       ? [
                           BoxShadow(
                             color: AppColors.primary.withOpacity(0.2),
-                            blurRadius: 16.r,
-                            offset: Offset(0, 4.h),
+                            blurRadius: ResponsiveHelper.getBorderRadius(
+                              context,
+                              'medium',
+                            ),
+                            offset: Offset(
+                              0,
+                              ResponsiveHelper.getSpacing(context, 'xs'),
+                            ),
                           ),
                         ]
                       : AppShadows.light,
@@ -140,7 +147,7 @@ class _ReusableTextFieldState extends State<ReusableTextField>
                   inputFormatters:
                       widget.inputFormatters ?? _getInputFormatters(),
                   style: AppTextStyles.body1.copyWith(
-                    fontSize: 16.sp,
+                    fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
                     color: AppColors.textPrimary,
                   ),
                   onTap: () {
@@ -168,10 +175,19 @@ class _ReusableTextFieldState extends State<ReusableTextField>
                     fillColor: AppColors.cardBackground,
                     contentPadding:
                         widget.contentPadding ??
-                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
+                        EdgeInsets.symmetric(
+                          horizontal: ResponsiveHelper.getSpacing(
+                            context,
+                            'large',
+                          ),
+                          vertical: ResponsiveHelper.getSpacing(
+                            context,
+                            'medium',
+                          ),
+                        ),
                     hintStyle: AppTextStyles.body2.copyWith(
                       color: AppColors.textLight,
-                      fontSize: 16.sp,
+                      fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
                     ),
                     helperStyle: AppTextStyles.caption.copyWith(
                       color: AppColors.textLight,
@@ -181,10 +197,22 @@ class _ReusableTextFieldState extends State<ReusableTextField>
                     ),
                     prefixIcon: widget.prefixIcon != null
                         ? Container(
-                            margin: EdgeInsets.only(left: 16.w, right: 12.w),
+                            margin: EdgeInsets.only(
+                              left: ResponsiveHelper.getSpacing(
+                                context,
+                                'medium',
+                              ),
+                              right: ResponsiveHelper.getSpacing(
+                                context,
+                                'small',
+                              ),
+                            ),
                             child: Icon(
                               widget.prefixIcon,
-                              size: 20.sp,
+                              size: ResponsiveHelper.getIconSize(
+                                context,
+                                'small',
+                              ),
                               color: _isFocused
                                   ? AppColors.primary
                                   : AppColors.textLight,
@@ -213,7 +241,7 @@ class _ReusableTextFieldState extends State<ReusableTextField>
       return IconButton(
         icon: Icon(
           _obscureText ? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye,
-          size: 18.sp,
+          size: ResponsiveHelper.getIconSize(context, 'tiny'),
           color: AppColors.textLight,
         ),
         onPressed: () => setState(() => _obscureText = !_obscureText),
@@ -222,7 +250,11 @@ class _ReusableTextFieldState extends State<ReusableTextField>
 
     if (widget.suffixIcon != null) {
       return IconButton(
-        icon: Icon(widget.suffixIcon, size: 20.sp, color: AppColors.textLight),
+        icon: Icon(
+          widget.suffixIcon,
+          size: ResponsiveHelper.getIconSize(context, 'small'),
+          color: AppColors.textLight,
+        ),
         onPressed: widget.onSuffixPressed,
       );
     }
@@ -230,7 +262,7 @@ class _ReusableTextFieldState extends State<ReusableTextField>
     if (widget.type == TextFieldType.search) {
       return Icon(
         FontAwesomeIcons.magnifyingGlass,
-        size: 18.sp,
+        size: ResponsiveHelper.getIconSize(context, 'tiny'),
         color: AppColors.textLight,
       );
     }
@@ -240,34 +272,46 @@ class _ReusableTextFieldState extends State<ReusableTextField>
 
   OutlineInputBorder _buildBorder() {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(widget.borderRadius ?? 16.r),
+      borderRadius: BorderRadius.circular(
+        widget.borderRadius ??
+            ResponsiveHelper.getBorderRadius(context, 'medium'),
+      ),
       borderSide: BorderSide(
         color: AppColors.textLight.withOpacity(0.3),
-        width: 1.5.w,
+        width: 1.5,
       ),
     );
   }
 
   OutlineInputBorder _buildFocusedBorder() {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(widget.borderRadius ?? 16.r),
-      borderSide: BorderSide(color: AppColors.primary, width: 2.w),
+      borderRadius: BorderRadius.circular(
+        widget.borderRadius ??
+            ResponsiveHelper.getBorderRadius(context, 'medium'),
+      ),
+      borderSide: BorderSide(color: AppColors.primary, width: 2.0),
     );
   }
 
   OutlineInputBorder _buildErrorBorder() {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(widget.borderRadius ?? 16.r),
-      borderSide: BorderSide(color: AppColors.error, width: 2.w),
+      borderRadius: BorderRadius.circular(
+        widget.borderRadius ??
+            ResponsiveHelper.getBorderRadius(context, 'medium'),
+      ),
+      borderSide: BorderSide(color: AppColors.error, width: 2.0),
     );
   }
 
   OutlineInputBorder _buildDisabledBorder() {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(widget.borderRadius ?? 16.r),
+      borderRadius: BorderRadius.circular(
+        widget.borderRadius ??
+            ResponsiveHelper.getBorderRadius(context, 'medium'),
+      ),
       borderSide: BorderSide(
         color: AppColors.textLight.withOpacity(0.1),
-        width: 1.w,
+        width: 1.0,
       ),
     );
   }

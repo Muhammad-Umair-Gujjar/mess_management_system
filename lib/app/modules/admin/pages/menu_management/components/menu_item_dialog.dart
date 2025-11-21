@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../widgets/common/reusable_button.dart';
 import '../../../../../widgets/common/reusable_text_field.dart';
 
@@ -43,26 +43,31 @@ class MenuItemDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       child: Container(
-        width: 600.w,
+        width: ResponsiveHelper.getResponsiveSpacing(
+          context,
+          mobile: 400.0,
+          tablet: 500.0,
+          desktop: 600.0,
+        ),
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height * 0.8,
         ),
-        padding: EdgeInsets.all(24.r),
+        padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
         decoration: AppDecorations.floatingCard(),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildDialogHeader(),
-              SizedBox(height: 24.h),
-              _buildBasicInfoSection(),
-              SizedBox(height: 16.h),
-              _buildDescriptionSection(),
-              SizedBox(height: 16.h),
-              _buildNutritionSection(),
-              SizedBox(height: 24.h),
-              _buildActionButtons(),
+              _buildDialogHeader(context),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+              _buildBasicInfoSection(context),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+              _buildDescriptionSection(context),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+              _buildNutritionSection(context),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+              _buildActionButtons(context),
             ],
           ),
         ),
@@ -71,7 +76,7 @@ class MenuItemDialog extends StatelessWidget {
   }
 
   /// Builds the dialog header with title
-  Widget _buildDialogHeader() {
+  Widget _buildDialogHeader(BuildContext context) {
     return Text(
       title,
       style: AppTextStyles.heading3.copyWith(color: AppColors.adminRole),
@@ -79,7 +84,7 @@ class MenuItemDialog extends StatelessWidget {
   }
 
   /// Builds the basic information section (name and price)
-  Widget _buildBasicInfoSection() {
+  Widget _buildBasicInfoSection(BuildContext context) {
     return Row(
       children: [
         Expanded(
@@ -90,7 +95,7 @@ class MenuItemDialog extends StatelessWidget {
             prefixIcon: Icons.restaurant,
           ),
         ),
-        SizedBox(width: 16.w),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
         Expanded(
           child: ReusableTextField(
             controller: itemPriceController,
@@ -105,7 +110,7 @@ class MenuItemDialog extends StatelessWidget {
   }
 
   /// Builds the description section
-  Widget _buildDescriptionSection() {
+  Widget _buildDescriptionSection(BuildContext context) {
     return ReusableTextField(
       controller: itemDescriptionController,
       label: 'Description',
@@ -116,7 +121,7 @@ class MenuItemDialog extends StatelessWidget {
   }
 
   /// Builds the nutritional information section
-  Widget _buildNutritionSection() {
+  Widget _buildNutritionSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -124,7 +129,7 @@ class MenuItemDialog extends StatelessWidget {
           'Nutritional Information',
           style: AppTextStyles.heading4.copyWith(color: AppColors.textPrimary),
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
         Row(
           children: [
             Expanded(
@@ -136,7 +141,7 @@ class MenuItemDialog extends StatelessWidget {
                 type: TextFieldType.number,
               ),
             ),
-            SizedBox(width: 12.w),
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
             Expanded(
               child: ReusableTextField(
                 controller: proteinController,
@@ -145,7 +150,7 @@ class MenuItemDialog extends StatelessWidget {
                 type: TextFieldType.number,
               ),
             ),
-            SizedBox(width: 12.w),
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
             Expanded(
               child: ReusableTextField(
                 controller: carbsController,
@@ -154,7 +159,7 @@ class MenuItemDialog extends StatelessWidget {
                 type: TextFieldType.number,
               ),
             ),
-            SizedBox(width: 12.w),
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
             Expanded(
               child: ReusableTextField(
                 controller: fatController,
@@ -170,7 +175,7 @@ class MenuItemDialog extends StatelessWidget {
   }
 
   /// Builds the action buttons (Cancel and Save)
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -181,13 +186,18 @@ class MenuItemDialog extends StatelessWidget {
             style: TextStyle(color: AppColors.textSecondary),
           ),
         ),
-        SizedBox(width: 16.w),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
         ReusableButton(
           text: isEdit ? 'Update Item' : 'Add Item',
           onPressed: onSave,
           type: ButtonType.primary,
           size: ButtonSize.medium,
-          width: 120.w,
+          width: ResponsiveHelper.getResponsiveSpacing(
+            context,
+            mobile: 100.0,
+            tablet: 110.0,
+            desktop: 120.0,
+          ),
         ),
       ],
     );

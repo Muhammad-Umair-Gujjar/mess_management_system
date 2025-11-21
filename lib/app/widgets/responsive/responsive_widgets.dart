@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/utils/responsive_helper.dart';
 import '../../../core/constants/responsive_constants.dart';
 import '../../../core/theme/app_decorations.dart';
@@ -43,14 +42,14 @@ class ResponsiveCard extends StatelessWidget {
   EdgeInsets _getResponsivePadding(BuildContext context) {
     final spacingConfig = ResponsiveConstants.getSpacing('cardPadding');
     if (spacingConfig == null) {
-      return EdgeInsets.all(16.r);
+      return EdgeInsets.all(16);
     }
 
     return ResponsiveHelper.getResponsivePadding(
       context,
-      mobile: EdgeInsets.all(spacingConfig['mobile']!.r),
-      tablet: EdgeInsets.all(spacingConfig['tablet']!.r),
-      desktop: EdgeInsets.all(spacingConfig['desktop']!.r),
+      mobile: EdgeInsets.all(spacingConfig['mobile']!.toDouble()),
+      tablet: EdgeInsets.all(spacingConfig['tablet']!.toDouble()),
+      desktop: EdgeInsets.all(spacingConfig['desktop']!.toDouble()),
     );
   }
 }
@@ -93,7 +92,7 @@ class ResponsiveText extends StatelessWidget {
     final typographyConfig = ResponsiveConstants.getTypography(styleType);
 
     if (typographyConfig == null) {
-      return TextStyle(fontSize: 16.sp, color: color, fontWeight: fontWeight);
+      return TextStyle(fontSize: 16, color: color, fontWeight: fontWeight);
     }
 
     final fontSize = ResponsiveHelper.getResponsiveFontSize(
@@ -129,7 +128,7 @@ class ResponsiveIcon extends StatelessWidget {
     final iconConfig = ResponsiveConstants.getIconSizes(sizeType);
 
     if (iconConfig == null) {
-      return Icon(icon, size: 24.sp, color: color);
+      return Icon(icon, size: 24, color: color);
     }
 
     final iconSize = ResponsiveHelper.getResponsiveIconSize(
@@ -204,8 +203,8 @@ class ResponsiveSpacing extends StatelessWidget {
 
     if (spacingConfig == null) {
       return SizedBox(
-        height: isVertical ? 16.h : null,
-        width: !isVertical ? 16.w : null,
+        height: isVertical ? 16 : null,
+        width: !isVertical ? 16 : null,
       );
     }
 
@@ -253,8 +252,8 @@ class ResponsiveGridWidget extends StatelessWidget {
         physics: physics ?? const NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          crossAxisSpacing: crossAxisSpacing ?? 12.w,
-          mainAxisSpacing: mainAxisSpacing ?? 12.h,
+          crossAxisSpacing: crossAxisSpacing ?? 12,
+          mainAxisSpacing: mainAxisSpacing ?? 12,
         ),
         itemCount: children.length,
         itemBuilder: (context, index) => children[index],
@@ -282,8 +281,8 @@ class ResponsiveGridWidget extends StatelessWidget {
       physics: physics ?? const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
-        crossAxisSpacing: crossAxisSpacing ?? spacing.w,
-        mainAxisSpacing: mainAxisSpacing ?? spacing.h,
+        crossAxisSpacing: crossAxisSpacing ?? spacing,
+        mainAxisSpacing: mainAxisSpacing ?? spacing,
         childAspectRatio: _getAspectRatio(context),
       ),
       itemCount: children.length,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/theme/app_decorations.dart';
+import '../../../../../core/utils/responsive_helper.dart';
 import '../../admin_controller.dart';
 import 'components/user_filters.dart';
 import 'components/users_list.dart';
@@ -27,7 +27,7 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage> {
 
     return Container(
       decoration: AppDecorations.backgroundGradient(),
-      padding: EdgeInsets.all(24.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -43,7 +43,7 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage> {
             onAddUser: () => AddUserDialog.show(),
           ),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
           // Users List
           Expanded(

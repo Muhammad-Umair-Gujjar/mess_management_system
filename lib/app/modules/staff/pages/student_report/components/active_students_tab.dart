@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -26,7 +25,7 @@ class ActiveStudentsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(24.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +49,7 @@ class ActiveStudentsTab extends StatelessWidget {
               ),
               const Spacer(),
               SizedBox(
-                width: isMobile ? 200.w : 300.w,
+                width: isMobile ? 200 : 300,
                 child: ReusableTextField(
                   hintText: 'Search students...',
                   type: TextFieldType.search,
@@ -60,7 +59,7 @@ class ActiveStudentsTab extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
 
           // Students Grid/List
           Expanded(
@@ -85,17 +84,25 @@ class ActiveStudentsTab extends StatelessWidget {
   }
 
   Widget _buildEmptyState(String message) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(FontAwesomeIcons.users, size: 64.sp, color: AppColors.textLight),
-          SizedBox(height: 24.h),
-          Text(
-            message,
-            style: AppTextStyles.heading5.copyWith(color: AppColors.textLight),
-          ),
-        ],
+    return Builder(
+      builder: (context) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              FontAwesomeIcons.users,
+              size: ResponsiveHelper.getIconSize(context, 'xxlarge'),
+              color: AppColors.textLight,
+            ),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+            Text(
+              message,
+              style: AppTextStyles.heading5.copyWith(
+                color: AppColors.textLight,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

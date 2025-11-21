@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
@@ -35,7 +34,11 @@ class AttendanceMarkingView extends StatelessWidget {
     final isMobile = ResponsiveHelper.isMobile(context);
 
     return Container(
-      padding: EdgeInsets.all(isMobile ? 16.r : 24.r),
+      padding: EdgeInsets.all(
+        isMobile
+            ? ResponsiveHelper.getSpacing(context, 'medium')
+            : ResponsiveHelper.getSpacing(context, 'large'),
+      ),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,12 +46,16 @@ class AttendanceMarkingView extends StatelessWidget {
           // Header with actions - responsive layout
           isMobile ? _buildMobileHeader(context) : _buildDesktopHeader(context),
 
-          SizedBox(height: isMobile ? 16.h : 24.h),
+          SizedBox(
+            height: isMobile
+                ? ResponsiveHelper.getSpacing(context, 'medium')
+                : ResponsiveHelper.getSpacing(context, 'large'),
+          ),
 
           // Search and Filter
           SearchAndFilterRow(controller: controller),
 
-          SizedBox(height: 20.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
           // Students List
           Expanded(
@@ -75,19 +82,19 @@ class AttendanceMarkingView extends StatelessWidget {
           children: [
             Text(
               'Mark $selectedMeal Attendance',
-              style: AppTextStyles.heading5.copyWith(fontSize: 18.sp),
+              style: AppTextStyles.heading5.copyWith(fontSize: 18),
             ),
-            SizedBox(height: 4.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xxsmall')),
             Text(
               DateFormat('EEEE, MMMM d, yyyy').format(selectedDay),
               style: AppTextStyles.body2.copyWith(
                 color: AppColors.textLight,
-                fontSize: 12.sp,
+                fontSize: 12,
               ),
             ),
           ],
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
 
         // Quick actions - moved below title on mobile
         Row(

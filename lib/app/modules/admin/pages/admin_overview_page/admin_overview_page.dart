@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/theme/app_decorations.dart';
@@ -21,14 +20,14 @@ class AdminOverviewPage extends StatelessWidget {
     return Container(
       decoration: AppDecorations.backgroundGradient(),
       child: SingleChildScrollView(
-        padding: EdgeInsets.all(24.r),
+        padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // System Stats Overview
             SystemStatsGrid(controller: controller, isMobile: isMobile),
 
-            SizedBox(height: 32.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
             // Recent Activity and Quick Actions
             Row(
@@ -41,7 +40,9 @@ class AdminOverviewPage extends StatelessWidget {
                 ),
 
                 if (!isMobile) ...[
-                  SizedBox(width: 24.w),
+                  SizedBox(
+                    width: ResponsiveHelper.getSpacing(context, 'large'),
+                  ),
                   // Quick Actions
                   Expanded(
                     flex: 1,
@@ -52,11 +53,11 @@ class AdminOverviewPage extends StatelessWidget {
             ),
 
             if (isMobile) ...[
-              SizedBox(height: 24.h),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
               QuickActionsCard(controller: controller),
             ],
 
-            SizedBox(height: 32.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
             // Pending Approvals
             PendingApprovalsCard(controller: controller, isMobile: isMobile),

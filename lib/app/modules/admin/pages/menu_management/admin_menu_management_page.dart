@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../core/theme/app_decorations.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/utils/toast_message.dart';
+import '../../../../../core/utils/responsive_helper.dart';
 import '../../../../widgets/common/reusable_text_field.dart';
 import '../../../../widgets/custom_tab_bar.dart';
 
@@ -161,7 +161,10 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
         children: [
           MenuHeader(onAddItem: () => _showAddItemDialog()),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+            margin: EdgeInsets.symmetric(
+              horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+              vertical: ResponsiveHelper.getSpacing(context, 'medium'),
+            ),
             decoration: AppDecorations.floatingCard(),
             child: CustomTabBar(
               selectedIndex: selectedTabIndex,
@@ -272,7 +275,9 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
     });
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 24.w),
+      margin: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+      ),
       child: ListView.builder(
         itemCount: filteredItems.length,
         itemBuilder: (context, index) {
@@ -291,7 +296,7 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
   /// Builds the categories management tab
   Widget _buildCategoriesTab() {
     return Container(
-      margin: EdgeInsets.all(24.r),
+      margin: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -304,14 +309,14 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
                   prefixIcon: Icons.category,
                 ),
               ),
-              SizedBox(width: 16.w),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
               ElevatedButton(
                 onPressed: _addCategory,
                 child: Text('Add Category'),
               ),
             ],
           ),
-          SizedBox(height: 24.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
           Expanded(
             child: ListView.builder(
               itemCount: _categories.length,

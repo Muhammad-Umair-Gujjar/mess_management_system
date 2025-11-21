@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 
 class ActivityItem extends StatelessWidget {
   final String title;
@@ -23,14 +23,22 @@ class ActivityItem extends StatelessWidget {
     return Row(
       children: [
         Container(
-          padding: EdgeInsets.all(8.r),
+          padding: EdgeInsets.all(
+            ResponsiveHelper.getSpacing(context, 'xsmall'),
+          ),
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getSpacing(context, 'xsmall'),
+            ),
           ),
-          child: Icon(icon, size: 16.sp, color: color),
+          child: Icon(
+            icon,
+            size: ResponsiveHelper.getIconSize(context, 'small'),
+            color: color,
+          ),
         ),
-        SizedBox(width: 12.w),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,7 +49,7 @@ class ActivityItem extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: 2.h),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'xxsmall')),
               Text(
                 time,
                 style: AppTextStyles.caption.copyWith(

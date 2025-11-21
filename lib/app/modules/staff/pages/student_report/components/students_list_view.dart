@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../staff_controller.dart';
 import 'student_list_tile.dart';
 
@@ -17,12 +17,14 @@ class StudentsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: EdgeInsets.all(8.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'xsmall')),
       itemCount: students.length,
       itemBuilder: (context, index) {
         final student = students[index];
         return Container(
-          margin: EdgeInsets.only(bottom: 12.h),
+          margin: EdgeInsets.only(
+            bottom: ResponsiveHelper.getSpacing(context, 'small'),
+          ),
           child: StudentListTile(
             student: student,
             index: index,

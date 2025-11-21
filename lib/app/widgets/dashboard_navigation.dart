@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../../core/constants/responsive_constants.dart';
+import '../../core/utils/responsive_helper.dart';
 
 import '../../core/theme/app_decorations.dart';
 import '../../core/constants/app_colors.dart';
@@ -61,7 +63,12 @@ class DashboardNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 320.w,
+      width: ResponsiveHelper.getValue(
+        context,
+        mobile: 320.0,
+        tablet: 360.0,
+        desktop: 320.0,
+      ),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -74,32 +81,37 @@ class DashboardNavigation extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: AppColors.shadowMedium,
-            blurRadius: 20.r,
-            offset: Offset(4.w, 0),
+            blurRadius: ResponsiveHelper.getValue(
+              context,
+              mobile: 20.0,
+              tablet: 22.0,
+              desktop: 24.0,
+            ),
+            offset: Offset(ResponsiveHelper.getSpacing(context, 'small'), 0),
           ),
         ],
       ),
       child: Column(
         children: [
           // User Profile Section
-          _buildUserProfile(),
+          _buildUserProfile(context),
 
-          SizedBox(height: 32.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
           // Navigation Menu
-          Expanded(child: _buildNavigationMenu()),
+          Expanded(child: _buildNavigationMenu(context)),
 
           // Bottom Actions
-          _buildBottomActions(),
+          _buildBottomActions(context),
         ],
       ),
     );
   }
 
-  Widget _buildUserProfile() {
+  Widget _buildUserProfile(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(24.r),
-      margin: EdgeInsets.all(16.r),
+      padding: ResponsiveHelper.getPadding(context, 'large'),
+      margin: ResponsiveHelper.getMargin(context, 'medium'),
       decoration: AppDecorations.gradientContainer(
         gradient: _getRoleGradient(userRole),
       ),
@@ -107,19 +119,21 @@ class DashboardNavigation extends StatelessWidget {
         children: [
           // Avatar
           Container(
-            padding: EdgeInsets.all(20.r),
+            padding: ResponsiveHelper.getPadding(context, 'large'),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(20.r),
+              borderRadius: BorderRadius.circular(
+                ResponsiveHelper.getBorderRadius(context, 'large'),
+              ),
             ),
             child: Icon(
               _getRoleIcon(userRole),
-              size: 32.sp,
+              size: ResponsiveHelper.getIconSize(context, 'large'),
               color: Colors.white,
             ),
           ).animate().scale(delay: 200.ms),
 
-          SizedBox(height: 16.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
           // User Info
           Text(
@@ -130,7 +144,7 @@ class DashboardNavigation extends StatelessWidget {
             ),
           ).animate().fadeIn(delay: 300.ms).slideX(begin: -0.3),
 
-          SizedBox(height: 4.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'xs')),
 
           Text(
             userRole.toUpperCase(),
@@ -140,7 +154,7 @@ class DashboardNavigation extends StatelessWidget {
             ),
           ).animate().fadeIn(delay: 400.ms).slideX(begin: -0.3),
 
-          SizedBox(height: 8.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
 
           Text(
             userEmail,
@@ -154,14 +168,17 @@ class DashboardNavigation extends StatelessWidget {
     );
   }
 
-  Widget _buildNavigationMenu() {
+  Widget _buildNavigationMenu(BuildContext context) {
     return ListView.builder(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+      ),
       itemCount: menuItems.length,
       itemBuilder: (context, index) {
         final item = menuItems[index];
         return Obx(
               () => _buildNavigationItem(
+                context,
                 item,
                 index,
                 currentIndex.value == index,
@@ -174,26 +191,43 @@ class DashboardNavigation extends StatelessWidget {
     );
   }
 
-  Widget _buildNavigationItem(NavigationItem item, int index, bool isActive) {
+  Widget _buildNavigationItem(
+    BuildContext context,
+    NavigationItem item,
+    int index,
+    bool isActive,
+  ) {
     return Container(
-      margin: EdgeInsets.only(bottom: 8.h),
+      margin: EdgeInsets.only(
+        bottom: ResponsiveHelper.getSpacing(context, 'small'),
+      ),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           onTap: () => onItemSelected(index),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            padding: EdgeInsets.all(16.r),
+            padding: ResponsiveHelper.getPadding(context, 'medium'),
             decoration: BoxDecoration(
               gradient: isActive ? _getRoleGradient(userRole) : null,
               color: isActive ? null : Colors.transparent,
-              borderRadius: BorderRadius.circular(16.r),
+              borderRadius: BorderRadius.circular(
+                ResponsiveHelper.getBorderRadius(context, 'medium'),
+              ),
               boxShadow: isActive
                   ? [
                       BoxShadow(
                         color: _getRoleColor(userRole).withOpacity(0.3),
-                        blurRadius: 12.r,
-                        offset: Offset(0, 4.h),
+                        blurRadius: ResponsiveHelper.getValue(
+                          context,
+                          mobile: 12.0,
+                          tablet: 14.0,
+                          desktop: 16.0,
+                        ),
+                        offset: Offset(
+                          0,
+                          ResponsiveHelper.getSpacing(context, 'xs'),
+                        ),
                       ),
                     ]
                   : null,
@@ -202,21 +236,23 @@ class DashboardNavigation extends StatelessWidget {
               children: [
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  padding: EdgeInsets.all(8.r),
+                  padding: ResponsiveHelper.getPadding(context, 'small'),
                   decoration: BoxDecoration(
                     color: isActive
                         ? Colors.white.withOpacity(0.2)
                         : _getRoleColor(userRole).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(
+                      ResponsiveHelper.getBorderRadius(context, 'small'),
+                    ),
                   ),
                   child: Icon(
                     item.icon,
-                    size: 20.sp,
+                    size: ResponsiveHelper.getIconSize(context, 'small'),
                     color: isActive ? Colors.white : _getRoleColor(userRole),
                   ),
                 ),
 
-                SizedBox(width: 16.w),
+                SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
 
                 Expanded(
                   child: Text(
@@ -224,7 +260,10 @@ class DashboardNavigation extends StatelessWidget {
                     style: AppTextStyles.navMenuItem.copyWith(
                       color: isActive ? Colors.white : AppColors.textPrimary,
                       fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-                      fontSize: 18.sp, // Enhanced for better mobile readability
+                      fontSize: ResponsiveHelper.getFontSize(
+                        context,
+                        'menuItem',
+                      ),
                     ),
                   ),
                 ),
@@ -232,18 +271,23 @@ class DashboardNavigation extends StatelessWidget {
                 if (item.badge != null)
                   Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 4.h,
+                      horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+                      vertical: ResponsiveHelper.getSpacing(context, 'xs'),
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.error,
-                      borderRadius: BorderRadius.circular(10.r),
+                      borderRadius: BorderRadius.circular(
+                        ResponsiveHelper.getBorderRadius(context, 'small'),
+                      ),
                     ),
                     child: Text(
                       item.badge!.toString(),
                       style: AppTextStyles.caption.copyWith(
                         color: Colors.white,
-                        fontSize: 10.sp,
+                        fontSize: ResponsiveHelper.getFontSize(
+                          context,
+                          'caption',
+                        ),
                       ),
                     ),
                   ),
@@ -251,7 +295,7 @@ class DashboardNavigation extends StatelessWidget {
                 if (isActive)
                   Icon(
                     Icons.arrow_forward_ios,
-                    size: 12.sp,
+                    size: ResponsiveHelper.getIconSize(context, 'xsmall'),
                     color: Colors.white,
                   ),
               ],
@@ -262,9 +306,9 @@ class DashboardNavigation extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomActions() {
+  Widget _buildBottomActions(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.r),
+      padding: ResponsiveHelper.getPadding(context, 'medium'),
       child: Column(
         children: [
           // Logout Button
@@ -274,10 +318,15 @@ class DashboardNavigation extends StatelessWidget {
               onTap: _handleLogout,
               child: Container(
                 width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+                padding: EdgeInsets.symmetric(
+                  vertical: ResponsiveHelper.getSpacing(context, 'small'),
+                  horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+                ),
                 decoration: BoxDecoration(
                   color: Colors.red.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(
+                    ResponsiveHelper.getBorderRadius(context, 'medium'),
+                  ),
                   border: Border.all(color: Colors.red.withOpacity(0.3)),
                 ),
                 child: Row(
@@ -285,10 +334,12 @@ class DashboardNavigation extends StatelessWidget {
                   children: [
                     Icon(
                       FontAwesomeIcons.rightFromBracket,
-                      size: 16.sp,
+                      size: ResponsiveHelper.getIconSize(context, 'small'),
                       color: Colors.red,
                     ),
-                    SizedBox(width: 8.w),
+                    SizedBox(
+                      width: ResponsiveHelper.getSpacing(context, 'small'),
+                    ),
                     Text(
                       'Logout',
                       style: AppTextStyles.button.copyWith(
@@ -302,7 +353,7 @@ class DashboardNavigation extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: 16.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
           // Version Info
           Text(

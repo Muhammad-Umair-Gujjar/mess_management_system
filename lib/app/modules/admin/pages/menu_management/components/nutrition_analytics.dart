@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 
 /// Nutrition analytics component
 ///
@@ -24,20 +24,20 @@ class NutritionAnalytics extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(24.r),
+      margin: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle(),
-          SizedBox(height: 16.h),
+          _buildSectionTitle(context),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
           Expanded(
             child: ListView(
               children: [
-                _buildAverageNutritionCard(),
-                SizedBox(height: 16.h),
-                _buildCategoryNutritionCard(),
-                SizedBox(height: 16.h),
-                _buildPopularItemsCard(),
+                _buildAverageNutritionCard(context),
+                SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+                _buildCategoryNutritionCard(context),
+                SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+                _buildPopularItemsCard(context),
               ],
             ),
           ),
@@ -47,7 +47,7 @@ class NutritionAnalytics extends StatelessWidget {
   }
 
   /// Builds the section title
-  Widget _buildSectionTitle() {
+  Widget _buildSectionTitle(BuildContext context) {
     return Text(
       'Nutritional Overview',
       style: AppTextStyles.heading3.copyWith(color: AppColors.textPrimary),
@@ -55,18 +55,18 @@ class NutritionAnalytics extends StatelessWidget {
   }
 
   /// Builds the average nutrition statistics card
-  Widget _buildAverageNutritionCard() {
+  Widget _buildAverageNutritionCard(BuildContext context) {
     if (menuItems.isEmpty) {
-      return _buildEmptyCard('No menu items available');
+      return _buildEmptyCard(context, 'No menu items available');
     }
 
-    final avgCalories = _calculateAverage('calories');
-    final avgProtein = _calculateAverage('protein');
-    final avgCarbs = _calculateAverage('carbs');
-    final avgFat = _calculateAverage('fat');
+    final avgCalories = _calculateAverage(menuItems, 'calories');
+    final avgProtein = _calculateAverage(menuItems, 'protein');
+    final avgCarbs = _calculateAverage(menuItems, 'carbs');
+    final avgFat = _calculateAverage(menuItems, 'fat');
 
     return Container(
-      padding: EdgeInsets.all(16.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,11 +77,12 @@ class NutritionAnalytics extends StatelessWidget {
               color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
           Row(
             children: [
               Expanded(
                 child: _buildNutritionStat(
+                  context,
                   'Calories',
                   avgCalories.round(),
                   'kcal',
@@ -90,6 +91,7 @@ class NutritionAnalytics extends StatelessWidget {
               ),
               Expanded(
                 child: _buildNutritionStat(
+                  context,
                   'Protein',
                   avgProtein,
                   'g',
@@ -97,10 +99,22 @@ class NutritionAnalytics extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: _buildNutritionStat('Carbs', avgCarbs, 'g', Colors.blue),
+                child: _buildNutritionStat(
+                  context,
+                  'Carbs',
+                  avgCarbs,
+                  'g',
+                  Colors.blue,
+                ),
               ),
               Expanded(
-                child: _buildNutritionStat('Fat', avgFat, 'g', Colors.green),
+                child: _buildNutritionStat(
+                  context,
+                  'Fat',
+                  avgFat,
+                  'g',
+                  Colors.green,
+                ),
               ),
             ],
           ),
@@ -110,9 +124,9 @@ class NutritionAnalytics extends StatelessWidget {
   }
 
   /// Builds nutrition by category card
-  Widget _buildCategoryNutritionCard() {
+  Widget _buildCategoryNutritionCard(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,21 +137,27 @@ class NutritionAnalytics extends StatelessWidget {
               color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(height: 16.h),
-          ...categories.take(4).map((category) {
-            return _buildCategoryNutritionBar(category);
-          }).toList(),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+          ..._buildCategoryNutritionList(context),
         ],
       ),
     );
   }
 
+  /// Builds category nutrition list
+  List<Widget> _buildCategoryNutritionList(BuildContext context) {
+    return [
+      for (final category in categories.take(4))
+        _buildCategoryNutritionBar(context, category),
+    ];
+  }
+
   /// Builds popular items nutrition card
-  Widget _buildPopularItemsCard() {
+  Widget _buildPopularItemsCard(BuildContext context) {
     final popularItems = menuItems.take(3).toList();
 
     return Container(
-      padding: EdgeInsets.all(16.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,8 +168,10 @@ class NutritionAnalytics extends StatelessWidget {
               color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(height: 16.h),
-          ...popularItems.map((item) => _buildDetailedNutritionRow(item)),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+          ...popularItems.map(
+            (item) => _buildDetailedNutritionRow(context, item),
+          ),
         ],
       ),
     );
@@ -157,17 +179,27 @@ class NutritionAnalytics extends StatelessWidget {
 
   /// Builds a single nutrition statistic
   Widget _buildNutritionStat(
+    BuildContext context,
     String label,
     dynamic value,
     String unit,
     Color color,
   ) {
     return Container(
-      padding: EdgeInsets.all(12.r),
-      margin: EdgeInsets.only(right: 8.w),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
+      margin: EdgeInsets.only(
+        right: ResponsiveHelper.getSpacing(context, 'small'),
+      ),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getResponsiveSpacing(
+            context,
+            mobile: 8.0,
+            tablet: 10.0,
+            desktop: 12.0,
+          ),
+        ),
       ),
       child: Column(
         children: [
@@ -178,9 +210,9 @@ class NutritionAnalytics extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
           Text(unit, style: AppTextStyles.caption.copyWith(color: color)),
-          SizedBox(height: 4.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
           Text(
             label,
             style: AppTextStyles.caption.copyWith(
@@ -193,14 +225,15 @@ class NutritionAnalytics extends StatelessWidget {
   }
 
   /// Builds a nutrition progress bar for a category
-  Widget _buildCategoryNutritionBar(Map<String, dynamic> category) {
+  Widget _buildCategoryNutritionBar(
+    BuildContext context,
+    Map<String, dynamic> category,
+  ) {
     final categoryItems = menuItems
         .where((item) => item['category'] == category['name'])
         .toList();
 
-    if (categoryItems.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    if (categoryItems.isEmpty) return const SizedBox.shrink();
 
     final avgCalories =
         categoryItems.fold<double>(
@@ -209,31 +242,122 @@ class NutritionAnalytics extends StatelessWidget {
         ) /
         categoryItems.length;
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.h),
-      child: Row(
+    return Container(
+      margin: EdgeInsets.only(
+        bottom: ResponsiveHelper.getSpacing(context, 'medium'),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            flex: 2,
-            child: Text(
-              category['name'] ?? 'Unknown',
-              style: AppTextStyles.body1,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                category['name'] ?? 'Unknown',
+                style: AppTextStyles.body2.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                '${avgCalories.round()} kcal avg',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
+          LinearProgressIndicator(
+            value: (avgCalories / 500).clamp(
+              0.0,
+              1.0,
+            ), // Assuming 500 kcal as max
+            backgroundColor: AppColors.textLight,
+            valueColor: AlwaysStoppedAnimation<Color>(
+              category['color'] ?? AppColors.primary,
             ),
           ),
-          Expanded(
-            flex: 3,
-            child: LinearProgressIndicator(
-              value: (avgCalories / 500).clamp(
-                0.0,
-                1.0,
-              ), // Normalize to 500 calories
-              backgroundColor: Colors.grey.withOpacity(0.2),
-              color: AppColors.adminRole,
-            ),
+        ],
+      ),
+    );
+  }
+
+  /// Builds detailed nutrition row for an item
+  Widget _buildDetailedNutritionRow(
+    BuildContext context,
+    Map<String, dynamic> item,
+  ) {
+    return Container(
+      margin: EdgeInsets.only(
+        bottom: ResponsiveHelper.getSpacing(context, 'medium'),
+      ),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.textLight),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getResponsiveSpacing(
+            context,
+            mobile: 8.0,
+            tablet: 10.0,
+            desktop: 12.0,
           ),
-          SizedBox(width: 8.w),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Text(
-            '${avgCalories.round()} cal avg',
+            item['name'] ?? 'Unknown Item',
+            style: AppTextStyles.body2.copyWith(fontWeight: FontWeight.w600),
+          ),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
+          Row(
+            children: [
+              _buildNutritionDetail(
+                context,
+                'Cal',
+                item['calories'],
+                Colors.orange,
+              ),
+              _buildNutritionDetail(
+                context,
+                'Protein',
+                item['protein'],
+                Colors.red,
+              ),
+              _buildNutritionDetail(
+                context,
+                'Carbs',
+                item['carbs'],
+                Colors.blue,
+              ),
+              _buildNutritionDetail(context, 'Fat', item['fat'], Colors.green),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Builds a small nutrition detail
+  Widget _buildNutritionDetail(
+    BuildContext context,
+    String label,
+    dynamic value,
+    Color color,
+  ) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            '${value ?? 0}',
+            style: AppTextStyles.caption.copyWith(
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            label,
             style: AppTextStyles.caption.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -243,91 +367,12 @@ class NutritionAnalytics extends StatelessWidget {
     );
   }
 
-  /// Builds a detailed nutrition row for an item
-  Widget _buildDetailedNutritionRow(Map<String, dynamic> item) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 12.h),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey.withOpacity(0.1))),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item['name'] ?? 'Unknown Item',
-                  style: AppTextStyles.body1.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  item['category'] ?? 'Unknown Category',
-                  style: AppTextStyles.caption.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: _buildMiniNutritionStat(
-              '${item['calories'] ?? 0}',
-              'cal',
-              Colors.orange,
-            ),
-          ),
-          Expanded(
-            child: _buildMiniNutritionStat(
-              '${item['protein'] ?? 0}g',
-              'protein',
-              Colors.red,
-            ),
-          ),
-          Expanded(
-            child: _buildMiniNutritionStat(
-              '${item['carbs'] ?? 0}g',
-              'carbs',
-              Colors.blue,
-            ),
-          ),
-          Expanded(
-            child: _buildMiniNutritionStat(
-              '${item['fat'] ?? 0}g',
-              'fat',
-              Colors.green,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Builds a mini nutrition statistic
-  Widget _buildMiniNutritionStat(String value, String label, Color color) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: AppTextStyles.body2.copyWith(
-            color: color,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          label,
-          style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
-        ),
-      ],
-    );
-  }
-
   /// Builds an empty state card
-  Widget _buildEmptyCard(String message) {
+  Widget _buildEmptyCard(BuildContext context, String message) {
     return Container(
-      padding: EdgeInsets.all(32.r),
+      padding: EdgeInsets.all(
+        ResponsiveHelper.getSpacing(context, 'extra_large'),
+      ),
       decoration: AppDecorations.floatingCard(),
       child: Center(
         child: Text(
@@ -339,14 +384,14 @@ class NutritionAnalytics extends StatelessWidget {
   }
 
   /// Calculates average value for a nutrition field
-  double _calculateAverage(String field) {
-    if (menuItems.isEmpty) return 0.0;
+  double _calculateAverage(List<Map<String, dynamic>> items, String field) {
+    if (items.isEmpty) return 0.0;
 
-    final total = menuItems.fold<double>(
+    final total = items.fold<double>(
       0.0,
       (sum, item) => sum + (item[field] ?? 0),
     );
 
-    return total / menuItems.length;
+    return total / items.length;
   }
 }

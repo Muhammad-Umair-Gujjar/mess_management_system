@@ -165,7 +165,7 @@ class CustomGridView extends StatelessWidget {
     return GestureDetector(
       onTap: item.onTap,
       child: Container(
-        padding: EdgeInsets.all(cardPadding),
+        padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, "cardPadding")),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(borderRadius),

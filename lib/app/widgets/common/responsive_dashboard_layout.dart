@@ -403,30 +403,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
         children: [
           Divider(color: AppColors.textLight.withOpacity(0.2)),
           SizedBox(height: isMobile ? 20.h : 16.h), // More spacing on mobile
-          // Quick Action Buttons
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildQuickActionButton(
-                Icons.qr_code_scanner,
-                'QR Scan',
-                AppColors.primary,
-              ),
-              _buildQuickActionButton(
-                Icons.notifications_outlined,
-                'Alerts',
-                AppColors.warning,
-              ),
-              _buildQuickActionButton(
-                Icons.headset_mic_outlined,
-                'Support',
-                AppColors.info,
-              ),
-            ],
-          ),
-
-          SizedBox(height: 20.h),
-
+          // Quick Action Button
           // Logout Button
           Material(
             color: Colors.transparent,

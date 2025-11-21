@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
@@ -33,22 +32,22 @@ class UserFilters extends StatelessWidget {
     final isMobile = ResponsiveHelper.isMobile(context);
 
     return Container(
-      padding: EdgeInsets.all(20.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (isMobile) ...[
-            _buildMobileLayout(),
+            _buildMobileLayout(context),
           ] else ...[
-            _buildDesktopLayout(),
+            _buildDesktopLayout(context),
           ],
         ],
       ),
     ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.3);
   }
 
-  Widget _buildMobileLayout() {
+  Widget _buildMobileLayout(BuildContext context) {
     return Column(
       children: [
         ReusableTextField(
@@ -56,21 +55,18 @@ class UserFilters extends StatelessWidget {
           type: TextFieldType.search,
           onChanged: onSearchChanged,
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
         Row(
           children: [
-            Flexible(child: _buildRoleDropdown()),
-            SizedBox(width: 4.w),
-            Flexible(child: _buildStatusDropdown()),
-          ],
-        ),
-        SizedBox(height: 16.h),
-        Row(
-          children: [
+            Flexible(child: _buildRoleDropdown(context)),
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'xsmall')),
+            Flexible(child: _buildStatusDropdown(context)),
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'xsmall')),
             Expanded(
               child: ReusableButton(
                 text: 'Add User',
                 icon: FontAwesomeIcons.userPlus,
+                
                 type: ButtonType.primary,
                 size: ButtonSize.medium,
                 onPressed: onAddUser,
@@ -82,69 +78,101 @@ class UserFilters extends StatelessWidget {
     );
   }
 
-  Widget _buildDesktopLayout() {
+  Widget _buildDesktopLayout(BuildContext context) {
     return Row(
       children: [
         Expanded(
-          flex: 2,
+          flex: 3,
           child: ReusableTextField(
-            hintText: 'Search users by name or email...',
+            hintText: r'Search users by name or email...',
             type: TextFieldType.search,
             onChanged: onSearchChanged,
           ),
         ),
-        SizedBox(width: 16.w),
-        SizedBox(width: 100.w, child: _buildRoleDropdown()),
-        SizedBox(width: 6.w),
-        SizedBox(width: 100.w, child: _buildStatusDropdown()),
-        SizedBox(width: 16.w),
-        ReusableButton(
-          text: 'Add User',
-          icon: FontAwesomeIcons.userPlus,
-          type: ButtonType.primary,
-          size: ButtonSize.medium,
-          onPressed: onAddUser,
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+        Expanded(
+          child: SizedBox(
+            width: ResponsiveHelper.getComponentDimension(
+              context,
+              'dropdownWidth',
+            ),
+            child: _buildRoleDropdown(context),
+          ),
+        ),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'xs')),
+        Expanded(
+          child: SizedBox(
+            width: ResponsiveHelper.getComponentDimension(
+              context,
+              'dropdownWidth',
+            ),
+            child: _buildStatusDropdown(context),
+          ),
+        ),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+        Expanded(
+          child: ReusableButton(
+            text: 'Add User',
+            icon: FontAwesomeIcons.userPlus,
+            type: ButtonType.primary,
+            size: ButtonSize.medium,
+            onPressed: onAddUser,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildRoleDropdown() {
+  Widget _buildRoleDropdown(BuildContext context) {
     return DropdownButtonFormField<String>(
-      style: TextStyle(fontSize: 10.sp),
-      decoration: const InputDecoration(
+      style: TextStyle(
+        fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
+      ),
+      decoration:  InputDecoration(
         labelText: 'Role',
-        labelStyle: TextStyle(fontSize: 9),
+        labelStyle: TextStyle(fontSize: 14),
         border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+        contentPadding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
         isDense: true,
       ),
       value: selectedRole.isEmpty ? null : selectedRole,
       items: ['Student', 'Staff', 'Admin'].map((role) {
         return DropdownMenuItem(
           value: role,
-          child: Text(role, style: TextStyle(fontSize: 10.sp)),
+          child: Text(
+            role,
+            style: TextStyle(
+              fontSize: ResponsiveHelper.getFontSize(context, 'caption'),
+            ),
+          ),
         );
       }).toList(),
       onChanged: (value) => onRoleChanged(value ?? ''),
     );
   }
 
-  Widget _buildStatusDropdown() {
+  Widget _buildStatusDropdown(BuildContext context) {
     return DropdownButtonFormField<String>(
-      style: TextStyle(fontSize: 10.sp),
-      decoration: const InputDecoration(
+      style: TextStyle(
+        fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
+      ),
+      decoration:  InputDecoration(
         labelText: 'Status',
-        labelStyle: TextStyle(fontSize: 9),
+        labelStyle: TextStyle(fontSize: 14),
         border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+        contentPadding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
         isDense: true,
       ),
       value: selectedStatus.isEmpty ? null : selectedStatus,
       items: ['Active', 'Inactive', 'Suspended'].map((status) {
         return DropdownMenuItem(
           value: status,
-          child: Text(status, style: TextStyle(fontSize: 10.sp)),
+          child: Text(
+            status,
+            style: TextStyle(
+              fontSize: ResponsiveHelper.getFontSize(context, 'caption'),
+            ),
+          ),
         );
       }).toList(),
       onChanged: (value) => onStatusChanged(value ?? ''),

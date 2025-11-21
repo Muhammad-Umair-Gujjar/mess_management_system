@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
@@ -26,25 +25,37 @@ class StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-          width: ResponsiveHelper.isMobile(context) ? double.infinity : 200.w,
-          padding: EdgeInsets.all(20.r),
+          width: ResponsiveHelper.isMobile(context) ? double.infinity : 200,
+          padding: EdgeInsets.all(
+            ResponsiveHelper.getSpacing(context, 'medium'),
+          ),
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getSpacing(context, 'medium'),
+            ),
             border: Border.all(color: color.withOpacity(0.3)),
           ),
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.all(12.r),
+                padding: EdgeInsets.all(
+                  ResponsiveHelper.getSpacing(context, 'small'),
+                ),
                 decoration: BoxDecoration(
                   color: color,
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(
+                    ResponsiveHelper.getSpacing(context, 'small'),
+                  ),
                 ),
-                child: Icon(icon, size: 24.sp, color: Colors.white),
+                child: Icon(
+                  icon,
+                  size: ResponsiveHelper.getIconSize(context, 'medium'),
+                  color: Colors.white,
+                ),
               ),
 
-              SizedBox(height: 12.h),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
 
               Text(
                 value,

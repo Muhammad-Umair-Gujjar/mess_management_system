@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 
 /// Individual menu item card component
 ///
@@ -31,22 +31,24 @@ class MenuItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 16.h),
+      margin: EdgeInsets.only(
+        bottom: ResponsiveHelper.getSpacing(context, 'large'),
+      ),
       decoration: AppDecorations.floatingCard(),
       child: Padding(
-        padding: EdgeInsets.all(16.r),
+        padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
         child: Row(
           children: [
             // Item image placeholder
-            _buildItemImage(),
+            _buildItemImage(context),
 
-            SizedBox(width: 16.w),
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
 
             // Item details section
-            Expanded(child: _buildItemDetails()),
+            Expanded(child: _buildItemDetails(context)),
 
             // Price and actions section
-            _buildPriceAndActions(),
+            _buildPriceAndActions(context),
           ],
         ),
       ),
@@ -54,24 +56,46 @@ class MenuItemCard extends StatelessWidget {
   }
 
   /// Builds the item image placeholder
-  Widget _buildItemImage() {
+  Widget _buildItemImage(BuildContext context) {
     return Container(
-      width: 80.w,
-      height: 80.h,
+      width: ResponsiveHelper.getResponsiveSpacing(
+        context,
+        mobile: 65.0,
+        tablet: 75.0,
+        desktop: 85.0,
+      ),
+      height: ResponsiveHelper.getResponsiveSpacing(
+        context,
+        mobile: 65.0,
+        tablet: 75.0,
+        desktop: 85.0,
+      ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getResponsiveSpacing(
+            context,
+            mobile: 12.0,
+            tablet: 14.0,
+            desktop: 16.0,
+          ),
+        ),
         color: AppColors.adminRole.withOpacity(0.1),
       ),
       child: Icon(
         FontAwesomeIcons.utensils,
         color: AppColors.adminRole,
-        size: 24.sp,
+        size: ResponsiveHelper.getResponsiveIconSize(
+          context,
+          mobile: 23.0,
+          tablet: 25.0,
+          desktop: 28.0,
+        ),
       ),
     );
   }
 
   /// Builds the item details (name, description, category, etc.)
-  Widget _buildItemDetails() {
+  Widget _buildItemDetails(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -86,39 +110,49 @@ class MenuItemCard extends StatelessWidget {
                 ),
               ),
             ),
-            _buildAvailabilityBadge(),
+            _buildAvailabilityBadge(context),
           ],
         ),
 
-        SizedBox(height: 4.h),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'xsmall')),
 
         // Description
         Text(
           item['description'] ?? 'No description available',
           style: AppTextStyles.body2.copyWith(color: AppColors.textSecondary),
-          maxLines: 2,
+          maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
 
-        SizedBox(height: 8.h),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
 
         // Item metadata (category, time, calories)
-        _buildItemMetadata(),
+        _buildItemMetadata(context),
       ],
     );
   }
 
   /// Builds the availability status badge
-  Widget _buildAvailabilityBadge() {
+  Widget _buildAvailabilityBadge(BuildContext context) {
     final bool isAvailable = item['isAvailable'] ?? false;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+        vertical: ResponsiveHelper.getSpacing(context, 'xsmall'),
+      ),
       decoration: BoxDecoration(
         color: isAvailable
             ? Colors.green.withOpacity(0.1)
             : Colors.red.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(6.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getResponsiveSpacing(
+            context,
+            mobile: 6.0,
+            tablet: 7.0,
+            desktop: 8.0,
+          ),
+        ),
       ),
       child: Text(
         isAvailable ? 'Available' : 'Unavailable',
@@ -131,20 +165,23 @@ class MenuItemCard extends StatelessWidget {
   }
 
   /// Builds the item metadata row (category, time, calories)
-  Widget _buildItemMetadata() {
+  Widget _buildItemMetadata(BuildContext context) {
     return Row(
       children: [
         _buildMetadataItem(
+          context,
           icon: FontAwesomeIcons.tag,
           text: item['category'] ?? 'Unknown',
         ),
-        SizedBox(width: 16.w),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
         _buildMetadataItem(
+          context,
           icon: FontAwesomeIcons.clock,
           text: item['preparationTime'] ?? 'N/A',
         ),
-        SizedBox(width: 16.w),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
         _buildMetadataItem(
+          context,
           icon: FontAwesomeIcons.fire,
           text: '${item['calories'] ?? 0} cal',
         ),
@@ -153,12 +190,25 @@ class MenuItemCard extends StatelessWidget {
   }
 
   /// Builds a single metadata item with icon and text
-  Widget _buildMetadataItem({required IconData icon, required String text}) {
+  Widget _buildMetadataItem(
+    BuildContext context, {
+    required IconData icon,
+    required String text,
+  }) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 12.sp, color: AppColors.textSecondary),
-        SizedBox(width: 4.w),
+        Icon(
+          icon,
+          size: ResponsiveHelper.getResponsiveIconSize(
+            context,
+            mobile: 10.0,
+            tablet: 11.0,
+            desktop: 12.0,
+          ),
+          color: AppColors.textSecondary,
+        ),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
         Text(
           text,
           style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
@@ -168,7 +218,7 @@ class MenuItemCard extends StatelessWidget {
   }
 
   /// Builds the price display and action buttons
-  Widget _buildPriceAndActions() {
+  Widget _buildPriceAndActions(BuildContext context) {
     return Column(
       children: [
         // Price display
@@ -179,20 +229,21 @@ class MenuItemCard extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-
-        SizedBox(height: 8.h),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
 
         // Action buttons
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildActionButton(
+              context,
               icon: FontAwesomeIcons.pen,
               color: AppColors.adminRole,
               onPressed: onEdit,
               tooltip: 'Edit item',
             ),
             _buildActionButton(
+              context,
               icon: (item['isAvailable'] ?? false)
                   ? FontAwesomeIcons.eyeSlash
                   : FontAwesomeIcons.eye,
@@ -205,6 +256,7 @@ class MenuItemCard extends StatelessWidget {
                   : 'Make available',
             ),
             _buildActionButton(
+              context,
               icon: FontAwesomeIcons.trash,
               color: Colors.red,
               onPressed: onDelete,
@@ -217,7 +269,8 @@ class MenuItemCard extends StatelessWidget {
   }
 
   /// Builds a single action button with tooltip
-  Widget _buildActionButton({
+  Widget _buildActionButton(
+    BuildContext context, {
     required IconData icon,
     required Color color,
     required VoidCallback onPressed,
@@ -227,9 +280,22 @@ class MenuItemCard extends StatelessWidget {
       message: tooltip,
       child: IconButton(
         onPressed: onPressed,
-        icon: Icon(icon, size: 16.sp),
+        icon: Icon(
+          icon,
+          size: ResponsiveHelper.getResponsiveIconSize(
+            context,
+            mobile: 14.0,
+            tablet: 15.0,
+            desktop: 16.0,
+          ),
+        ),
         color: color,
-        splashRadius: 20.r,
+        splashRadius: ResponsiveHelper.getResponsiveSpacing(
+          context,
+          mobile: 18.0,
+          tablet: 19.0,
+          desktop: 20.0,
+        ),
       ),
     );
   }

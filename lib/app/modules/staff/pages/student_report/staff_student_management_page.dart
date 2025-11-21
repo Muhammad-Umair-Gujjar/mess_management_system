@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/theme/app_decorations.dart';
@@ -57,7 +56,7 @@ class _StaffStudentManagementPageState extends State<StaffStudentManagementPage>
             },
           ),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
 
           // Main Content
           Expanded(

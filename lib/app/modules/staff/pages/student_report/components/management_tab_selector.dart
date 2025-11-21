@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../widgets/custom_tab_bar.dart';
 
 class ManagementTabSelector extends StatelessWidget {
@@ -21,7 +21,7 @@ class ManagementTabSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
       decoration: AppDecorations.floatingCard(),
       child: CustomTabBar(
         selectedIndex: selectedTabIndex,
@@ -40,7 +40,9 @@ class ManagementTabSelector extends StatelessWidget {
         unselectedColor: AppColors.textSecondary,
         selectedBackgroundColor: AppColors.success,
         unselectedBackgroundColor: Colors.transparent,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getSpacing(context, 'small'),
+        ),
         selectedTextStyle: AppTextStyles.body1.copyWith(
           fontWeight: FontWeight.w600,
         ),

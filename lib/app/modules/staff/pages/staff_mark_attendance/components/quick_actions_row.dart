@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
@@ -40,7 +39,7 @@ class QuickActionsRow extends StatelessWidget {
           size: ButtonSize.small,
           onPressed: onMarkAllPresent,
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'xsmall')),
         ReusableButton(
           text: 'Mark All Absent',
           icon: FontAwesomeIcons.xmark,
@@ -63,7 +62,7 @@ class QuickActionsRow extends StatelessWidget {
           size: ButtonSize.medium,
           onPressed: onMarkAllPresent,
         ),
-        SizedBox(width: 12.w),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
         ReusableButton(
           text: 'Mark All Absent',
           icon: FontAwesomeIcons.xmark,

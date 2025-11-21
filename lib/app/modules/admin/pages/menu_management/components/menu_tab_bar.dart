@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
+import '../../../../../../app/widgets/custom_tab_bar.dart';
 
 /// Tab bar component for Menu Management page
 ///
@@ -12,41 +13,48 @@ import '../../../../../../core/constants/app_colors.dart';
 /// - Categories: For managing food categories
 /// - Nutrition: For viewing nutritional analytics
 class MenuTabBar extends StatelessWidget {
-  final TabController tabController;
+  final int selectedIndex;
+  final Function(int) onTabChanged;
 
-  const MenuTabBar({super.key, required this.tabController});
+  const MenuTabBar({
+    super.key,
+    required this.selectedIndex,
+    required this.onTabChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-      decoration: AppDecorations.floatingCard(),
-      child: TabBar(
-        controller: tabController,
-        labelColor: AppColors.adminRole,
-        unselectedLabelColor: AppColors.textSecondary,
-        indicatorColor: AppColors.adminRole,
-        indicatorWeight: 3,
-        indicatorSize: TabBarIndicatorSize.tab,
-        tabs: [
-          _buildTab(icon: FontAwesomeIcons.plateWheat, label: 'Menu Items'),
-          _buildTab(icon: FontAwesomeIcons.layerGroup, label: 'Categories'),
-          _buildTab(icon: FontAwesomeIcons.heartPulse, label: 'Nutrition'),
-        ],
+      margin: EdgeInsets.symmetric(
+        // horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+        vertical: ResponsiveHelper.getSpacing(context, 'medium'),
       ),
-    );
-  }
-
-  /// Builds a single tab with icon and label
-  Widget _buildTab({required IconData icon, required String label}) {
-    return Tab(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 16.sp),
-          SizedBox(width: 8.w),
-          Text(label),
+      decoration: AppDecorations.floatingCard(),
+      child: CustomUnderlineTabBar(
+      
+        tabs: [
+          CustomTabBarItem(
+            label: 'Menu Items',
+            icon: FontAwesomeIcons.plateWheat,
+          ),
+          CustomTabBarItem(
+            label: 'Categories',
+            icon: FontAwesomeIcons.layerGroup,
+          ),
+          CustomTabBarItem(
+            label: 'Nutrition',
+            icon: FontAwesomeIcons.heartPulse,
+          ),
         ],
+        selectedIndex: selectedIndex,
+        onTap: onTabChanged,
+
+        selectedColor: AppColors.adminRole,
+        unselectedColor: AppColors.textSecondary,
+        indicatorColor: AppColors.adminRole,
+        indicatorHeight: 3,
+
+        showIcons: true,
       ),
     );
   }

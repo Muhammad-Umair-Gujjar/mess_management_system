@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../widgets/custom_grid_view.dart';
 import '../../../staff_controller.dart';
 import 'student_card.dart';
@@ -41,12 +41,12 @@ class StudentsGridView extends StatelessWidget {
       crossAxisCount: 4, // Desktop: 4 columns
       tabletCrossAxisCount: 3, // Tablet: 3 columns
       mobileCrossAxisCount: 2, // Mobile: 2 columns
-      crossAxisSpacing: 16.w,
-      mainAxisSpacing: 16.h,
+      crossAxisSpacing: ResponsiveHelper.getSpacing(context, 'medium'),
+      mainAxisSpacing: ResponsiveHelper.getSpacing(context, 'medium'),
       childAspectRatio: 1.1, // Reduced from 1.4 to give more vertical space
       mobileAspectRatio: 0.9, // Even more vertical space on mobile
       tabletAspectRatio: 1.0, // Slightly more vertical space on tablet
-      padding: EdgeInsets.all(8.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'xsmall')),
       physics: const BouncingScrollPhysics(), // Enable scrolling
       shrinkWrap: false, // Ensure it takes full available space
       cardStyle: CustomGridCardStyle.minimal,

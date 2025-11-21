@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../../../core/utils/responsive_helper.dart';
 import '../../staff_controller.dart';
 import 'components/welcome_section.dart';
 import 'components/today_stats_section.dart';
@@ -18,24 +18,26 @@ class StaffOverviewPage extends StatelessWidget {
         final todayStats = controller.getTodayStats();
 
         return SingleChildScrollView(
-          padding: EdgeInsets.all(24.r),
+          padding: EdgeInsets.all(
+            ResponsiveHelper.getSpacing(context, 'large'),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Welcome Section
               const WelcomeSection(),
 
-              SizedBox(height: 24.h),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
 
               // Today's Statistics Cards
               TodayStatsSection(todayStats: todayStats),
 
-              SizedBox(height: 32.h),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
               // Quick Actions
               QuickActionsSection(controller: controller),
 
-              SizedBox(height: 32.h),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
               // Recent Activity
               RecentActivitySection(todayStats: todayStats),

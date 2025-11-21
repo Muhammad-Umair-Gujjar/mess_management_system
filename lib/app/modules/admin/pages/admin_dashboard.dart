@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -37,9 +36,11 @@ class AdminDashboard extends StatelessWidget {
 
   Widget _buildHeader(AdminController controller) {
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: ResponsiveHelper.isMobile(Get.context!) ? 16.w : 32.w,
-        vertical: 24.h,
+      padding: ResponsiveHelper.getResponsivePadding(
+        Get.context!,
+        mobile: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        tablet: const EdgeInsets.symmetric(horizontal: 24, vertical: 15),
+        desktop: const EdgeInsets.symmetric(horizontal: 32, vertical: 22),
       ),
       decoration: AppDecorations.floatingCard(),
       child: Row(
@@ -51,20 +52,21 @@ class AdminDashboard extends StatelessWidget {
                 () => Text(
                   controller.getCurrentPageTitle(),
                   style: AppTextStyles.heading4.copyWith(
+                    fontWeight: FontWeight.w600,
                     fontSize: ResponsiveHelper.getResponsiveFontSize(
                       Get.context!,
-                      mobile: 24,
-                      tablet: 28,
-                      desktop: 32,
+                      mobile: 20,
+                      tablet: 25,
+                      desktop: 28,
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: ResponsiveHelper.getSpacing(Get.context!, 'xs')),
               Obx(
                 () => Text(
                   controller.getCurrentPageSubtitle(),
-                  style: AppTextStyles.body2.copyWith(
+                  style: AppTextStyles.body3.copyWith(
                     color: AppColors.textLight,
                   ),
                 ),
@@ -86,7 +88,12 @@ class AdminDashboard extends StatelessWidget {
                   AppColors.adminRole,
                   isMobile: isMobile,
                 ),
-                SizedBox(width: isMobile ? 12.w : 24.w),
+                SizedBox(
+                  width: ResponsiveHelper.getSpacing(
+                    Get.context!,
+                    isMobile ? 'small' : 'large',
+                  ),
+                ),
                 _buildQuickStat(
                   'Pending',
                   '${stats['pendingApprovals']}',
@@ -94,17 +101,27 @@ class AdminDashboard extends StatelessWidget {
                   AppColors.warning,
                   isMobile: isMobile,
                 ),
-                SizedBox(width: isMobile ? 12.w : 24.w),
-                _buildQuickStat(
+                SizedBox(
+                  width: ResponsiveHelper.getSpacing(
+                    Get.context!,
+                    isMobile ? 'small' : 'large',
+                  ),
+                ),
+                 // Only show uptime on tablet and desktop
+                if (!isMobile) ...[
+                  SizedBox(
+                    width: ResponsiveHelper.getSpacing(Get.context!, 'large'),
+                  ),
+                   _buildQuickStat(
                   'Revenue',
                   '₹${(stats['monthlyRevenue'] / 1000).toStringAsFixed(0)}K',
                   FontAwesomeIcons.chartLine,
                   AppColors.success,
                   isMobile: isMobile,
                 ),
-                // Only show uptime on tablet and desktop
-                if (!isMobile) ...[
-                  SizedBox(width: 24.w),
+                  SizedBox(
+                    width: ResponsiveHelper.getSpacing(Get.context!, 'large'),
+                  ),
                   _buildQuickStat(
                     'Uptime',
                     '${stats['systemUptime']}%',
@@ -130,15 +147,22 @@ class AdminDashboard extends StatelessWidget {
   }) {
     return Container(
       constraints: isMobile
-          ? BoxConstraints(maxWidth: 100.w, minHeight: 60.h)
+          ? const BoxConstraints(maxWidth: 100, minHeight: 50)
           : null,
-      padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 8.w : 16.w,
-        vertical: isMobile ? 8.h : 12.h,
+      padding: ResponsiveHelper.getResponsivePadding(
+        Get.context!,
+        mobile: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        tablet: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        desktop: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(isMobile ? 8.r : 12.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getBorderRadius(
+            Get.context!,
+            isMobile ? 'small' : 'medium',
+          ),
+        ),
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: isMobile
@@ -147,13 +171,22 @@ class AdminDashboard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 14.sp, color: color),
-                SizedBox(height: 2.h),
+                Icon(
+                  icon,
+                  size: ResponsiveHelper.getIconSize(Get.context!, 'tiny'),
+                  color: color,
+                ),
+                SizedBox(
+                  height: ResponsiveHelper.getSpacing(Get.context!, 'xs'),
+                ),
                 Text(
                   label,
                   style: AppTextStyles.caption.copyWith(
                     color: color,
-                    fontSize: 10.sp,
+                    fontSize: ResponsiveHelper.getFontSize(
+                      Get.context!,
+                      'caption',
+                    ),
                   ),
                   textAlign: TextAlign.center,
                   maxLines: 1,
@@ -164,7 +197,10 @@ class AdminDashboard extends StatelessWidget {
                   style: AppTextStyles.subtitle1.copyWith(
                     color: color,
                     fontWeight: FontWeight.w700,
-                    fontSize: 12.sp,
+                    fontSize: ResponsiveHelper.getFontSize(
+                      Get.context!,
+                      'cardSubtitle',
+                    ),
                   ),
                   textAlign: TextAlign.center,
                   maxLines: 1,
@@ -174,8 +210,14 @@ class AdminDashboard extends StatelessWidget {
             )
           : Row(
               children: [
-                Icon(icon, size: 18.sp, color: color),
-                SizedBox(width: 8.w),
+                Icon(
+                  icon,
+                  size: ResponsiveHelper.getIconSize(Get.context!, 'small'),
+                  color: color,
+                ),
+                SizedBox(
+                  width: ResponsiveHelper.getSpacing(Get.context!, 'small'),
+                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

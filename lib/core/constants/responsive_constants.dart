@@ -12,7 +12,7 @@ class ResponsiveConstants {
     'quickActions': {'mobile': 3, 'tablet': 4, 'desktop': 2},
 
     // Stats Cards (3 mobile, 3 tablet, 4 desktop)
-    'statsCards': {'mobile': 3, 'tablet': 3, 'desktop': 4},
+    'statsCards': {'mobile': 2, 'tablet': 3, 'desktop': 4},
 
     // Menu Items (3 mobile, 2 tablet, 3 desktop)
     'menuItems': {'mobile': 3, 'tablet': 2, 'desktop': 3},
@@ -36,7 +36,7 @@ class ResponsiveConstants {
     'padding': {'mobile': 20.0, 'tablet': 22.0, 'desktop': 32.0},
 
     // Card padding - Enhanced for mobile
-    'cardPadding': {'mobile': 18.0, 'tablet': 20.0, 'desktop': 22.0},
+    'cardPadding': {'mobile': 14.0, 'tablet': 20.0, 'desktop': 22.0},
 
     // Section margins - Enhanced mobile spacing
     'sectionMargin': {'mobile': 18.0, 'tablet': 20.0, 'desktop': 24.0},
@@ -124,7 +124,7 @@ class ResponsiveConstants {
     'card': {'mobile': 1.0, 'tablet': 1.1, 'desktop': 1.2},
     'actionCard': {'mobile': 1.2, 'tablet': 1.1, 'desktop': 1.3},
     'menuCard': {'mobile': 0.8, 'tablet': 0.9, 'desktop': 1.1},
-    'statsCard': {'mobile': 0.9, 'tablet': 1.2, 'desktop': 1.2},
+    'statsCard': {'mobile': 1.0, 'tablet': 1.2, 'desktop': 1.2},
     'quickAction': {'mobile': 1.3, 'tablet': 1.1, 'desktop': 1.3},
     'studentCard': {'mobile': 1.0, 'tablet': 1.1, 'desktop': 1.2},
   };

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 
 /// Category card component for displaying individual categories
 ///
@@ -30,16 +30,18 @@ class CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 16.h),
-      padding: EdgeInsets.all(16.r),
+      margin: EdgeInsets.only(
+        bottom: ResponsiveHelper.getSpacing(context, 'large'),
+      ),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
       decoration: AppDecorations.floatingCard(),
       child: Row(
         children: [
-          _buildCategoryIcon(),
-          SizedBox(width: 16.w),
-          _buildCategoryInfo(),
+          _buildCategoryIcon(context),
+          SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+          _buildCategoryInfo(context),
           _buildActiveToggle(),
-          SizedBox(width: 8.w),
+          SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
           _buildActionMenu(context),
         ],
       ),
@@ -47,24 +49,46 @@ class CategoryCard extends StatelessWidget {
   }
 
   /// Builds the category icon container
-  Widget _buildCategoryIcon() {
+  Widget _buildCategoryIcon(BuildContext context) {
     return Container(
-      width: 48.w,
-      height: 48.h,
+      width: ResponsiveHelper.getResponsiveSpacing(
+        context,
+        mobile: 48.0,
+        tablet: 52.0,
+        desktop: 56.0,
+      ),
+      height: ResponsiveHelper.getResponsiveSpacing(
+        context,
+        mobile: 48.0,
+        tablet: 52.0,
+        desktop: 56.0,
+      ),
       decoration: BoxDecoration(
         color: AppColors.adminRole.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getResponsiveSpacing(
+            context,
+            mobile: 8.0,
+            tablet: 10.0,
+            desktop: 12.0,
+          ),
+        ),
       ),
       child: Icon(
         FontAwesomeIcons.layerGroup,
         color: AppColors.adminRole,
-        size: 20.sp,
+        size: ResponsiveHelper.getResponsiveIconSize(
+          context,
+          mobile: 18.0,
+          tablet: 19.0,
+          desktop: 20.0,
+        ),
       ),
     );
   }
 
   /// Builds the category information (name and item count)
-  Widget _buildCategoryInfo() {
+  Widget _buildCategoryInfo(BuildContext context) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,7 +99,7 @@ class CategoryCard extends StatelessWidget {
               color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
           Text(
             '${category['itemCount'] ?? 0} items',
             style: AppTextStyles.body2.copyWith(color: AppColors.textSecondary),
@@ -100,7 +124,12 @@ class CategoryCard extends StatelessWidget {
       icon: Icon(
         FontAwesomeIcons.ellipsisVertical,
         color: AppColors.textSecondary,
-        size: 16.sp,
+        size: ResponsiveHelper.getResponsiveIconSize(
+          context,
+          mobile: 14.0,
+          tablet: 15.0,
+          desktop: 16.0,
+        ),
       ),
       itemBuilder: (context) => [
         PopupMenuItem<String>(
@@ -108,7 +137,12 @@ class CategoryCard extends StatelessWidget {
           child: ListTile(
             leading: Icon(
               FontAwesomeIcons.pen,
-              size: 16.sp,
+              size: ResponsiveHelper.getResponsiveIconSize(
+                context,
+                mobile: 14.0,
+                tablet: 15.0,
+                desktop: 16.0,
+              ),
               color: AppColors.adminRole,
             ),
             title: Text('Edit'),
@@ -120,7 +154,12 @@ class CategoryCard extends StatelessWidget {
           child: ListTile(
             leading: Icon(
               FontAwesomeIcons.trash,
-              size: 16.sp,
+              size: ResponsiveHelper.getResponsiveIconSize(
+                context,
+                mobile: 14.0,
+                tablet: 15.0,
+                desktop: 16.0,
+              ),
               color: Colors.red,
             ),
             title: Text('Delete', style: TextStyle(color: Colors.red)),

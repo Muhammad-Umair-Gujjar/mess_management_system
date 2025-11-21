@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
@@ -38,14 +37,14 @@ class UsersList extends StatelessWidget {
       );
 
       return Container(
-        padding: EdgeInsets.all(20.r),
+        padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
         decoration: AppDecorations.floatingCard(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildHeader(filteredUsers, isMobile),
-            SizedBox(height: 20.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
             Expanded(
               child: filteredUsers.isEmpty
                   ? const UserEmptyState()

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
@@ -23,7 +22,7 @@ class TodayStatsSection extends StatelessWidget {
           'Today\'s Overview',
           style: AppTextStyles.heading5.copyWith(fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
         ResponsiveHelper.isDesktop(Get.context!)
             ? Row(
@@ -36,7 +35,9 @@ class TodayStatsSection extends StatelessWidget {
                       color: AppColors.primary,
                     ),
                   ),
-                  SizedBox(width: 16.w),
+                  SizedBox(
+                    width: ResponsiveHelper.getSpacing(context, 'medium'),
+                  ),
                   Expanded(
                     child: StatCard(
                       title: 'Breakfast Attendance',
@@ -46,7 +47,9 @@ class TodayStatsSection extends StatelessWidget {
                       color: AppColors.warning,
                     ),
                   ),
-                  SizedBox(width: 16.w),
+                  SizedBox(
+                    width: ResponsiveHelper.getSpacing(context, 'medium'),
+                  ),
                   Expanded(
                     child: StatCard(
                       title: 'Dinner Attendance',
@@ -56,7 +59,9 @@ class TodayStatsSection extends StatelessWidget {
                       color: AppColors.info,
                     ),
                   ),
-                  SizedBox(width: 16.w),
+                  SizedBox(
+                    width: ResponsiveHelper.getSpacing(context, 'medium'),
+                  ),
                   Expanded(
                     child: StatCard(
                       title: 'Attendance Rate',
@@ -80,7 +85,9 @@ class TodayStatsSection extends StatelessWidget {
                           color: AppColors.primary,
                         ),
                       ),
-                      SizedBox(width: 16.w),
+                      SizedBox(
+                        width: ResponsiveHelper.getSpacing(context, 'medium'),
+                      ),
                       Expanded(
                         child: StatCard(
                           title: 'Attendance Rate',
@@ -92,7 +99,9 @@ class TodayStatsSection extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(
+                    height: ResponsiveHelper.getSpacing(context, 'medium'),
+                  ),
                   Row(
                     children: [
                       Expanded(
@@ -104,7 +113,9 @@ class TodayStatsSection extends StatelessWidget {
                           color: AppColors.warning,
                         ),
                       ),
-                      SizedBox(width: 16.w),
+                      SizedBox(
+                        width: ResponsiveHelper.getSpacing(context, 'medium'),
+                      ),
                       Expanded(
                         child: StatCard(
                           title: 'Dinner',

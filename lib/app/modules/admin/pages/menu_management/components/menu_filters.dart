@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
@@ -44,8 +43,11 @@ class MenuFilters extends StatelessWidget {
     final isTablet = ResponsiveHelper.isTablet(context);
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 24.w, vertical: 8.h),
-      padding: EdgeInsets.all(16.r),
+      margin: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+        vertical: ResponsiveHelper.getSpacing(context, 'small'),
+      ),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
       decoration: AppDecorations.floatingCard(),
       child: isMobile
           ? _buildMobileLayout(context)
@@ -63,27 +65,23 @@ class MenuFilters extends StatelessWidget {
         ReusableTextField(
           controller: searchController,
           hintText: 'Search menu items...',
-          prefixIcon: Icons.search,
           type: TextFieldType.search,
           onChanged: (_) => onSearchChanged(),
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
         // Row with category and sort dropdowns
         Row(
           children: [
             Expanded(child: _buildCategoryDropdown(context)),
-            SizedBox(width: 12.w),
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
             Expanded(child: _buildSortByDropdown(context)),
+             SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
+            Expanded(child: _buildAvailabilityFilter(context)),
+            
           ],
         ),
-        SizedBox(height: 12.h),
-
-        // Availability filter - centered
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [_buildAvailabilityFilter(context)],
-        ),
+        
       ],
     );
   }
@@ -100,22 +98,22 @@ class MenuFilters extends StatelessWidget {
               child: ReusableTextField(
                 controller: searchController,
                 hintText: 'Search menu items...',
-                prefixIcon: Icons.search,
+  
                 type: TextFieldType.search,
                 onChanged: (_) => onSearchChanged(),
               ),
             ),
-            SizedBox(width: 16.w),
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
             Expanded(child: _buildCategoryDropdown(context)),
           ],
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
         // Bottom row - sort and availability
         Row(
           children: [
             Expanded(child: _buildSortByDropdown(context)),
-            SizedBox(width: 16.w),
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
             _buildAvailabilityFilter(context),
           ],
         ),
@@ -138,15 +136,15 @@ class MenuFilters extends StatelessWidget {
             onChanged: (_) => onSearchChanged(),
           ),
         ),
-        SizedBox(width: 16.w),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
 
         // Category filter dropdown
         Expanded(child: _buildCategoryDropdown(context)),
-        SizedBox(width: 16.w),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
 
         // Sort by dropdown
         Expanded(child: _buildSortByDropdown(context)),
-        SizedBox(width: 16.w),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
 
         // Available only checkbox
         _buildAvailabilityFilter(context),
@@ -157,27 +155,66 @@ class MenuFilters extends StatelessWidget {
   /// Builds the category filter dropdown
   Widget _buildCategoryDropdown([BuildContext? ctx]) {
     final context = ctx ?? Get.context!;
-    final isMobile = ResponsiveHelper.isMobile(context);
 
     return DropdownButtonFormField<String>(
       value: selectedCategory,
       decoration: InputDecoration(
         labelText: 'Category',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 12.w : 16.w,
-          vertical: isMobile ? 8.h : 12.h,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(
+            ResponsiveHelper.getResponsiveSpacing(
+              context,
+              mobile: 12.0,
+              tablet: 14.0,
+              desktop: 16.0,
+            ),
+          ),
         ),
-        labelStyle: TextStyle(fontSize: isMobile ? 12.sp : 14.sp),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: ResponsiveHelper.getResponsiveSpacing(
+            context,
+            mobile: 12.0,
+            tablet: 14.0,
+            desktop: 16.0,
+          ),
+          vertical: ResponsiveHelper.getResponsiveSpacing(
+            context,
+            mobile: 8.0,
+            tablet: 10.0,
+            desktop: 12.0,
+          ),
+        ),
+        labelStyle: TextStyle(
+          fontSize: ResponsiveHelper.getResponsiveFontSize(
+            context,
+            mobile: 12.0,
+            tablet: 13.0,
+            desktop: 14.0,
+          ),
+        ),
       ),
-      style: TextStyle(fontSize: isMobile ? 12.sp : 14.sp),
+      style: TextStyle(
+        fontSize: ResponsiveHelper.getResponsiveFontSize(
+          context,
+          mobile: 12.0,
+          tablet: 13.0,
+          desktop: 14.0,
+        ),
+      ),
       items: ['All Categories', ...categories.map((c) => c['name'] as String)]
           .map(
             (category) => DropdownMenuItem<String>(
               value: category,
               child: Text(
                 category,
-                style: TextStyle(fontSize: isMobile ? 12.sp : 14.sp),
+                style: TextStyle(
+                  fontSize: ResponsiveHelper.getResponsiveFontSize(
+                    context,
+                    mobile: 12.0,
+                    tablet: 13.0,
+                    desktop: 14.0,
+                  ),
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -194,27 +231,66 @@ class MenuFilters extends StatelessWidget {
   /// Builds the sort by dropdown
   Widget _buildSortByDropdown([BuildContext? ctx]) {
     final context = ctx ?? Get.context!;
-    final isMobile = ResponsiveHelper.isMobile(context);
 
     return DropdownButtonFormField<String>(
       value: sortBy,
       decoration: InputDecoration(
         labelText: 'Sort By',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 12.w : 16.w,
-          vertical: isMobile ? 8.h : 12.h,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(
+            ResponsiveHelper.getResponsiveSpacing(
+              context,
+              mobile: 12.0,
+              tablet: 14.0,
+              desktop: 16.0,
+            ),
+          ),
         ),
-        labelStyle: TextStyle(fontSize: isMobile ? 12.sp : 14.sp),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: ResponsiveHelper.getResponsiveSpacing(
+            context,
+            mobile: 12.0,
+            tablet: 14.0,
+            desktop: 16.0,
+          ),
+          vertical: ResponsiveHelper.getResponsiveSpacing(
+            context,
+            mobile: 8.0,
+            tablet: 10.0,
+            desktop: 12.0,
+          ),
+        ),
+        labelStyle: TextStyle(
+          fontSize: ResponsiveHelper.getResponsiveFontSize(
+            context,
+            mobile: 12.0,
+            tablet: 13.0,
+            desktop: 14.0,
+          ),
+        ),
       ),
-      style: TextStyle(fontSize: isMobile ? 12.sp : 14.sp),
+      style: TextStyle(
+        fontSize: ResponsiveHelper.getResponsiveFontSize(
+          context,
+          mobile: 12.0,
+          tablet: 13.0,
+          desktop: 14.0,
+        ),
+      ),
       items: ['Name', 'Price', 'Category', 'Availability']
           .map(
             (sort) => DropdownMenuItem<String>(
               value: sort,
               child: Text(
                 sort,
-                style: TextStyle(fontSize: isMobile ? 12.sp : 14.sp),
+                style: TextStyle(
+                  fontSize: ResponsiveHelper.getResponsiveFontSize(
+                    context,
+                    mobile: 12.0,
+                    tablet: 13.0,
+                    desktop: 14.0,
+                  ),
+                ),
               ),
             ),
           )
@@ -230,7 +306,6 @@ class MenuFilters extends StatelessWidget {
   /// Builds the availability filter checkbox
   Widget _buildAvailabilityFilter([BuildContext? ctx]) {
     final context = ctx ?? Get.context!;
-    final isMobile = ResponsiveHelper.isMobile(context);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -243,7 +318,12 @@ class MenuFilters extends StatelessWidget {
         Text(
           'Available Only',
           style: TextStyle(
-            fontSize: isMobile ? 12.sp : 14.sp,
+            fontSize: ResponsiveHelper.getResponsiveFontSize(
+              context,
+              mobile: 12.0,
+              tablet: 13.0,
+              desktop: 14.0,
+            ),
             color: AppColors.textPrimary,
           ),
         ),
