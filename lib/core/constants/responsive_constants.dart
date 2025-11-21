@@ -42,12 +42,14 @@ class ResponsiveConstants {
     'sectionMargin': {'mobile': 18.0, 'tablet': 20.0, 'desktop': 24.0},
 
     // Item spacing in grids - Enhanced mobile spacing
-    'itemSpacing': {'mobile': 10.0, 'tablet': 12.0, 'desktop': 16.0},
+    'itemSpacing': {'mobile': 10.0, 'tablet': 12.0, 'desktop': 14.0},
 
     // Content margins - Enhanced mobile readability
     'contentMargin': {'mobile': 16.0, 'tablet': 18.0, 'desktop': 20.0},
 
     // General spacing - Enhanced mobile
+    'xs': {'mobile': 4.0, 'tablet': 5.0, 'desktop': 4.0},
+    'xsmall': {'mobile': 6.0, 'tablet': 8.0, 'desktop': 6.0},
     'small': {'mobile': 8.0, 'tablet': 10.0, 'desktop': 8.0},
     'medium': {'mobile': 12.0, 'tablet': 14.0, 'desktop': 16.0},
     'large': {'mobile': 20.0, 'tablet': 22.0, 'desktop': 24.0},
@@ -58,15 +60,16 @@ class ResponsiveConstants {
   // Font sizes optimized for readability across devices - ENHANCED MOBILE
   static const Map<String, Map<String, double>> typography = {
     // Headings - Enhanced mobile sizes for better visibility
-    'heading1': {'mobile': 28.0, 'tablet': 32.0, 'desktop': 36.0},
-    'heading2': {'mobile': 24.0, 'tablet': 28.0, 'desktop': 32.0},
-    'heading3': {'mobile': 20.0, 'tablet': 24.0, 'desktop': 28.0},
-    'heading4': {'mobile': 18.0, 'tablet': 20.0, 'desktop': 24.0},
+    'heading1': {'mobile': 32.0, 'tablet': 32.0, 'desktop': 36.0},
+    'heading2': {'mobile': 28.0, 'tablet': 28.0, 'desktop': 32.0},
+    'heading3': {'mobile': 24.0, 'tablet': 24.0, 'desktop': 28.0},
+    'heading4': {'mobile': 20.0, 'tablet': 20.0, 'desktop': 24.0},
     'heading5': {'mobile': 16.0, 'tablet': 18.0, 'desktop': 20.0},
 
     // Body text - Enhanced for mobile readability
     'body1': {'mobile': 16.0, 'tablet': 17.0, 'desktop': 18.0},
     'body2': {'mobile': 15.0, 'tablet': 16.0, 'desktop': 16.0},
+    'body3': {'mobile': 12.0, 'tablet': 13.0, 'desktop': 14.0},
     'caption': {'mobile': 14.0, 'tablet': 15.0, 'desktop': 16.0},
     'label': {'mobile': 14.0, 'tablet': 15.0, 'desktop': 14.0},
     'button': {'mobile': 16.0, 'tablet': 17.0, 'desktop': 16.0},
@@ -83,11 +86,12 @@ class ResponsiveConstants {
   // ==================== ICON SIZES ====================
   // Icon sizes optimized for touch targets and visual hierarchy - ENHANCED MOBILE
   static const Map<String, Map<String, double>> iconSizes = {
+    'xsmall': {'mobile': 12.0, 'tablet': 14.0, 'desktop': 12.0},
     'tiny': {'mobile': 16.0, 'tablet': 18.0, 'desktop': 16.0},
     'small': {'mobile': 18.0, 'tablet': 20.0, 'desktop': 20.0},
     'medium': {'mobile': 22.0, 'tablet': 24.0, 'desktop': 28.0},
-    'large': {'mobile': 28.0, 'tablet': 32.0, 'desktop': 40.0},
-    'xlarge': {'mobile': 36.0, 'tablet': 40.0, 'desktop': 48.0},
+    'large': {'mobile': 28.0, 'tablet': 32.0, 'desktop': 35.0},
+    'xlarge': {'mobile': 32.0, 'tablet': 40.0, 'desktop': 48.0},
 
     // Specific use cases - Enhanced mobile
     'actionIcon': {'mobile': 24.0, 'tablet': 26.0, 'desktop': 28.0},
@@ -120,7 +124,7 @@ class ResponsiveConstants {
     'card': {'mobile': 1.0, 'tablet': 1.1, 'desktop': 1.2},
     'actionCard': {'mobile': 1.2, 'tablet': 1.1, 'desktop': 1.3},
     'menuCard': {'mobile': 0.8, 'tablet': 0.9, 'desktop': 1.1},
-    'statsCard': {'mobile': 1.1, 'tablet': 1.2, 'desktop': 1.4},
+    'statsCard': {'mobile': 0.9, 'tablet': 1.2, 'desktop': 1.2},
     'quickAction': {'mobile': 1.3, 'tablet': 1.1, 'desktop': 1.3},
     'studentCard': {'mobile': 1.0, 'tablet': 1.1, 'desktop': 1.2},
   };

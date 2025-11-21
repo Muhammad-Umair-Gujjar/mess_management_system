@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../student_controller.dart';
 
 class NutritionalInfoCard extends StatelessWidget {
@@ -16,16 +16,17 @@ class NutritionalInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(24.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Weekly Nutrition', style: AppTextStyles.heading5),
-          SizedBox(height: 20.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
           // Calories Progress
           _buildNutritionProgress(
+            context,
             'Calories',
             2400,
             3500, // Weekly target: 500 per day * 7 days
@@ -33,10 +34,11 @@ class NutritionalInfoCard extends StatelessWidget {
             FontAwesomeIcons.fire,
           ),
 
-          SizedBox(height: 16.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
           // Protein Progress
           _buildNutritionProgress(
+            context,
             'Protein',
             180,
             350, // Weekly target
@@ -49,6 +51,7 @@ class NutritionalInfoCard extends StatelessWidget {
   }
 
   Widget _buildNutritionProgress(
+    BuildContext context,
     String label,
     double current,
     double target,
@@ -62,8 +65,12 @@ class NutritionalInfoCard extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(icon, size: 16.sp, color: color),
-            SizedBox(width: 8.w),
+            Icon(
+              icon,
+              size: ResponsiveHelper.getIconSize(context, 'small'),
+              color: color,
+            ),
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
             Text(
               label,
               style: AppTextStyles.body2.copyWith(fontWeight: FontWeight.w600),
@@ -75,12 +82,14 @@ class NutritionalInfoCard extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
         Container(
-          height: 8.h,
+          height: ResponsiveHelper.getSpacing(context, 'small'),
           decoration: BoxDecoration(
             color: color.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(4.r),
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getSpacing(context, 'small') * 0.5,
+            ),
           ),
           child: FractionallySizedBox(
             alignment: Alignment.centerLeft,
@@ -88,7 +97,9 @@ class NutritionalInfoCard extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: color,
-                borderRadius: BorderRadius.circular(4.r),
+                borderRadius: BorderRadius.circular(
+                  ResponsiveHelper.getSpacing(context, 'small') * 0.5,
+                ),
               ),
             ),
           ),

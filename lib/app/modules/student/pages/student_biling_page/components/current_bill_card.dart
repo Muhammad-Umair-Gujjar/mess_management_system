@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
@@ -8,7 +7,6 @@ import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/utils/responsive_helper.dart';
-import '../../../../../../core/utils/toast_message.dart';
 import '../../../student_controller.dart';
 
 class CurrentBillCard extends StatelessWidget {
@@ -28,15 +26,15 @@ class CurrentBillCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(32.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'xlarge')),
       decoration: AppShadows.glassmorphicCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(context),
-          SizedBox(height: 32.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
           _buildAnimatedBillAmount(context),
-          SizedBox(height: 32.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
           _buildQuickActions(),
         ],
       ),
@@ -47,30 +45,29 @@ class CurrentBillCard extends StatelessWidget {
     return Row(
       children: [
         Container(
-          padding: EdgeInsets.all(16.r),
+          padding: EdgeInsets.all(
+            ResponsiveHelper.getSpacing(context, 'medium'),
+          ),
           decoration: BoxDecoration(
             gradient: AppColors.primaryGradient,
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getSpacing(context, 'medium'),
+            ),
           ),
           child: Icon(
             FontAwesomeIcons.receipt,
-            size: 32.sp,
+            size: ResponsiveHelper.getIconSize(context, 'medium'),
             color: Colors.white,
           ),
         ),
-        SizedBox(width: 20.w),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Current Month Bill',
-              style: AppTextStyles.heading5.copyWith(
-                fontSize: ResponsiveHelper.getResponsiveFontSize(
-                  context,
-                  mobile: 30,
-                  tablet: 20,
-                  desktop: 22,
-                ),
+              style: TextStyle(
+                fontSize: ResponsiveHelper.getFontSize(context, 'heading5'),
               ),
             ),
             Text(
@@ -102,12 +99,13 @@ class CurrentBillCard extends StatelessWidget {
           children: [
             Text(
               '₹${animatedValue.toStringAsFixed(0)}',
-              style: AppTextStyles.heading1.copyWith(
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
                 fontSize: ResponsiveHelper.getResponsiveFontSize(
                   context,
-                  mobile: 48,
-                  tablet: 42,
-                  desktop: 48,
+                  mobile: 26,
+                  tablet: 26,
+                  desktop: 24,
                 ),
                 foreground: Paint()
                   ..shader = AppColors.primaryGradient.createShader(
@@ -115,26 +113,32 @@ class CurrentBillCard extends StatelessWidget {
                   ),
               ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
             Row(
               children: [
                 Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: 12.w,
-                    vertical: 6.h,
+                    horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+                    vertical:
+                        ResponsiveHelper.getSpacing(context, 'small') * 0.5,
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.success.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20.r),
+                    borderRadius: BorderRadius.circular(
+                      ResponsiveHelper.getSpacing(context, 'medium'),
+                    ),
                   ),
                   child: Row(
                     children: [
                       Icon(
-                        FontAwesomeIcons.arrowDown,
-                        size: 12.sp,
+                        FontAwesomeIcons.circleCheck,
+                        size: ResponsiveHelper.getIconSize(context, 'small'),
                         color: AppColors.success,
                       ),
-                      SizedBox(width: 4.w),
+                      SizedBox(
+                        width:
+                            ResponsiveHelper.getSpacing(context, 'small') * 0.5,
+                      ),
                       Text(
                         '12% vs last month',
                         style: AppTextStyles.caption.copyWith(
@@ -154,30 +158,35 @@ class CurrentBillCard extends StatelessWidget {
   }
 
   Widget _buildQuickActions() {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildQuickActionButton(
-            'Download PDF',
-            FontAwesomeIcons.filePdf,
-            AppColors.error,
-            onDownloadPDF,
+    return Builder(
+      builder: (context) => Row(
+        children: [
+          Expanded(
+            child: _buildQuickActionButton(
+              context,
+              'Download PDF',
+              FontAwesomeIcons.filePdf,
+              AppColors.error,
+              onDownloadPDF,
+            ),
           ),
-        ),
-        SizedBox(width: 16.w),
-        Expanded(
-          child: _buildQuickActionButton(
-            'Export CSV',
-            FontAwesomeIcons.fileCsv,
-            AppColors.success,
-            onExportCSV,
+          SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+          Expanded(
+            child: _buildQuickActionButton(
+              context,
+              'Export CSV',
+              FontAwesomeIcons.fileCsv,
+              AppColors.success,
+              onExportCSV,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _buildQuickActionButton(
+    BuildContext context,
     String title,
     IconData icon,
     Color color,
@@ -189,17 +198,21 @@ class CurrentBillCard extends StatelessWidget {
         backgroundColor: color.withOpacity(0.1),
         foregroundColor: color,
         elevation: 0,
-        padding: EdgeInsets.symmetric(vertical: 16.h),
+        padding: EdgeInsets.symmetric(
+          vertical: ResponsiveHelper.getSpacing(context, 'medium'),
+        ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(
+            ResponsiveHelper.getSpacing(context, 'small'),
+          ),
           side: BorderSide(color: color.withOpacity(0.3)),
         ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 16.sp),
-          SizedBox(width: 8.w),
+          Icon(icon, size: ResponsiveHelper.getIconSize(context, 'small')),
+          SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
           Text(
             title,
             style: AppTextStyles.body2.copyWith(fontWeight: FontWeight.w600),

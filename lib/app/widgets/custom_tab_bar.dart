@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/responsive_helper.dart';
 
 class CustomTabBarItem {
   final String label;
@@ -54,7 +54,9 @@ class CustomTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding ?? EdgeInsets.all(4.r),
+      padding:
+          padding ??
+          EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'xs') / 2),
       child: Row(
         mainAxisSize: isScrollable ? MainAxisSize.min : MainAxisSize.max,
         children: List.generate(tabs.length, (index) {
@@ -66,19 +68,21 @@ class CustomTabBar extends StatelessWidget {
             child: GestureDetector(
               onTap: () => onTap(index),
               child: Container(
-                height: isSelected
-                    ? (tabHeight != null ? tabHeight! + 8.h : 56.h)
-                    : (tabHeight ?? 48.h),
-                margin: EdgeInsets.all(2.r),
+                height: tabHeight ?? 56.0,
+                margin: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.getSpacing(context, 'xs') / 4,
+                ),
                 padding: EdgeInsets.symmetric(
-                  horizontal: isScrollable ? 16.w : 8.w,
-                  vertical: 8.h,
+                  horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+                  vertical: ResponsiveHelper.getSpacing(context, 'small'),
                 ),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? selectedBackgroundColor ?? AppColors.primary
                       : Colors.transparent,
-                  borderRadius: BorderRadius.circular(10.r),
+                  borderRadius: BorderRadius.circular(
+                    ResponsiveHelper.getSpacing(context, 'small'),
+                  ),
                   gradient: isSelected
                       ? LinearGradient(
                           colors: [
@@ -111,12 +115,25 @@ class CustomTabBar extends StatelessWidget {
                         if (showIcons && tab.icon != null) ...[
                           Icon(
                             tab.icon,
-                            size: isSelected ? 22.sp : 20.sp,
+                            size: isSelected
+                                ? ResponsiveHelper.getIconSize(
+                                    context,
+                                    'medium',
+                                  )
+                                : ResponsiveHelper.getIconSize(
+                                    context,
+                                    'small',
+                                  ),
                             color: isSelected
                                 ? Colors.white
                                 : unselectedColor ?? AppColors.textSecondary,
                           ),
-                          SizedBox(width: 8.w),
+                          SizedBox(
+                            width: ResponsiveHelper.getSpacing(
+                              context,
+                              'small',
+                            ),
+                          ),
                         ],
                         Flexible(
                           child: Text(
@@ -125,14 +142,12 @@ class CustomTabBar extends StatelessWidget {
                                 ? AppTextStyles.body2.copyWith(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w700,
-                                    fontSize: 19.sp, // Enhanced from 17sp
                                   )
                                 : (unselectedTextStyle ??
                                       AppTextStyles.body2.copyWith(
                                         color:
                                             unselectedColor ??
                                             AppColors.textSecondary,
-                                        fontSize: 17.sp, // Enhanced from 15sp
                                       )),
                             textAlign: TextAlign.center,
                             overflow: TextOverflow.ellipsis,
@@ -182,8 +197,9 @@ class CustomVerticalTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: tabWidth ?? 200.w,
-      padding: padding ?? EdgeInsets.all(4.r),
+      width: tabWidth ?? ResponsiveHelper.getSpacing(context, 'xlarge') * 5,
+      padding:
+          padding ?? EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'xs')),
       child: Column(
         children: List.generate(tabs.length, (index) {
           final isSelected = selectedIndex == index;
@@ -191,16 +207,25 @@ class CustomVerticalTabBar extends StatelessWidget {
 
           return Container(
             width: double.infinity,
-            margin: EdgeInsets.only(bottom: 4.h),
+            margin: EdgeInsets.only(
+              bottom: ResponsiveHelper.getSpacing(context, 'xs'),
+            ),
             child: GestureDetector(
               onTap: () => onTap(index),
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                padding: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+                  vertical: ResponsiveHelper.getSpacing(context, 'small'),
+                ),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? selectedBackgroundColor ?? AppColors.primary
                       : unselectedBackgroundColor ?? Colors.transparent,
-                  borderRadius: borderRadius ?? BorderRadius.circular(8.r),
+                  borderRadius:
+                      borderRadius ??
+                      BorderRadius.circular(
+                        ResponsiveHelper.getSpacing(context, 'small'),
+                      ),
                   gradient: isSelected
                       ? LinearGradient(
                           colors: [
@@ -218,13 +243,15 @@ class CustomVerticalTabBar extends StatelessWidget {
                     if (showIcons && tab.icon != null) ...[
                       Icon(
                         tab.icon,
-                        size: 18.sp,
+                        size: ResponsiveHelper.getIconSize(context, 'small'),
                         color: isSelected
                             ? selectedColor ?? Colors.white
                             : unselectedColor ?? AppColors.textSecondary,
                       ),
                     ],
-                    SizedBox(width: 8.w),
+                    SizedBox(
+                      width: ResponsiveHelper.getSpacing(context, 'small'),
+                    ),
                     Flexible(
                       child: Text(
                         tab.label,
@@ -232,12 +259,10 @@ class CustomVerticalTabBar extends StatelessWidget {
                             ? AppTextStyles.body2.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,
-                                fontSize: 19.sp, // Enhanced from 17sp
                               )
                             : AppTextStyles.body2.copyWith(
                                 color:
                                     unselectedColor ?? AppColors.textSecondary,
-                                fontSize: 17.sp, // Enhanced from 15sp
                               ),
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
@@ -283,7 +308,11 @@ class CustomUnderlineTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding ?? EdgeInsets.symmetric(horizontal: 16.w),
+      padding:
+          padding ??
+          EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+          ),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
@@ -301,7 +330,9 @@ class CustomUnderlineTabBar extends StatelessWidget {
             child: GestureDetector(
               onTap: () => onTap(index),
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 16.h),
+                padding: EdgeInsets.symmetric(
+                  vertical: ResponsiveHelper.getSpacing(context, 'medium'),
+                ),
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
@@ -319,12 +350,14 @@ class CustomUnderlineTabBar extends StatelessWidget {
                     if (showIcons && tab.icon != null) ...[
                       Icon(
                         tab.icon,
-                        size: 16.sp,
+                        size: ResponsiveHelper.getIconSize(context, 'small'),
                         color: isSelected
                             ? selectedColor ?? AppColors.primary
                             : unselectedColor ?? AppColors.textSecondary,
                       ),
-                      SizedBox(width: 8.w),
+                      SizedBox(
+                        width: ResponsiveHelper.getSpacing(context, 'small'),
+                      ),
                     ],
                     Flexible(
                       child: Text(

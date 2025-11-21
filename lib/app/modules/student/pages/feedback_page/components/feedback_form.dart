@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
@@ -51,7 +50,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(32.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'xlarge')),
       decoration: AppDecorations.floatingCard(),
       child: Form(
         key: _formKey,
@@ -63,33 +62,34 @@ class _FeedbackFormState extends State<FeedbackForm> {
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.all(16.r),
+                  padding: EdgeInsets.all(
+                    ResponsiveHelper.getSpacing(context, 'medium'),
+                  ),
                   decoration: BoxDecoration(
                     gradient: AppColors.primaryGradient,
-                    borderRadius: BorderRadius.circular(16.r),
+                    borderRadius: BorderRadius.circular(
+                      ResponsiveHelper.getSpacing(context, 'large'),
+                    ),
                   ),
                   child: Icon(
                     FontAwesomeIcons.comment,
-                    size: 24.sp,
+                    size: ResponsiveHelper.getIconSize(context, 'small'),
                     color: Colors.white,
                   ),
                 ),
-                SizedBox(width: 20.w),
+                SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Share Your Feedback',
-                      style: AppTextStyles.heading5.copyWith(
-                        fontSize: ResponsiveHelper.getResponsiveFontSize(
-                          context,
-                          mobile: 20,
-                          tablet: 22,
-                          desktop: 24,
-                        ),
-                      ),
+                      style: AppTextStyles.heading5,
+    
                     ),
-                    SizedBox(height: 4.h),
+                    SizedBox(
+                      height:
+                          ResponsiveHelper.getSpacing(context, 'small') * 0.5,
+                    ),
                     Text(
                       'Help us improve our services',
                       style: AppTextStyles.body2.copyWith(
@@ -101,7 +101,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
               ],
             ),
 
-            SizedBox(height: 32.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
             // Rating Selection
             Text(
@@ -110,7 +110,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -127,12 +127,16 @@ class _FeedbackFormState extends State<FeedbackForm> {
                   },
                   child:
                       Container(
-                            padding: EdgeInsets.all(12.r),
+                            padding: EdgeInsets.all(
+                              ResponsiveHelper.getSpacing(context, 'small'),
+                            ),
                             decoration: BoxDecoration(
                               color: isSelected
                                   ? emojiData['color'].withOpacity(0.2)
                                   : Colors.transparent,
-                              borderRadius: BorderRadius.circular(16.r),
+                              borderRadius: BorderRadius.circular(
+                                ResponsiveHelper.getSpacing(context, 'medium'),
+                              ),
                               border: Border.all(
                                 color: isSelected
                                     ? emojiData['color']
@@ -144,12 +148,25 @@ class _FeedbackFormState extends State<FeedbackForm> {
                               children: [
                                 Text(
                                   emojiData['emoji'],
-                                  style: TextStyle(fontSize: 32.sp),
+                                  style: TextStyle(
+                                    fontSize:
+                                        ResponsiveHelper.getResponsiveFontSize(
+                                          context,
+                                          mobile: 16,
+                                          tablet: 22,
+                                          desktop: 16,
+                                        ),
+                                  ),
                                 ),
-                                SizedBox(height: 8.h),
+                                SizedBox(
+                                  height: ResponsiveHelper.getSpacing(
+                                    context,
+                                    'small',
+                                  ),
+                                ),
                                 Text(
                                   emojiData['label'],
-                                  style: AppTextStyles.body2.copyWith(
+                                  style: AppTextStyles.caption.copyWith(
                                     // Changed from caption to body2
                                     color: isSelected
                                         ? emojiData['color']
@@ -160,9 +177,9 @@ class _FeedbackFormState extends State<FeedbackForm> {
                                     fontSize:
                                         ResponsiveHelper.getResponsiveFontSize(
                                           context,
-                                          mobile: 16, // Larger text on mobile
-                                          tablet: 15,
-                                          desktop: 14,
+                                          mobile: 14, // Larger text on mobile
+                                          tablet: 20,
+                                          desktop: 12,
                                         ),
                                   ),
                                 ),
@@ -176,7 +193,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
               }),
             ),
 
-            SizedBox(height: 32.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
             // Category Selection
             Text(
@@ -185,20 +202,25 @@ class _FeedbackFormState extends State<FeedbackForm> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+              padding: EdgeInsets.symmetric(
+                horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+                vertical: ResponsiveHelper.getSpacing(context, 'small'),
+              ),
               decoration: BoxDecoration(
                 color: AppColors.background,
-                borderRadius: BorderRadius.circular(12.r),
+                borderRadius: BorderRadius.circular(
+                  ResponsiveHelper.getSpacing(context, 'large'),
+                ),
                 border: Border.all(color: AppColors.primary.withOpacity(0.2)),
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   value: selectedCategory,
                   isExpanded: true,
-                  style: AppTextStyles.body1,
+                  style: AppTextStyles.body2,
                   items: categories
                       .map(
                         (category) => DropdownMenuItem(
@@ -218,7 +240,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
               ),
             ),
 
-            SizedBox(height: 32.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
             // Message Input
             Text(
@@ -227,7 +249,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
             TextFormField(
               controller: _messageController,
@@ -235,25 +257,31 @@ class _FeedbackFormState extends State<FeedbackForm> {
               style: AppTextStyles.body1,
               decoration: InputDecoration(
                 hintText: 'Share your thoughts and suggestions...',
-                hintStyle: AppTextStyles.body1.copyWith(
+                hintStyle: AppTextStyles.body2.copyWith(
                   color: AppColors.textLight,
                 ),
                 filled: true,
                 fillColor: AppColors.background,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(
+                    ResponsiveHelper.getSpacing(context, 'large'),
+                  ),
                   borderSide: BorderSide(
                     color: AppColors.primary.withOpacity(0.2),
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(
+                    ResponsiveHelper.getSpacing(context, 'large'),
+                  ),
                   borderSide: BorderSide(
                     color: AppColors.primary.withOpacity(0.2),
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(
+                    ResponsiveHelper.getSpacing(context, 'large'),
+                  ),
                   borderSide: BorderSide(color: AppColors.primary),
                 ),
               ),
@@ -268,17 +296,21 @@ class _FeedbackFormState extends State<FeedbackForm> {
               },
             ),
 
-            SizedBox(height: 32.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
             // Submit Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: isSubmitting ? null : () => _submitFeedback(),
+                onPressed: isSubmitting ? null : _submitFeedback,
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  padding: EdgeInsets.symmetric(
+                    vertical: ResponsiveHelper.getSpacing(context, 'medium'),
+                  ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
+                    borderRadius: BorderRadius.circular(
+                      ResponsiveHelper.getSpacing(context, 'large'),
+                    ),
                   ),
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
@@ -288,8 +320,14 @@ class _FeedbackFormState extends State<FeedbackForm> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(
-                            width: 20.w,
-                            height: 20.h,
+                            width: ResponsiveHelper.getSpacing(
+                              context,
+                              'large',
+                            ),
+                            height: ResponsiveHelper.getSpacing(
+                              context,
+                              'large',
+                            ),
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation<Color>(
@@ -297,10 +335,15 @@ class _FeedbackFormState extends State<FeedbackForm> {
                               ),
                             ),
                           ),
-                          SizedBox(width: 12.w),
+                          SizedBox(
+                            width: ResponsiveHelper.getSpacing(
+                              context,
+                              'small',
+                            ),
+                          ),
                           Text(
                             'Submitting...',
-                            style: AppTextStyles.subtitle1.copyWith(
+                            style: AppTextStyles.subtitle2.copyWith(
                               color: Colors.white,
                             ),
                           ),
@@ -309,11 +352,22 @@ class _FeedbackFormState extends State<FeedbackForm> {
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(FontAwesomeIcons.paperPlane, size: 16.sp),
-                          SizedBox(width: 12.w),
+                          Icon(
+                            FontAwesomeIcons.paperPlane,
+                            size: ResponsiveHelper.getIconSize(
+                              context,
+                              'small',
+                            ),
+                          ),
+                          SizedBox(
+                            width: ResponsiveHelper.getSpacing(
+                              context,
+                              'small',
+                            ),
+                          ),
                           Text(
                             'Submit Feedback',
-                            style: AppTextStyles.subtitle1.copyWith(
+                            style: AppTextStyles.subtitle2.copyWith(
                               color: Colors.white,
                             ),
                           ),
@@ -321,7 +375,9 @@ class _FeedbackFormState extends State<FeedbackForm> {
                       ),
               ),
             ),
-            SizedBox(height: 20.h), // Add bottom padding to prevent overflow
+            SizedBox(
+              height: ResponsiveHelper.getSpacing(context, 'medium'),
+            ), // Add bottom padding to prevent overflow
           ],
         ),
       ),

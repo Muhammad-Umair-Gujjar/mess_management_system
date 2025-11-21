@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/theme/app_decorations.dart';
@@ -74,19 +73,21 @@ class _StudentBillingPageState extends State<StudentBillingPage>
             onDownloadPDF: _downloadPDF,
             onExportCSV: _exportCSV,
           ),
-          SizedBox(height: 24.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
           MealCountCards(
             controller: controller,
             countAnimationController: _countAnimationController,
           ),
-          SizedBox(height: 24.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
           PaymentHistoryCard(controller: controller),
-          SizedBox(height: 24.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
           MealRatesCard(
             controller: controller,
             countAnimationController: _countAnimationController,
           ),
-          SizedBox(height: 20.h), // Add bottom padding
+          SizedBox(
+            height: ResponsiveHelper.getSpacing(context, 'medium'),
+          ), // Add bottom padding
         ],
       ),
     );
@@ -109,7 +110,7 @@ class _StudentBillingPageState extends State<StudentBillingPage>
                   onDownloadPDF: _downloadPDF,
                   onExportCSV: _exportCSV,
                 ),
-                SizedBox(height: 24.h),
+                SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
                 MealCountCards(
                   controller: controller,
                   countAnimationController: _countAnimationController,
@@ -117,14 +118,14 @@ class _StudentBillingPageState extends State<StudentBillingPage>
               ],
             ),
           ),
-          SizedBox(width: 24.w),
+          SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
           Expanded(
             flex: 3,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 PaymentHistoryCard(controller: controller),
-                SizedBox(height: 24.h),
+                SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
                 MealRatesCard(
                   controller: controller,
                   countAnimationController: _countAnimationController,

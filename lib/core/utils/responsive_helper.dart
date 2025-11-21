@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../constants/responsive_constants.dart';
 
 class ResponsiveHelper {
@@ -28,15 +27,15 @@ class ResponsiveHelper {
     required double tablet,
     required double desktop,
   }) {
-    if (isMobile(context)) return mobile.sp;
-    if (isTablet(context)) return tablet.sp;
-    return desktop.sp;
+    if (isMobile(context)) return mobile;
+    if (isTablet(context)) return tablet;
+    return desktop;
   }
 
   /// Get font size from ResponsiveConstants typography
   static double getFontSize(BuildContext context, String textStyle) {
     final config = ResponsiveConstants.getTypography(textStyle);
-    if (config == null) return 16.sp;
+    if (config == null) return 16.0;
 
     return getResponsiveFontSize(
       context,
@@ -55,15 +54,15 @@ class ResponsiveHelper {
     required double tablet,
     required double desktop,
   }) {
-    if (isMobile(context)) return mobile.sp;
-    if (isTablet(context)) return tablet.sp;
-    return desktop.sp;
+    if (isMobile(context)) return mobile;
+    if (isTablet(context)) return tablet;
+    return desktop;
   }
 
   /// Get icon size from ResponsiveConstants
   static double getIconSize(BuildContext context, String sizeCategory) {
     final config = ResponsiveConstants.getIconSizes(sizeCategory);
-    if (config == null) return 24.sp;
+    if (config == null) return 24.0;
 
     return getResponsiveIconSize(
       context,
@@ -82,15 +81,15 @@ class ResponsiveHelper {
     required double tablet,
     required double desktop,
   }) {
-    if (isMobile(context)) return mobile.h;
-    if (isTablet(context)) return tablet.h;
-    return desktop.h;
+    if (isMobile(context)) return mobile;
+    if (isTablet(context)) return tablet;
+    return desktop;
   }
 
   /// Get spacing from ResponsiveConstants
   static double getSpacing(BuildContext context, String spacingType) {
     final config = ResponsiveConstants.getSpacing(spacingType);
-    if (config == null) return 16.h;
+    if (config == null) return 16.0;
 
     return getResponsiveSpacing(
       context,
@@ -109,21 +108,21 @@ class ResponsiveHelper {
     EdgeInsets? tablet,
     EdgeInsets? desktop,
   }) {
-    if (isMobile(context)) return mobile ?? EdgeInsets.all(14.r);
-    if (isTablet(context)) return tablet ?? EdgeInsets.all(20.r);
-    return desktop ?? EdgeInsets.all(32.r);
+    if (isMobile(context)) return mobile ?? const EdgeInsets.all(14.0);
+    if (isTablet(context)) return tablet ?? const EdgeInsets.all(20.0);
+    return desktop ?? const EdgeInsets.all(32.0);
   }
 
   /// Get padding from ResponsiveConstants
   static EdgeInsets getPadding(BuildContext context, String paddingType) {
     final config = ResponsiveConstants.getSpacing(paddingType);
-    if (config == null) return EdgeInsets.all(16.r);
+    if (config == null) return const EdgeInsets.all(16.0);
 
     return getResponsivePadding(
       context,
-      mobile: EdgeInsets.all(config['mobile']!.r),
-      tablet: EdgeInsets.all(config['tablet']!.r),
-      desktop: EdgeInsets.all(config['desktop']!.r),
+      mobile: EdgeInsets.all(config['mobile']!),
+      tablet: EdgeInsets.all(config['tablet']!),
+      desktop: EdgeInsets.all(config['desktop']!),
     );
   }
 
@@ -141,21 +140,21 @@ class ResponsiveHelper {
     EdgeInsets? tablet,
     EdgeInsets? desktop,
   }) {
-    if (isMobile(context)) return mobile ?? EdgeInsets.all(10.r);
-    if (isTablet(context)) return tablet ?? EdgeInsets.all(14.r);
-    return desktop ?? EdgeInsets.all(20.r);
+    if (isMobile(context)) return mobile ?? const EdgeInsets.all(10.0);
+    if (isTablet(context)) return tablet ?? const EdgeInsets.all(14.0);
+    return desktop ?? const EdgeInsets.all(20.0);
   }
 
   /// Get margin from ResponsiveConstants
   static EdgeInsets getMargin(BuildContext context, String marginType) {
     final config = ResponsiveConstants.getSpacing(marginType);
-    if (config == null) return EdgeInsets.all(12.r);
+    if (config == null) return const EdgeInsets.all(12.0);
 
     return getResponsiveMargin(
       context,
-      mobile: EdgeInsets.all(config['mobile']!.r),
-      tablet: EdgeInsets.all(config['tablet']!.r),
-      desktop: EdgeInsets.all(config['desktop']!.r),
+      mobile: EdgeInsets.all(config['mobile']!),
+      tablet: EdgeInsets.all(config['tablet']!),
+      desktop: EdgeInsets.all(config['desktop']!),
     );
   }
 
@@ -169,19 +168,19 @@ class ResponsiveHelper {
     final config = ResponsiveConstants.getComponentDimension(dimensionType);
     if (config == null) return 40.0;
 
-    if (isMobile(context)) return config['mobile']!.h;
-    if (isTablet(context)) return config['tablet']!.h;
-    return config['desktop']!.h;
+    if (isMobile(context)) return config['mobile']!;
+    if (isTablet(context)) return config['tablet']!;
+    return config['desktop']!;
   }
 
   /// Get border radius from ResponsiveConstants
   static double getBorderRadius(BuildContext context, String radiusType) {
     final config = ResponsiveConstants.getBorderRadius(radiusType);
-    if (config == null) return 12.r;
+    if (config == null) return 12.0;
 
-    if (isMobile(context)) return config['mobile']!.r;
-    if (isTablet(context)) return config['tablet']!.r;
-    return config['desktop']!.r;
+    if (isMobile(context)) return config['mobile']!;
+    if (isTablet(context)) return config['tablet']!;
+    return config['desktop']!;
   }
 
   // ==================== GRID METHODS ====================

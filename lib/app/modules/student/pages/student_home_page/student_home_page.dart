@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../../core/theme/app_decorations.dart';
 import '../../../../../core/utils/responsive_helper.dart';
@@ -28,11 +27,11 @@ class StudentHomePage extends StatelessWidget {
           children: [
             // Welcome Section
             WelcomeCard(controller: controller),
-            SizedBox(height: 32.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
             // Quick Stats Grid
             QuickStatsGrid(controller: controller),
-            SizedBox(height: 32.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
             // Today's Menu and Attendance
             ResponsiveHelper.buildResponsiveLayout(
@@ -40,7 +39,9 @@ class StudentHomePage extends StatelessWidget {
               mobile: Column(
                 children: [
                   TodaysMenuCard(controller: controller),
-                  SizedBox(height: 24.h),
+                  SizedBox(
+                    height: ResponsiveHelper.getSpacing(context, 'large'),
+                  ),
                   TodaysAttendanceCard(controller: controller),
                 ],
               ),
@@ -48,12 +49,14 @@ class StudentHomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(child: TodaysMenuCard(controller: controller)),
-                  SizedBox(width: 24.w),
+                  SizedBox(
+                    width: ResponsiveHelper.getSpacing(context, 'large'),
+                  ),
                   Expanded(child: TodaysAttendanceCard(controller: controller)),
                 ],
               ),
             ),
-            SizedBox(height: 32.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
             // Recent Activity and Quick Actions
             ResponsiveHelper.buildResponsiveLayout(
@@ -61,7 +64,9 @@ class StudentHomePage extends StatelessWidget {
               mobile: Column(
                 children: [
                   RecentActivityCard(controller: controller),
-                  SizedBox(height: 24.h),
+                  SizedBox(
+                    height: ResponsiveHelper.getSpacing(context, 'large'),
+                  ),
                   QuickActionsCard(controller: controller),
                 ],
               ),
@@ -72,7 +77,9 @@ class StudentHomePage extends StatelessWidget {
                     flex: 2,
                     child: RecentActivityCard(controller: controller),
                   ),
-                  SizedBox(width: 24.w),
+                  SizedBox(
+                    width: ResponsiveHelper.getSpacing(context, 'large'),
+                  ),
                   Expanded(child: QuickActionsCard(controller: controller)),
                 ],
               ),

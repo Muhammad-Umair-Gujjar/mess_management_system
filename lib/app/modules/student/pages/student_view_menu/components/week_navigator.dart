@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
@@ -23,9 +22,9 @@ class WeekNavigator extends StatelessWidget {
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
 
     return Container(
-      height: 90.h,
+      height: ResponsiveHelper.getSpacing(context, 'xlarge') * 2.5,
       margin: EdgeInsets.symmetric(
-        horizontal: ResponsiveHelper.getResponsivePadding(context).horizontal,
+        horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
       ),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -42,11 +41,14 @@ class WeekNavigator extends StatelessWidget {
             onTap: () => onDaySelected(index),
             child:
                 Container(
-                      width: 70.w,
-                      margin: EdgeInsets.only(right: 12.w),
+                      width: ResponsiveHelper.getSpacing(context, 'xlarge') * 2,
+                      margin: EdgeInsets.only(
+                        right: ResponsiveHelper.getSpacing(context, 'small'),
+                      ),
                       padding: EdgeInsets.symmetric(
-                        vertical: 8.h,
-                        horizontal: 4.w,
+                        vertical: ResponsiveHelper.getSpacing(context, 'xs'),
+                        horizontal:
+                            ResponsiveHelper.getSpacing(context, 'xs'),
                       ),
                       decoration: BoxDecoration(
                         gradient: isSelected ? AppColors.primaryGradient : null,
@@ -55,7 +57,9 @@ class WeekNavigator extends StatelessWidget {
                             : isToday
                             ? AppColors.accent.withOpacity(0.1)
                             : AppColors.cardBackground,
-                        borderRadius: BorderRadius.circular(16.r),
+                        borderRadius: BorderRadius.circular(
+                          ResponsiveHelper.getSpacing(context, 'medium'),
+                        ),
                         border: Border.all(
                           color: isToday && !isSelected
                               ? AppColors.accent
@@ -66,8 +70,17 @@ class WeekNavigator extends StatelessWidget {
                             ? [
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.1),
-                                  offset: Offset(0, 8.h),
-                                  blurRadius: 16.r,
+                                  offset: Offset(
+                                    0,
+                                    ResponsiveHelper.getSpacing(
+                                      context,
+                                      'small',
+                                    ),
+                                  ),
+                                  blurRadius: ResponsiveHelper.getSpacing(
+                                    context,
+                                    'medium',
+                                  ),
                                 ),
                               ]
                             : null,
@@ -83,17 +96,27 @@ class WeekNavigator extends StatelessWidget {
                                   ? Colors.white
                                   : AppColors.textSecondary,
                               fontWeight: FontWeight.w600,
-                              fontSize: 12.sp,
+                              fontSize: ResponsiveHelper.getFontSize(
+                                context,
+                                'body3',
+                              ),
                             ),
                           ),
-                          SizedBox(height: 2.h),
+                          SizedBox(
+                            height:
+                                ResponsiveHelper.getSpacing(context, 'small') *
+                                0.25,
+                          ),
                           Text(
                             dayDate.day.toString(),
                             style: AppTextStyles.heading5.copyWith(
                               color: isSelected
                                   ? Colors.white
                                   : AppColors.textPrimary,
-                              fontSize: 16.sp,
+                              fontSize: ResponsiveHelper.getFontSize(
+                                context,
+                                'heading5',
+                              ),
                             ),
                           ),
                         ],

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mess_management/app/data/models/attendance.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../data/models/menu.dart';
 import '../../../student_controller.dart';
 
@@ -23,32 +23,37 @@ class MealRatesCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(24.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(),
-          SizedBox(height: 24.h),
-          _buildRatesList(),
+          _buildHeader(context),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+          _buildRatesList(context),
         ],
       ),
     ).animate(delay: 600.ms).fadeIn(duration: 800.ms).slideY(begin: 0.3);
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Row(
       children: [
         Text('Current Meal Rates', style: AppTextStyles.heading5),
         const Spacer(),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+          padding: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+            vertical: ResponsiveHelper.getSpacing(context, 'small') * 0.5,
+          ),
           decoration: BoxDecoration(
             color: AppColors.success.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(20.r),
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getSpacing(context, 'medium'),
+            ),
           ),
           child: Text(
-            'Effective from Dec 2024',
+            'From Dec 2024',
             style: AppTextStyles.caption.copyWith(
               color: AppColors.success,
               fontWeight: FontWeight.w600,
@@ -59,7 +64,7 @@ class MealRatesCard extends StatelessWidget {
     );
   }
 
-  Widget _buildRatesList() {
+  Widget _buildRatesList(BuildContext context) {
     return Column(
       children: controller.mealRates
           .map(
@@ -98,17 +103,23 @@ class _MealRateItem extends StatelessWidget {
         : AppColors.info;
 
     return Container(
-          margin: EdgeInsets.only(bottom: 16.h),
-          padding: EdgeInsets.all(20.r),
+          margin: EdgeInsets.only(
+            bottom: ResponsiveHelper.getSpacing(context, 'medium'),
+          ),
+          padding: EdgeInsets.all(
+            ResponsiveHelper.getSpacing(context, 'medium'),
+          ),
           decoration: BoxDecoration(
             color: mealColor.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getSpacing(context, 'medium'),
+            ),
             border: Border.all(color: mealColor.withOpacity(0.3)),
           ),
           child: Row(
             children: [
-              _buildMealIcon(mealIcon, mealColor),
-              SizedBox(width: 16.w),
+              _buildMealIcon(context, mealIcon, mealColor),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
               _buildMealInfo(mealName, mealColor),
               _buildAnimatedRate(mealColor),
             ],
@@ -119,14 +130,24 @@ class _MealRateItem extends StatelessWidget {
         .scale(begin: const Offset(0.9, 0.9));
   }
 
-  Widget _buildMealIcon(IconData mealIcon, Color mealColor) {
+  Widget _buildMealIcon(
+    BuildContext context,
+    IconData mealIcon,
+    Color mealColor,
+  ) {
     return Container(
-      padding: EdgeInsets.all(12.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'small')),
       decoration: BoxDecoration(
         color: mealColor,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getSpacing(context, 'small'),
+        ),
       ),
-      child: Icon(mealIcon, size: 20.sp, color: Colors.white),
+      child: Icon(
+        mealIcon,
+        size: ResponsiveHelper.getIconSize(context, 'large'),
+        color: Colors.white,
+      ),
     );
   }
 

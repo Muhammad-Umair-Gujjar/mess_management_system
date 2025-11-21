@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
@@ -31,14 +30,14 @@ class WelcomeCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildWelcomeContent(context, greeting),
-            SizedBox(height: 24.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
             _buildWelcomeAvatar(context),
           ],
         ),
         desktop: Row(
           children: [
             Expanded(child: _buildWelcomeContent(context, greeting)),
-            SizedBox(width: 32.w),
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'xlarge')),
             _buildWelcomeAvatar(context),
           ],
         ),
@@ -59,17 +58,21 @@ class WelcomeCard extends StatelessWidget {
               fontSize: ResponsiveHelper.getFontSize(context, 'heading5'),
             ),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
           Text(
             student?.name ?? 'Loading...',
             style: AppTextStyles.heading2.copyWith(
               color: Colors.white,
-              fontSize: ResponsiveHelper.getFontSize(context, 'heading2'),
+              fontWeight: FontWeight.bold,
+              fontSize: ResponsiveHelper.getFontSize(context, 'heading3'),
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+            padding: EdgeInsets.symmetric(
+              horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+              vertical: ResponsiveHelper.getSpacing(context, 'small'),
+            ),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
               borderRadius: BorderRadius.circular(
@@ -86,7 +89,7 @@ class WelcomeCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
           Text(
             'Welcome back! Check your meal attendance, view today\'s menu, and manage your billing.',
             style: AppTextStyles.body1.copyWith(
@@ -100,6 +103,7 @@ class WelcomeCard extends StatelessWidget {
   }
 
   Widget _buildWelcomeAvatar(BuildContext context) {
+    
     return Container(
       padding: ResponsiveHelper.getPadding(context, 'padding'),
       decoration: BoxDecoration(
@@ -110,7 +114,7 @@ class WelcomeCard extends StatelessWidget {
       ),
       child: Icon(
         FontAwesomeIcons.graduationCap,
-        size: ResponsiveHelper.getIconSize(context, 'xlarge'),
+        size: ResponsiveHelper.getIconSize(context, 'medium'),
         color: Colors.white,
       ),
     ).animate().scale(delay: 500.ms);

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 
 class FeedbackCard extends StatelessWidget {
   final Map<String, dynamic> feedback;
@@ -27,10 +27,14 @@ class FeedbackCard extends StatelessWidget {
     final ratingData = ratingEmojis[rating - 1];
 
     return Container(
-          padding: EdgeInsets.all(20.r),
+          padding: EdgeInsets.all(
+            ResponsiveHelper.getSpacing(context, 'medium'),
+          ),
           decoration: BoxDecoration(
             color: AppColors.background,
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getSpacing(context, 'medium'),
+            ),
             border: Border.all(color: Colors.grey.withOpacity(0.1)),
           ),
           child: Column(
@@ -39,17 +43,28 @@ class FeedbackCard extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(8.r),
+                    padding: EdgeInsets.all(
+                      ResponsiveHelper.getSpacing(context, 'small'),
+                    ),
                     decoration: BoxDecoration(
                       color: ratingData['color'].withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(8.r),
+                      borderRadius: BorderRadius.circular(
+                        ResponsiveHelper.getSpacing(context, 'small'),
+                      ),
                     ),
                     child: Text(
                       ratingData['emoji'],
-                      style: TextStyle(fontSize: 20.sp),
+                      style: TextStyle(
+                        fontSize: ResponsiveHelper.getFontSize(
+                          context,
+                          'heading3',
+                        ),
+                      ),
                     ),
                   ),
-                  SizedBox(width: 12.w),
+                  SizedBox(
+                    width: ResponsiveHelper.getSpacing(context, 'small'),
+                  ),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,14 +86,17 @@ class FeedbackCard extends StatelessWidget {
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 4.h,
+                      horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+                      vertical:
+                          ResponsiveHelper.getSpacing(context, 'small') * 0.5,
                     ),
                     decoration: BoxDecoration(
                       color: _getStatusColor(
                         feedback['status'],
                       ).withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12.r),
+                      borderRadius: BorderRadius.circular(
+                        ResponsiveHelper.getSpacing(context, 'small'),
+                      ),
                     ),
                     child: Text(
                       feedback['status'],
@@ -91,7 +109,7 @@ class FeedbackCard extends StatelessWidget {
                 ],
               ),
 
-              SizedBox(height: 12.h),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
 
               Text(
                 feedback['message'],
@@ -99,12 +117,18 @@ class FeedbackCard extends StatelessWidget {
               ),
 
               if (feedback['response'] != null) ...[
-                SizedBox(height: 16.h),
+                SizedBox(
+                  height: ResponsiveHelper.getSpacing(context, 'medium'),
+                ),
                 Container(
-                  padding: EdgeInsets.all(12.r),
+                  padding: EdgeInsets.all(
+                    ResponsiveHelper.getSpacing(context, 'medium'),
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.success.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(
+                      ResponsiveHelper.getSpacing(context, 'small'),
+                    ),
                     border: Border.all(
                       color: AppColors.success.withOpacity(0.3),
                     ),
@@ -116,10 +140,18 @@ class FeedbackCard extends StatelessWidget {
                         children: [
                           Icon(
                             FontAwesomeIcons.reply,
-                            size: 12.sp,
+                            size: ResponsiveHelper.getIconSize(
+                              context,
+                              'xsmall',
+                            ),
                             color: AppColors.success,
                           ),
-                          SizedBox(width: 6.w),
+                          SizedBox(
+                            width: ResponsiveHelper.getSpacing(
+                              context,
+                              'xsmall',
+                            ),
+                          ),
                           Text(
                             'Admin Response',
                             style: AppTextStyles.caption.copyWith(
@@ -129,7 +161,9 @@ class FeedbackCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(
+                        height: ResponsiveHelper.getSpacing(context, 'small'),
+                      ),
                       Text(
                         feedback['response'],
                         style: AppTextStyles.body2.copyWith(

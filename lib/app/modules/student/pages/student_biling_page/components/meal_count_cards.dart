@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
@@ -35,7 +34,7 @@ class MealCountCards extends StatelessWidget {
             countAnimationController: countAnimationController,
           ),
         ),
-        SizedBox(width: 16.w),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
         Expanded(
           child: _MealCountCard(
             title: 'Dinner',
@@ -71,19 +70,29 @@ class _MealCountCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-          padding: EdgeInsets.all(24.r),
+          padding: EdgeInsets.all(
+            ResponsiveHelper.getSpacing(context, 'large'),
+          ),
           decoration: AppDecorations.floatingCard(),
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.all(16.r),
+                padding: EdgeInsets.all(
+                  ResponsiveHelper.getSpacing(context, 'medium'),
+                ),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(16.r),
+                  borderRadius: BorderRadius.circular(
+                    ResponsiveHelper.getSpacing(context, 'medium'),
+                  ),
                 ),
-                child: Icon(icon, size: 28.sp, color: color),
+                child: Icon(
+                  icon,
+                  size: ResponsiveHelper.getIconSize(context, 'medium'),
+                  color: color,
+                ),
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
               AnimatedBuilder(
                 animation: countAnimationController,
                 builder: (context, child) {
@@ -103,19 +112,19 @@ class _MealCountCard extends StatelessWidget {
 
                   return Text(
                     animatedValue.toInt().toString(),
-                    style: AppTextStyles.heading3.copyWith(
+                    style: TextStyle(
                       color: color,
                       fontSize: ResponsiveHelper.getResponsiveFontSize(
                         context,
-                        mobile: 35,
-                        tablet: 32,
-                        desktop: 36,
+                        mobile: 28,
+                        tablet: 26,
+                        desktop: 24,
                       ),
                     ),
                   );
                 },
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
               Text(
                 title,
                 style: AppTextStyles.subtitle1.copyWith(

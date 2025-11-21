@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mess_management/app/data/models/attendance.dart';
@@ -19,8 +18,8 @@ class MealHeader extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 80.w,
-          height: 80.h,
+          width: ResponsiveHelper.getSpacing(context, 'xlarge') * 2,
+          height: ResponsiveHelper.getSpacing(context, 'xlarge') * 2,
           decoration: BoxDecoration(
             gradient: menuItem.mealType == MealType.breakfast
                 ? LinearGradient(
@@ -32,43 +31,35 @@ class MealHeader extends StatelessWidget {
                 : LinearGradient(
                     colors: [AppColors.info, AppColors.info.withOpacity(0.7)],
                   ),
-            borderRadius: BorderRadius.circular(20.r),
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getSpacing(context, 'medium'),
+            ),
           ),
           child: Icon(
             menuItem.mealType == MealType.breakfast
                 ? FontAwesomeIcons.sun
                 : FontAwesomeIcons.moon,
-            size: 32.sp,
+            size: ResponsiveHelper.getIconSize(context, 'medium'),
             color: Colors.white,
           ),
         ),
-        SizedBox(width: 20.w),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 menuItem.name,
-                style: AppTextStyles.heading5.copyWith(
-                  fontSize: ResponsiveHelper.getResponsiveFontSize(
-                    context,
-                    mobile: 22,
-                    tablet: 24,
-                    desktop: 24,
-                  ),
+                style: TextStyle(
+                  fontSize: ResponsiveHelper.getFontSize(context, 'heading5'),
                 ),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'xs')),
               Text(
                 DateFormat('EEEE, MMM dd').format(menuItem.date),
                 style: AppTextStyles.body2.copyWith(
                   color: AppColors.textLight,
-                  fontSize: ResponsiveHelper.getResponsiveFontSize(
-                    context,
-                    mobile: 16,
-                    tablet: 16,
-                    desktop: 14,
-                  ),
+                  fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
                 ),
               ),
             ],

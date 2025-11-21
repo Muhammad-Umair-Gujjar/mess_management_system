@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../data/models/menu.dart';
 
 class NutritionalCard extends StatelessWidget {
@@ -14,7 +14,7 @@ class NutritionalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -24,7 +24,9 @@ class NutritionalCard extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getSpacing(context, 'medium'),
+        ),
         border: Border.all(color: AppColors.success.withOpacity(0.3)),
       ),
       child: Column(
@@ -34,10 +36,10 @@ class NutritionalCard extends StatelessWidget {
             children: [
               Icon(
                 FontAwesomeIcons.seedling,
-                size: 20.sp,
+                size: ResponsiveHelper.getIconSize(context, 'medium'),
                 color: AppColors.success,
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
               Text(
                 'Nutritional Information',
                 style: AppTextStyles.subtitle1.copyWith(
@@ -47,22 +49,25 @@ class NutritionalCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
           Row(
             children: [
               _buildNutritionalItem(
+                context,
                 'Calories',
                 '${menuItem.calories.toInt()}',
                 'kcal',
               ),
-              SizedBox(width: 24.w),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
               _buildNutritionalItem(
+                context,
                 'Protein',
                 '${(menuItem.calories * 0.15 / 4).toInt()}',
                 'g',
               ),
-              SizedBox(width: 24.w),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
               _buildNutritionalItem(
+                context,
                 'Carbs',
                 '${(menuItem.calories * 0.55 / 4).toInt()}',
                 'g',
@@ -74,7 +79,12 @@ class NutritionalCard extends StatelessWidget {
     );
   }
 
-  Widget _buildNutritionalItem(String label, String value, String unit) {
+  Widget _buildNutritionalItem(
+    BuildContext context,
+    String label,
+    String value,
+    String unit,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -82,7 +92,7 @@ class NutritionalCard extends StatelessWidget {
           label,
           style: AppTextStyles.caption.copyWith(color: AppColors.success),
         ),
-        SizedBox(height: 4.h),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'small') * 0.5),
         RichText(
           text: TextSpan(
             text: value,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
@@ -192,8 +191,8 @@ class _ActivityItem extends StatelessWidget {
 
     final iconSize = ResponsiveHelper.getIconSize(context, 'medium');
     return Container(
-      width: iconSize + 4.w,
-      height: iconSize + 4.h,
+      width: iconSize + ResponsiveHelper.getSpacing(context, 'small') * 0.5,
+      height: iconSize + ResponsiveHelper.getSpacing(context, 'small') * 0.5,
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(

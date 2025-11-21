@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
@@ -36,11 +35,11 @@ class QuickActionsCard extends StatelessWidget {
       children: [
         ResponsiveIcon(
           icon: FontAwesomeIcons.bolt,
-          sizeType: 'large',
+          sizeType: 'medium',
           color: AppColors.warning,
         ),
         ResponsiveSpacing(spacingType: 'itemSpacing', isVertical: false),
-        ResponsiveText(text: 'Quick Actions', styleType: 'heading2'),
+        ResponsiveText(text: 'Quick Actions', styleType: 'heading4'),
       ],
     );
   }
@@ -73,14 +72,14 @@ class QuickActionsCard extends StatelessWidget {
         mobile: 8,
         tablet: 12,
         desktop: 16,
-      ).w,
+      ),
       mainAxisSpacing: ResponsiveHelper.getResponsiveSpacing(
         context,
         mobile: 8,
         tablet: 12,
         desktop: 16,
-      ).h,
-      childAspectRatio: 1.3,
+      ),
+      childAspectRatio: 1.2,
       mobileAspectRatio: 1.3,
       tabletAspectRatio: 1.1,
       shrinkWrap: true,
@@ -122,7 +121,7 @@ class QuickActionsCard extends StatelessWidget {
   Widget _buildQuickActionContent(Map<String, dynamic> action) {
     return Builder(
       builder: (context) {
-        final iconConfig = ResponsiveConstants.getIconSizes('large')!;
+        final iconConfig = ResponsiveConstants.getIconSizes('medium')!;
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -149,7 +148,7 @@ class QuickActionsCard extends StatelessWidget {
                     mobile: 6.0,
                     tablet: 8.0,
                     desktop: 10.0,
-                  ).r,
+                  ),
                 ),
               ),
               child: ResponsiveIcon(
@@ -162,7 +161,7 @@ class QuickActionsCard extends StatelessWidget {
             Flexible(
               child: ResponsiveText(
                 text: action['title'],
-                styleType: 'body1',
+                styleType: 'body3',
                 color: action['color'],
                 fontWeight: FontWeight.w600,
                 maxLines: 2,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
@@ -15,7 +14,7 @@ class MenuPageHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: ResponsiveHelper.getResponsivePadding(context),
+      padding: ResponsiveHelper.getPadding(context, 'padding'),
       child: Row(
         children: [
           Expanded(
@@ -26,46 +25,64 @@ class MenuPageHeader extends StatelessWidget {
                 Text(
                   'Weekly Menu',
                   style: AppTextStyles.heading4.copyWith(
-                    fontSize: ResponsiveHelper.getResponsiveFontSize(
-                      context,
-                      mobile: 24,
-                      tablet: 28,
-                      desktop: 32,
-                    ),
+                    fontSize: ResponsiveHelper.getFontSize(context, 'heading4'),
                   ),
                 ),
-                SizedBox(height: 4.h),
+                SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
                 Text(
                   'Plan your meals for the week',
                   style: AppTextStyles.body2.copyWith(
                     color: AppColors.textLight,
+                    fontSize: ResponsiveHelper.getFontSize(context, 'body2'),
                   ),
                 ),
               ],
             ),
           ),
-          SizedBox(width: 16.w),
+          SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
           Flexible(
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+              padding: ResponsiveHelper.getResponsivePadding(
+                context,
+                mobile: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+                  vertical: ResponsiveHelper.getSpacing(context, 'small'),
+                ),
+                tablet: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+                  vertical: ResponsiveHelper.getSpacing(context, 'small'),
+                ),
+                desktop: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+                  vertical: ResponsiveHelper.getSpacing(context, 'small'),
+                ),
+              ),
               decoration: BoxDecoration(
                 gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(20.r),
+                borderRadius: BorderRadius.circular(
+                  ResponsiveHelper.getBorderRadius(context, 'large'),
+                ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     FontAwesomeIcons.calendarWeek,
-                    size: 16.sp,
+                    size: ResponsiveHelper.getIconSize(context, 'xsmall'),
                     color: Colors.white,
                   ),
-                  SizedBox(width: 8.w),
+                  SizedBox(
+                    width: ResponsiveHelper.getSpacing(context, 'xsmall'),
+                  ),
                   Text(
                     'This Week',
-                    style: AppTextStyles.body2.copyWith(
+                    style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
+                      fontSize: ResponsiveHelper.getFontSize(
+                        context,
+                        'body3',
+                      ),
                     ),
                   ),
                 ],

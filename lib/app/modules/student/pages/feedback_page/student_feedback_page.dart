@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/theme/app_decorations.dart';
@@ -59,7 +58,7 @@ class _StudentFeedbackPageState extends State<StudentFeedbackPage>
               mainAxisSize: MainAxisSize.min,
               children: [
                 const FeedbackForm(),
-                SizedBox(height: 24.h),
+                SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.5,
                   child: RecentFeedbacks(controller: controller),
@@ -82,7 +81,7 @@ class _StudentFeedbackPageState extends State<StudentFeedbackPage>
             flex: 2,
             child: SingleChildScrollView(child: FeedbackForm()),
           ),
-          SizedBox(width: 24.w),
+          SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
           Expanded(flex: 3, child: RecentFeedbacks(controller: controller)),
         ],
       ),

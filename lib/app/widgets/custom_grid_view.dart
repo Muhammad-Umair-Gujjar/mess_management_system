@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mess_management/core/constants/app_colors.dart';
 import 'package:mess_management/core/theme/app_theme.dart';
@@ -93,8 +92,8 @@ class CustomGridView extends StatelessWidget {
       physics: physics ?? const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: currentCrossAxisCount,
-        crossAxisSpacing: crossAxisSpacing.w,
-        mainAxisSpacing: mainAxisSpacing.h,
+        crossAxisSpacing: crossAxisSpacing,
+        mainAxisSpacing: mainAxisSpacing,
         childAspectRatio: currentAspectRatio,
       ),
       itemCount: data.length,
@@ -154,9 +153,9 @@ class CustomGridView extends StatelessWidget {
     // Responsive padding and border radius
     final double cardPadding = ResponsiveHelper.getResponsiveSpacing(
       context,
-      mobile: 18.0,
-      tablet: 20.0,
-      desktop: 24.0,
+      mobile: 10.0,
+      tablet: 16.0,
+      desktop: 19.0,
     );
     final double borderRadius = ResponsiveHelper.getBorderRadius(
       context,
@@ -183,9 +182,9 @@ class CustomGridView extends StatelessWidget {
                 0,
                 ResponsiveHelper.getResponsiveSpacing(
                   context,
-                  mobile: 6.0,
+                  mobile: 4.0,
                   tablet: 7.0,
-                  desktop: 8.0,
+                  desktop: 6.0,
                 ),
               ),
             ),
@@ -389,36 +388,33 @@ class CustomGridView extends StatelessWidget {
       tablet: 9.0,
       desktop: 8.0,
     );
-    final double iconSize = ResponsiveHelper.getIconSize(context, 'large');
+    final double iconSize = ResponsiveHelper.getIconSize(context, 'small');
     final double iconBorderRadius = ResponsiveHelper.getBorderRadius(
       context,
       'small',
     );
     final double trendIconSize = ResponsiveHelper.getIconSize(
       context,
-      'medium',
+      'xsmall',
     );
-    final double trendFontSize = ResponsiveHelper.getFontSize(context, 'body2');
+    final double trendFontSize = ResponsiveHelper.getFontSize(context, 'body3');
     final double valueSpacing = ResponsiveHelper.getSpacing(
       context,
       'sectionMargin',
     );
     final double valueFontSize = ResponsiveHelper.getFontSize(
       context,
-      'heading2',
+      'heading5',
     );
     final double titleSpacing = ResponsiveHelper.getSpacing(
       context,
       'itemSpacing',
     );
-    final double titleFontSize = ResponsiveHelper.getFontSize(
-      context,
-      'subtitle1',
-    );
+    final double titleFontSize = ResponsiveHelper.getFontSize(context, 'body3');
     final double subtitleSpacing = ResponsiveHelper.getSpacing(context, 'xs');
     final double subtitleFontSize = ResponsiveHelper.getFontSize(
       context,
-      'body2',
+      'caption',
     );
     final double trendSpacing = ResponsiveHelper.getSpacing(context, 'xs');
 
@@ -561,7 +557,7 @@ class CustomStaggeredGridView extends StatelessWidget {
           Expanded(
             child: Container(
               margin: EdgeInsets.only(
-                right: j < crossAxisCount - 1 ? crossAxisSpacing.w : 0,
+                right: j < crossAxisCount - 1 ? crossAxisSpacing : 0,
               ),
               child: CustomGridView(
                 data: [data[i + j]],
@@ -584,7 +580,7 @@ class CustomStaggeredGridView extends StatelessWidget {
       );
 
       if (i + crossAxisCount < data.length) {
-        rows.add(SizedBox(height: mainAxisSpacing.h));
+        rows.add(SizedBox(height: mainAxisSpacing));
       }
     }
     return rows;
@@ -611,15 +607,17 @@ class CustomHorizontalGridView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: itemHeight.h,
+      height: itemHeight,
       padding: padding,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: data.length,
         itemBuilder: (context, index) {
           return Container(
-            width: itemWidth.w,
-            margin: EdgeInsets.only(right: 16.w),
+            width: itemWidth,
+            margin: EdgeInsets.only(
+              right: ResponsiveHelper.getSpacing(context, 'medium'),
+            ),
             child: CustomGridView(
               data: [data[index]],
               crossAxisCount: 1,

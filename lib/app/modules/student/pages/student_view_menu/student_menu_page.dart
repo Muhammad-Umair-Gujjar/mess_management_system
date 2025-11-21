@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/theme/app_decorations.dart';
@@ -83,7 +82,9 @@ class _StudentMenuPageState extends State<StudentMenuPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     MenuPageHeader(controller: controller),
-                    SizedBox(height: 24.h),
+                    SizedBox(
+                      height: ResponsiveHelper.getSpacing(context, 'large'),
+                    ),
                     WeekNavigator(
                       selectedDay: selectedDay,
                       onDaySelected: (index) {
@@ -92,7 +93,9 @@ class _StudentMenuPageState extends State<StudentMenuPage> {
                         });
                       },
                     ),
-                    SizedBox(height: 24.h),
+                    SizedBox(
+                      height: ResponsiveHelper.getSpacing(context, 'large'),
+                    ),
                     NutritionalInfoCard(controller: controller),
                   ],
                 ),

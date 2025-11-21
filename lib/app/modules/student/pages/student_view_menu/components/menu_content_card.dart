@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mess_management/app/data/models/attendance.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
-import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/utils/responsive_helper.dart';
-import '../../../../../data/models/menu.dart';
 import '../../../../../widgets/custom_tab_bar.dart';
 import '../../../student_controller.dart';
 import 'meal_tab_content.dart';
@@ -30,16 +27,16 @@ class MenuContentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(
-        ResponsiveHelper.getResponsivePadding(context).horizontal,
-      ),
+      margin: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // Custom Tab Bar
           Container(
-            margin: EdgeInsets.all(20.r),
+            margin: EdgeInsets.all(
+              ResponsiveHelper.getSpacing(context, 'medium'),
+            ),
             child: CustomTabBar(
               selectedIndex: selectedTabIndex,
               onTap: onTabChanged,
@@ -54,18 +51,18 @@ class MenuContentCard extends StatelessWidget {
               unselectedColor: AppColors.textSecondary,
               selectedBackgroundColor: AppColors.primary,
               unselectedBackgroundColor: AppColors.background,
-              borderRadius: BorderRadius.circular(12.r),
-              tabHeight: 48.h,
-              selectedTextStyle: AppTextStyles.subtitle1.copyWith(
-                fontWeight: FontWeight.w600,
+              borderRadius: BorderRadius.circular(
+                ResponsiveHelper.getSpacing(context, 'small'),
               ),
-              unselectedTextStyle: AppTextStyles.subtitle1,
+              tabHeight: 45.0,
             ),
           ),
 
           // Tab Content - Fixed height to avoid unbounded constraints
           SizedBox(
-            height: 400.h, // Fixed height instead of Expanded
+            height:
+                ResponsiveHelper.getSpacing(context, 'xlarge') *
+                12, // Fixed height instead of Expanded
             child: IndexedStack(
               index: selectedTabIndex,
               children: [
