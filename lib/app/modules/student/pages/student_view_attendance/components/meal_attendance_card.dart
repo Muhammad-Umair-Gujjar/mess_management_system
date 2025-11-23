@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../data/models/attendance.dart';
 import '../../../student_controller.dart';
 
@@ -30,13 +30,17 @@ class MealAttendanceCard extends StatelessWidget {
         : AppColors.info;
 
     return Container(
-      margin: EdgeInsets.only(bottom: 16.h),
-      padding: EdgeInsets.all(20.r),
+      margin: EdgeInsets.only(
+        bottom: ResponsiveHelper.getSpacing(context, 'medium'),
+      ),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
       decoration: BoxDecoration(
         color: attendance.isPresent
             ? mealColor.withOpacity(0.1)
             : AppColors.error.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getSpacing(context, 'medium'),
+        ),
         border: Border.all(
           color: attendance.isPresent
               ? mealColor.withOpacity(0.3)
@@ -46,28 +50,41 @@ class MealAttendanceCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildMealHeader(mealIcon, mealName, mealColor),
+          _buildMealHeader(context, mealIcon, mealName, mealColor),
           if (attendance.isPresent) ...[
-            SizedBox(height: 16.h),
-            _buildMealDetails(mealColor),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+            _buildMealDetails(context, mealColor),
           ],
         ],
       ),
     );
   }
 
-  Widget _buildMealHeader(IconData mealIcon, String mealName, Color mealColor) {
+  Widget _buildMealHeader(
+    BuildContext context,
+    IconData mealIcon,
+    String mealName,
+    Color mealColor,
+  ) {
     return Row(
       children: [
         Container(
-          padding: EdgeInsets.all(12.r),
+          padding: EdgeInsets.all(
+            ResponsiveHelper.getSpacing(context, 'small'),
+          ),
           decoration: BoxDecoration(
             color: attendance.isPresent ? mealColor : AppColors.error,
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getSpacing(context, 'small'),
+            ),
           ),
-          child: Icon(mealIcon, size: 20.sp, color: Colors.white),
+          child: Icon(
+            mealIcon,
+            size: ResponsiveHelper.getIconSize(context, 'small'),
+            color: Colors.white,
+          ),
         ),
-        SizedBox(width: 16.w),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,26 +111,36 @@ class MealAttendanceCard extends StatelessWidget {
               ? FontAwesomeIcons.circleCheck
               : FontAwesomeIcons.circleXmark,
           color: attendance.isPresent ? AppColors.success : AppColors.error,
-          size: 24.sp,
+          size: ResponsiveHelper.getIconSize(context, 'large'),
         ),
       ],
     );
   }
 
-  Widget _buildMealDetails(Color mealColor) {
+  Widget _buildMealDetails(BuildContext context, Color mealColor) {
     return Container(
-      padding: EdgeInsets.all(12.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'small')),
       decoration: BoxDecoration(
         color: mealColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getSpacing(context, 'small'),
+        ),
       ),
       child: Row(
         children: [
-          Icon(FontAwesomeIcons.utensils, size: 16.sp, color: mealColor),
-          SizedBox(width: 8.w),
-          Text(
-            _getMealDescription(attendance.mealType),
-            style: AppTextStyles.body2.copyWith(color: mealColor),
+          Icon(
+            FontAwesomeIcons.utensils,
+            size: ResponsiveHelper.getIconSize(context, 'small'),
+            color: mealColor,
+          ),
+          SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
+          Flexible(
+            child: Text(
+              _getMealDescription(attendance.mealType),
+              style: AppTextStyles.body2.copyWith(color: mealColor,
+              overflow: TextOverflow.ellipsis
+              ),
+            ),
           ),
         ],
       ),

@@ -24,12 +24,12 @@ class NutritionAnalytics extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
+      margin: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildSectionTitle(context),
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
           Expanded(
             child: ListView(
               children: [
@@ -50,7 +50,7 @@ class NutritionAnalytics extends StatelessWidget {
   Widget _buildSectionTitle(BuildContext context) {
     return Text(
       'Nutritional Overview',
-      style: AppTextStyles.heading3.copyWith(color: AppColors.textPrimary),
+      style: AppTextStyles.heading4.copyWith(color: AppColors.textPrimary),
     );
   }
 

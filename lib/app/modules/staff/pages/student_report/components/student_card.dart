@@ -161,23 +161,23 @@ class StudentCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    width: ResponsiveHelper.getSpacing(context, 'xxsmall'),
+                    width: ResponsiveHelper.getSpacing(context, 'small'),
                   ), // Reduced from 8.w
                   Container(
                     padding: EdgeInsets.all(
-                      ResponsiveHelper.getSpacing(context, 'xxsmall'),
+                      ResponsiveHelper.getSpacing(context, 'xsmall'),
                     ), // Reduced from 6.r
                     decoration: BoxDecoration(
                       color: AppColors.success.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(
-                        ResponsiveHelper.getSpacing(context, 'xxsmall'),
+                        ResponsiveHelper.getSpacing(context, 'xsmall'),
                       ), // Reduced from 6.r
                     ),
                     child: Icon(
                       FontAwesomeIcons.check,
                       size: ResponsiveHelper.getIconSize(
                         context,
-                        'xxsmall',
+                        'small',
                       ), // Reduced from 12.sp
                       color: AppColors.success,
                     ),

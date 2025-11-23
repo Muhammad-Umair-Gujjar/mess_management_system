@@ -14,7 +14,7 @@ class MenuPageHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: ResponsiveHelper.getPadding(context, 'padding'),
+      padding: ResponsiveHelper.getPadding(context, 'medium'),
       child: Row(
         children: [
           Expanded(
@@ -39,54 +39,53 @@ class MenuPageHeader extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
-          Flexible(
-            child: Container(
-              padding: ResponsiveHelper.getResponsivePadding(
-                context,
-                mobile: EdgeInsets.symmetric(
-                  horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
-                  vertical: ResponsiveHelper.getSpacing(context, 'small'),
-                ),
-                tablet: EdgeInsets.symmetric(
-                  horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
-                  vertical: ResponsiveHelper.getSpacing(context, 'small'),
-                ),
-                desktop: EdgeInsets.symmetric(
-                  horizontal: ResponsiveHelper.getSpacing(context, 'small'),
-                  vertical: ResponsiveHelper.getSpacing(context, 'small'),
-                ),
+          SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
+          Container(
+            padding: ResponsiveHelper.getResponsivePadding(
+              context,
+              mobile: EdgeInsets.symmetric(
+                horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+                vertical: ResponsiveHelper.getSpacing(context, 'small'),
               ),
-              decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(
-                  ResponsiveHelper.getBorderRadius(context, 'large'),
-                ),
+              tablet: EdgeInsets.symmetric(
+                horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+                vertical: ResponsiveHelper.getSpacing(context, 'small'),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    FontAwesomeIcons.calendarWeek,
-                    size: ResponsiveHelper.getIconSize(context, 'xsmall'),
+              desktop: EdgeInsets.symmetric(
+                horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+                vertical: ResponsiveHelper.getSpacing(context, 'small'),
+              ),
+            ),
+            decoration: BoxDecoration(
+              gradient: AppColors.primaryGradient,
+              borderRadius: BorderRadius.circular(
+                ResponsiveHelper.getBorderRadius(context, 'medium'),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  FontAwesomeIcons.calendarWeek,
+                  size: ResponsiveHelper.getIconSize(context, 'xsmall'),
+                  color: Colors.white,
+                ),
+                SizedBox(
+                  width: ResponsiveHelper.getSpacing(context, 'xsmall'),
+                ),
+                Text(
+                  'This Week',
+                  style: TextStyle(
                     color: Colors.white,
-                  ),
-                  SizedBox(
-                    width: ResponsiveHelper.getSpacing(context, 'xsmall'),
-                  ),
-                  Text(
-                    'This Week',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: ResponsiveHelper.getFontSize(
-                        context,
-                        'body3',
-                      ),
+                    fontWeight: FontWeight.w600,
+                    overflow: TextOverflow.ellipsis,
+                    fontSize: ResponsiveHelper.getFontSize(
+                      context,
+                      'body3',
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],

@@ -49,7 +49,7 @@ class ActivityItem extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: ResponsiveHelper.getSpacing(context, 'xxsmall')),
+            
               Text(
                 time,
                 style: AppTextStyles.caption.copyWith(

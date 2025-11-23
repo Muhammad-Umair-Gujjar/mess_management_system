@@ -109,7 +109,7 @@ class StudentCard extends StatelessWidget {
         Container(
           padding: EdgeInsets.symmetric(
             horizontal: ResponsiveHelper.getSpacing(context, 'small'),
-            vertical: ResponsiveHelper.getSpacing(context, 'xxsmall'),
+            vertical: ResponsiveHelper.getSpacing(context, 'xs'),
           ),
           decoration: BoxDecoration(
             color: isPresent == null

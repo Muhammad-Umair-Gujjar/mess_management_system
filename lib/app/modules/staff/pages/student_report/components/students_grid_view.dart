@@ -38,15 +38,15 @@ class StudentsGridView extends StatelessWidget {
 
     return CustomGridView(
       data: gridData,
-      crossAxisCount: 4, // Desktop: 4 columns
+      crossAxisCount: 3, // Desktop: 4 columns
       tabletCrossAxisCount: 3, // Tablet: 3 columns
       mobileCrossAxisCount: 2, // Mobile: 2 columns
       crossAxisSpacing: ResponsiveHelper.getSpacing(context, 'medium'),
       mainAxisSpacing: ResponsiveHelper.getSpacing(context, 'medium'),
-      childAspectRatio: 1.1, // Reduced from 1.4 to give more vertical space
+      childAspectRatio: 1.2, // Reduced from 1.4 to give more vertical space
       mobileAspectRatio: 0.9, // Even more vertical space on mobile
-      tabletAspectRatio: 1.0, // Slightly more vertical space on tablet
-      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'xsmall')),
+      tabletAspectRatio: 1.2, // Slightly more vertical space on tablet
+      // Removed outer padding to make cards bigger
       physics: const BouncingScrollPhysics(), // Enable scrolling
       shrinkWrap: false, // Ensure it takes full available space
       cardStyle: CustomGridCardStyle.minimal,

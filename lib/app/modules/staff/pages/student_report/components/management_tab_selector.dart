@@ -21,7 +21,7 @@ class ManagementTabSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'small')),
       decoration: AppDecorations.floatingCard(),
       child: CustomTabBar(
         selectedIndex: selectedTabIndex,
@@ -43,8 +43,8 @@ class ManagementTabSelector extends StatelessWidget {
         borderRadius: BorderRadius.circular(
           ResponsiveHelper.getSpacing(context, 'small'),
         ),
-        selectedTextStyle: AppTextStyles.body1.copyWith(
-          fontWeight: FontWeight.w600,
+        selectedTextStyle: AppTextStyles.body2.copyWith(
+          fontWeight: FontWeight.w500,
         ),
         unselectedTextStyle: AppTextStyles.body2,
       ),

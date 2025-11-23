@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -80,7 +79,12 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
             // Desktop Side Navigation
             if (showSideNav)
               SizedBox(
-                width: 320.w,
+                width: ResponsiveHelper.getValue<double>(
+                  context,
+                  mobile: 200,
+                  tablet: 250,
+                  desktop: 250,
+                ),
                 child: _buildDesktopSidebar(),
               ).animate().slideX(begin: -1.0, duration: 600.ms),
 
@@ -88,16 +92,16 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
             Expanded(
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
-                margin: EdgeInsets.all(
-                  ResponsiveHelper.isMobile(context) ? 16.r : 24.r,
-                ),
+                margin: ResponsiveHelper.getMargin(context, 'contentMargin'),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Custom Header Section
                     if (widget.header != null) ...[
                       widget.header!,
-                      SizedBox(height: 24.h),
+                      SizedBox(
+                        height: ResponsiveHelper.getSpacing(context, 'large'),
+                      ),
                     ],
 
                     // Main Page Content
@@ -127,15 +131,17 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
       elevation: 0,
       leading: Builder(
         builder: (context) => Container(
-          margin: EdgeInsets.all(8.r),
+          margin: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'small')),
           decoration: BoxDecoration(
             color: AppColors.cardBackground.withOpacity(0.8),
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getBorderRadius(context, 'button'),
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
-                blurRadius: 8.r,
-                offset: Offset(0, 2.h),
+                blurRadius: ResponsiveHelper.getSpacing(context, 'small'),
+                offset: Offset(0, ResponsiveHelper.getSpacing(context, 'xs')),
               ),
             ],
           ),
@@ -143,7 +149,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
             icon: Icon(
               Icons.menu,
               color: _getRoleColor(widget.userRole),
-              size: 24.sp,
+              size: ResponsiveHelper.getIconSize(context, 'menuIcon'),
             ),
             onPressed: () => Scaffold.of(context).openDrawer(),
           ),
@@ -165,11 +171,12 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
   }
 
   Widget _buildResponsiveDrawer() {
-    final isMobile = ResponsiveHelper.isMobile(context);
-    final drawerWidth = isMobile
-        ? 330
-              .w // Increased width for phones for better visibility
-        : 360.w; // Larger on tablet for better readability
+    final drawerWidth = ResponsiveHelper.getValue<double>(
+      context,
+      mobile: MediaQuery.of(context).size.width * 0.45,
+      tablet: MediaQuery.of(context).size.width * 0.35,
+      desktop: 250,
+    );
 
     return SizedBox(
       width: drawerWidth,
@@ -177,8 +184,12 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
         backgroundColor: AppColors.cardBackground,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-            topRight: Radius.circular(20.r),
-            bottomRight: Radius.circular(20.r),
+            topRight: Radius.circular(
+              ResponsiveHelper.getBorderRadius(context, 'large'),
+            ),
+            bottomRight: Radius.circular(
+              ResponsiveHelper.getBorderRadius(context, 'large'),
+            ),
           ),
         ),
         child: Container(
@@ -201,10 +212,11 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
               Expanded(
                 child: ListView.builder(
                   padding: EdgeInsets.symmetric(
-                    horizontal: ResponsiveHelper.isMobile(context)
-                        ? 16.w
-                        : 20.w,
-                    vertical: ResponsiveHelper.isMobile(context) ? 8.h : 12.h,
+                    horizontal: ResponsiveHelper.getSpacing(
+                      context,
+                      'contentMargin',
+                    ),
+                    vertical: ResponsiveHelper.getSpacing(context, 'small'),
                   ),
                   itemCount: widget.menuItems.length,
                   itemBuilder: (context, index) {
@@ -230,54 +242,59 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
   }
 
   Widget _buildDrawerHeader() {
-    final isMobile = ResponsiveHelper.isMobile(context);
-
     return Container(
-      padding: EdgeInsets.all(
-        isMobile ? 28.r : 24.r,
-      ), // Larger padding on mobile
-      margin: EdgeInsets.all(isMobile ? 18.r : 16.r), // Larger margin on mobile
+      padding: ResponsiveHelper.getPadding(context, 'cardPadding'),
+      margin: ResponsiveHelper.getMargin(context, 'sectionMargin'),
       decoration: AppDecorations.gradientContainer(
         gradient: _getRoleGradient(widget.userRole),
       ),
       child: Column(
         children: [
           CircleAvatar(
-            radius: isMobile ? 36.r : 32.r, // Larger avatar on mobile
+            radius:
+                ResponsiveHelper.getComponentDimension(context, 'avatarLarge') /
+                2,
             backgroundColor: Colors.white.withOpacity(0.2),
             child: Text(
               widget.userName.substring(0, 1).toUpperCase(),
               style: TextStyle(
-                fontSize: isMobile ? 28.sp : 24.sp, // Larger text on mobile
+                fontSize: ResponsiveHelper.getFontSize(context, 'heading3'),
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
           ),
-          SizedBox(height: isMobile ? 20.h : 16.h), // More spacing on mobile
+          SizedBox(
+            height: ResponsiveHelper.getValue<double>(
+              context,
+              mobile: 20,
+              tablet: 16,
+              desktop: 16,
+            ),
+          ), // More spacing on mobile
           Text(
             widget.userName,
             style: TextStyle(
-              fontSize: isMobile ? 20.sp : 18.sp, // Larger text on mobile
+              fontSize: ResponsiveHelper.getFontSize(context, 'heading5'),
               fontWeight: FontWeight.w600,
               color: Colors.white,
             ),
           ),
-          SizedBox(height: isMobile ? 6.h : 4.h), // More spacing on mobile
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'xs')),
           Text(
             widget.userRole.toUpperCase(),
             style: TextStyle(
-              fontSize: isMobile ? 14.sp : 12.sp, // Larger text on mobile
+              fontSize: ResponsiveHelper.getFontSize(context, 'label'),
               fontWeight: FontWeight.w500,
               color: Colors.white.withOpacity(0.8),
               letterSpacing: 1.2,
             ),
           ),
-          SizedBox(height: isMobile ? 10.h : 8.h), // More spacing on mobile
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
           Text(
             widget.userEmail,
             style: TextStyle(
-              fontSize: isMobile ? 14.sp : 12.sp, // Larger email text on mobile
+              fontSize: ResponsiveHelper.getFontSize(context, 'body3'),
               color: Colors.white.withOpacity(0.7),
             ),
             textAlign: TextAlign.center,
@@ -290,35 +307,41 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
   }
 
   Widget _buildDrawerMenuItem(NavigationItem item, int index, bool isActive) {
-    final isMobile = ResponsiveHelper.isMobile(context);
-
     return Container(
       margin: EdgeInsets.only(
-        bottom: isMobile ? 12.h : 12.h,
-      ), // Consistent spacing
+        bottom: ResponsiveHelper.getSpacing(context, 'small'),
+      ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(
+            ResponsiveHelper.getBorderRadius(context, 'small'),
+          ),
           onTap: () {
             widget.onItemSelected(index);
             Navigator.pop(context);
           },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            padding: EdgeInsets.all(
-              isMobile ? 20.r : 18.r,
-            ), // Larger padding on mobile
+            padding: ResponsiveHelper.getPadding(context, 'cardPadding'),
             decoration: BoxDecoration(
               gradient: isActive ? _getRoleGradient(widget.userRole) : null,
               color: isActive ? null : Colors.transparent,
-              borderRadius: BorderRadius.circular(16.r),
+              borderRadius: BorderRadius.circular(
+                ResponsiveHelper.getBorderRadius(context, 'medium'),
+              ),
               boxShadow: isActive
                   ? [
                       BoxShadow(
                         color: _getRoleColor(widget.userRole).withOpacity(0.3),
-                        blurRadius: 12.r,
-                        offset: Offset(0, 4.h),
+                        blurRadius: ResponsiveHelper.getSpacing(
+                          context,
+                          'small',
+                        ),
+                        offset: Offset(
+                          0,
+                          ResponsiveHelper.getSpacing(context, 'xs'),
+                        ),
                       ),
                     ]
                   : null,
@@ -328,32 +351,33 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   padding: EdgeInsets.all(
-                    isMobile ? 10.r : 8.r,
-                  ), // Larger padding on mobile
+                    ResponsiveHelper.getSpacing(context, 'xs'),
+                  ),
                   decoration: BoxDecoration(
                     color: isActive
                         ? Colors.white.withOpacity(0.2)
                         : _getRoleColor(widget.userRole).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(
+                      ResponsiveHelper.getBorderRadius(context, 'small'),
+                    ),
                   ),
                   child: Icon(
                     item.icon,
-                    size: isMobile ? 24.sp : 22.sp, // Larger icons on mobile
+                    size: ResponsiveHelper.getIconSize(context, 'cardIcon'),
                     color: isActive
                         ? Colors.white
                         : _getRoleColor(widget.userRole),
                   ),
                 ),
-                SizedBox(
-                  width: isMobile ? 20.w : 18.w,
-                ), // More spacing on mobile
+                SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
                 Expanded(
                   child: Text(
                     item.title,
                     style: TextStyle(
-                      fontSize: isMobile
-                          ? 18.sp
-                          : 17.sp, // Larger text on mobile
+                      fontSize: ResponsiveHelper.getFontSize(
+                        context,
+                        'menuItem',
+                      ),
                       fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
                       color: isActive ? Colors.white : AppColors.textPrimary,
                     ),
@@ -362,18 +386,23 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
                 if (item.badge != null)
                   Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 4.h,
+                      horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+                      vertical: ResponsiveHelper.getSpacing(context, 'xs'),
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.error,
-                      borderRadius: BorderRadius.circular(10.r),
+                      borderRadius: BorderRadius.circular(
+                        ResponsiveHelper.getBorderRadius(context, 'small'),
+                      ),
                     ),
                     child: Text(
                       item.badge!.toString(),
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 10.sp,
+                        fontSize: ResponsiveHelper.getFontSize(
+                          context,
+                          'body3',
+                        ),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -381,7 +410,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
                 if (isActive)
                   Icon(
                     Icons.arrow_forward_ios,
-                    size: 12.sp,
+                    size: ResponsiveHelper.getIconSize(context, 'xsmall'),
                     color: Colors.white,
                   ),
               ],
@@ -393,22 +422,27 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
   }
 
   Widget _buildDrawerFooter() {
-    final isMobile = ResponsiveHelper.isMobile(context);
-
     return Container(
-      padding: EdgeInsets.all(
-        isMobile ? 20.r : 16.r,
-      ), // Larger padding on mobile
+      padding: ResponsiveHelper.getPadding(context, 'cardPadding'),
       child: Column(
         children: [
           Divider(color: AppColors.textLight.withOpacity(0.2)),
-          SizedBox(height: isMobile ? 20.h : 16.h), // More spacing on mobile
+          SizedBox(
+            height: ResponsiveHelper.getValue<double>(
+              context,
+              mobile: 20,
+              tablet: 16,
+              desktop: 16,
+            ),
+          ), // More spacing on mobile
           // Quick Action Button
           // Logout Button
           Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(12.r),
+              borderRadius: BorderRadius.circular(
+                ResponsiveHelper.getBorderRadius(context, 'small'),
+              ),
               onTap: () {
                 if (widget.onLogoutPressed != null) {
                   widget.onLogoutPressed!();
@@ -417,12 +451,14 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
               child: Container(
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(
-                  vertical: isMobile ? 16.h : 12.h, // Larger padding on mobile
-                  horizontal: isMobile ? 20.w : 16.w,
+                  vertical: ResponsiveHelper.getSpacing(context, 'medium'),
+                  horizontal: ResponsiveHelper.getSpacing(context, 'large'),
                 ),
                 decoration: BoxDecoration(
                   color: Colors.red.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(
+                    ResponsiveHelper.getBorderRadius(context, 'button'),
+                  ),
                   border: Border.all(color: Colors.red.withOpacity(0.3)),
                 ),
                 child: Row(
@@ -430,18 +466,19 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
                   children: [
                     Icon(
                       Icons.logout,
-                      size: isMobile ? 20.sp : 16.sp, // Larger icon on mobile
+                      size: ResponsiveHelper.getIconSize(context, 'small'),
                       color: Colors.red,
                     ),
                     SizedBox(
-                      width: isMobile ? 10.w : 8.w,
-                    ), // More spacing on mobile
+                      width: ResponsiveHelper.getSpacing(context, 'small'),
+                    ),
                     Text(
                       'Logout',
                       style: TextStyle(
-                        fontSize: isMobile
-                            ? 16.sp
-                            : 14.sp, // Larger text on mobile
+                        fontSize: ResponsiveHelper.getFontSize(
+                          context,
+                          'button',
+                        ),
                         fontWeight: FontWeight.w600,
                         color: Colors.red,
                       ),
@@ -452,46 +489,17 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
             ),
           ),
 
-          SizedBox(height: 16.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
           Text(
             'MessMaster v1.0.0',
-            style: TextStyle(fontSize: 12.sp, color: AppColors.textLight),
+            style: TextStyle(
+              fontSize: ResponsiveHelper.getFontSize(context, 'body3'),
+              color: AppColors.textLight,
+            ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildQuickActionButton(IconData icon, String label, Color color) {
-    final isMobile = ResponsiveHelper.isMobile(context);
-
-    return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.all(
-            isMobile ? 14.r : 12.r,
-          ), // Larger padding on mobile
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(color: color.withOpacity(0.3)),
-          ),
-          child: Icon(
-            icon,
-            size: isMobile ? 22.sp : 20.sp, // Larger icons on mobile
-            color: color,
-          ),
-        ),
-        SizedBox(height: isMobile ? 8.h : 6.h), // More spacing on mobile
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: isMobile ? 12.sp : 10.sp, // Larger text on mobile
-            color: AppColors.textLight,
-          ),
-        ),
-      ],
     );
   }
 

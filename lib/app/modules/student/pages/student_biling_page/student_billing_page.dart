@@ -100,7 +100,7 @@ class _StudentBillingPageState extends State<StudentBillingPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            flex: 2,
+            flex: 3,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -120,7 +120,7 @@ class _StudentBillingPageState extends State<StudentBillingPage>
           ),
           SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
           Expanded(
-            flex: 3,
+            flex: 4,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

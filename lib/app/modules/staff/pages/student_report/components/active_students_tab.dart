@@ -91,7 +91,7 @@ class ActiveStudentsTab extends StatelessWidget {
           children: [
             Icon(
               FontAwesomeIcons.users,
-              size: ResponsiveHelper.getIconSize(context, 'xxlarge'),
+              size: ResponsiveHelper.getIconSize(context, 'xlarge'),
               color: AppColors.textLight,
             ),
             SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),

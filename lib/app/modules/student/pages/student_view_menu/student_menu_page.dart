@@ -75,7 +75,7 @@ class _StudentMenuPageState extends State<StudentMenuPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              flex: 1,
+              flex: 2,
               child: Padding(
                 padding: ResponsiveHelper.getResponsivePadding(context),
                 child: Column(
@@ -102,7 +102,7 @@ class _StudentMenuPageState extends State<StudentMenuPage> {
               ),
             ),
             Expanded(
-              flex: 2,
+              flex: 3,
               child: Padding(
                 padding: ResponsiveHelper.getResponsivePadding(context),
                 child: MenuContentCard(

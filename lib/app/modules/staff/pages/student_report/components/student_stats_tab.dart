@@ -5,7 +5,6 @@ import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../staff_controller.dart';
 import 'stats_cards_grid.dart';
-import 'recent_activities_list.dart';
 
 class StudentStatsTab extends StatelessWidget {
   final StaffController controller;
@@ -22,24 +21,18 @@ class StudentStatsTab extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
       decoration: AppDecorations.floatingCard(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Student Statistics', style: AppTextStyles.heading5),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Student Statistics', style: AppTextStyles.heading5),
 
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
 
-          // Stats Cards
-          StatsCardsGrid(controller: controller),
-
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
-
-          Text('Recent Activities', style: AppTextStyles.heading5),
-
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
-
-          Expanded(child: RecentActivitiesList()),
-        ],
+            // Stats Cards
+            StatsCardsGrid(controller: controller),
+          ],
+        ),
       ),
     );
   }

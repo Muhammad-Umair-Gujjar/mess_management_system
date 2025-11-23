@@ -39,7 +39,7 @@ class QuickActionsCard extends StatelessWidget {
           color: AppColors.warning,
         ),
         ResponsiveSpacing(spacingType: 'itemSpacing', isVertical: false),
-        ResponsiveText(text: 'Quick Actions', styleType: 'heading4'),
+        ResponsiveText(text: 'Quick Actions', styleType: 'heading5'),
       ],
     );
   }

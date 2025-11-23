@@ -26,7 +26,7 @@ class CurrentBillCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'xlarge')),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'mediumr')),
       decoration: AppShadows.glassmorphicCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,20 +61,23 @@ class CurrentBillCard extends StatelessWidget {
           ),
         ),
         SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Current Month Bill',
-              style: TextStyle(
-                fontSize: ResponsiveHelper.getFontSize(context, 'heading5'),
+        Flexible(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Current Month Bill',
+                style: TextStyle(
+                  overflow: TextOverflow.ellipsis,
+                  fontSize: ResponsiveHelper.getFontSize(context, 'heading5'),
+                ),
               ),
-            ),
-            Text(
-              DateFormat('MMMM yyyy').format(DateTime.now()),
-              style: AppTextStyles.body2.copyWith(color: AppColors.textLight),
-            ),
-          ],
+              Text(
+                DateFormat('MMMM yyyy').format(DateTime.now()),
+                style: AppTextStyles.body2.copyWith(color: AppColors.textLight),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -168,16 +171,6 @@ class CurrentBillCard extends StatelessWidget {
               FontAwesomeIcons.filePdf,
               AppColors.error,
               onDownloadPDF,
-            ),
-          ),
-          SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
-          Expanded(
-            child: _buildQuickActionButton(
-              context,
-              'Export CSV',
-              FontAwesomeIcons.fileCsv,
-              AppColors.success,
-              onExportCSV,
             ),
           ),
         ],

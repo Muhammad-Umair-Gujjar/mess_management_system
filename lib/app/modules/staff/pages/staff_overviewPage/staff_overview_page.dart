@@ -19,7 +19,7 @@ class StaffOverviewPage extends StatelessWidget {
 
         return SingleChildScrollView(
           padding: EdgeInsets.all(
-            ResponsiveHelper.getSpacing(context, 'large'),
+            ResponsiveHelper.getSpacing(context, 'medium'),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

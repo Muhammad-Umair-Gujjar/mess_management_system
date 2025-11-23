@@ -14,7 +14,7 @@ class WelcomeSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
       decoration: AppDecorations.floatingCard().copyWith(
         gradient: AppColors.primaryGradient,
       ),

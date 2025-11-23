@@ -55,7 +55,7 @@ class WelcomeCard extends StatelessWidget {
             '$greeting 👋',
             style: AppTextStyles.heading5.copyWith(
               color: Colors.white.withOpacity(0.9),
-              fontSize: ResponsiveHelper.getFontSize(context, 'heading5'),
+              fontSize: ResponsiveHelper.getFontSize(context, 'body2'),
             ),
           ),
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -84,7 +83,7 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
               });
             },
           ),
-          SizedBox(height: 24.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
           DayDetailsCard(controller: controller, selectedDay: _selectedDay),
         ],
       ),
@@ -129,7 +128,7 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
               ),
             ),
           ),
-          SizedBox(width: 24.w),
+          SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
           Expanded(
             flex: 2,
             child: SingleChildScrollView(
@@ -139,7 +138,9 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
                     controller: controller,
                     selectedDay: _selectedDay,
                   ),
-                  SizedBox(height: 24.h),
+                  SizedBox(
+                    height: ResponsiveHelper.getSpacing(context, 'large'),
+                  ),
                   AttendanceStatsCard(controller: controller),
                 ],
               ),

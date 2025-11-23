@@ -155,7 +155,7 @@ class CustomGridView extends StatelessWidget {
       context,
       mobile: 10.0,
       tablet: 16.0,
-      desktop: 19.0,
+      desktop: 15.0,
     );
     final double borderRadius = ResponsiveHelper.getBorderRadius(
       context,
@@ -165,7 +165,9 @@ class CustomGridView extends StatelessWidget {
     return GestureDetector(
       onTap: item.onTap,
       child: Container(
-        padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, "cardPadding")),
+        padding: EdgeInsets.all(
+          ResponsiveHelper.getSpacing(context, "cardPadding"),
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(borderRadius),
@@ -291,13 +293,7 @@ class CustomGridView extends StatelessWidget {
   }
 
   Widget _buildMinimalCard(BuildContext context, GridCardData item, int index) {
-    // Responsive padding and border radius
-    final double cardPadding = ResponsiveHelper.getResponsiveSpacing(
-      context,
-      mobile: 16.0,
-      tablet: 18.0,
-      desktop: 24.0,
-    );
+    // Responsive border radius
     final double borderRadius = ResponsiveHelper.getBorderRadius(
       context,
       'small',
@@ -306,7 +302,7 @@ class CustomGridView extends StatelessWidget {
     return GestureDetector(
       onTap: item.onTap,
       child: Container(
-        padding: EdgeInsets.all(cardPadding),
+        // Removed internal padding to make cards bigger
         decoration: BoxDecoration(
           color: item.color.withOpacity(0.05),
           borderRadius: BorderRadius.circular(borderRadius),
@@ -426,7 +422,7 @@ class CustomGridView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              padding: EdgeInsets.all(iconPadding),
+              padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'small')),
               decoration: BoxDecoration(
                 color: item.color.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(iconBorderRadius),
@@ -473,7 +469,7 @@ class CustomGridView extends StatelessWidget {
           maxLines: 1,
         ),
 
-        SizedBox(height: titleSpacing),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, "small")),
 
         // Title and subtitle
         Column(

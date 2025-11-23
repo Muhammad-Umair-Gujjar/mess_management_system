@@ -40,7 +40,7 @@ class AdminDashboard extends StatelessWidget {
         Get.context!,
         mobile: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         tablet: const EdgeInsets.symmetric(horizontal: 24, vertical: 15),
-        desktop: const EdgeInsets.symmetric(horizontal: 32, vertical: 22),
+        desktop: const EdgeInsets.symmetric(horizontal: 26, vertical: 22),
       ),
       decoration: AppDecorations.floatingCard(),
       child: Row(
@@ -74,65 +74,44 @@ class AdminDashboard extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          // System Stats
-          Obx(() {
-            final stats = controller.getSystemOverview();
-            final isMobile = ResponsiveHelper.isMobile(Get.context!);
-
-            return Row(
-              children: [
-                _buildQuickStat(
-                  'Total Users',
-                  '${stats['totalUsers']}',
-                  FontAwesomeIcons.users,
-                  AppColors.adminRole,
-                  isMobile: isMobile,
-                ),
-                SizedBox(
-                  width: ResponsiveHelper.getSpacing(
-                    Get.context!,
-                    isMobile ? 'small' : 'large',
+          // System Stats - Only show on tablet/desktop
+          if (!ResponsiveHelper.isMobile(Get.context!))
+            Obx(() {
+              final stats = controller.getSystemOverview();
+              final isMobile = false;
+              return Row(
+                children: [
+                  _buildQuickStat(
+                    'Total Users',
+                    '${stats['totalUsers']}',
+                    FontAwesomeIcons.users,
+                    AppColors.adminRole,
+                    isMobile: isMobile,
                   ),
-                ),
-                _buildQuickStat(
-                  'Pending',
-                  '${stats['pendingApprovals']}',
-                  FontAwesomeIcons.clock,
-                  AppColors.warning,
-                  isMobile: isMobile,
-                ),
-                SizedBox(
-                  width: ResponsiveHelper.getSpacing(
-                    Get.context!,
-                    isMobile ? 'small' : 'large',
-                  ),
-                ),
-                 // Only show uptime on tablet and desktop
-                if (!isMobile) ...[
                   SizedBox(
-                    width: ResponsiveHelper.getSpacing(Get.context!, 'large'),
-                  ),
-                   _buildQuickStat(
-                  'Revenue',
-                  '₹${(stats['monthlyRevenue'] / 1000).toStringAsFixed(0)}K',
-                  FontAwesomeIcons.chartLine,
-                  AppColors.success,
-                  isMobile: isMobile,
-                ),
-                  SizedBox(
-                    width: ResponsiveHelper.getSpacing(Get.context!, 'large'),
+                    width: ResponsiveHelper.getSpacing(Get.context!, 'medium'),
                   ),
                   _buildQuickStat(
-                    'Uptime',
-                    '${stats['systemUptime']}%',
-                    FontAwesomeIcons.server,
-                    AppColors.info,
-                    isMobile: false,
+                    'Pending',
+                    '${stats['pendingApprovals']}',
+                    FontAwesomeIcons.clock,
+                    AppColors.warning,
+                    isMobile: isMobile,
+                  ),
+                  SizedBox(
+                    width: ResponsiveHelper.getSpacing(Get.context!, 'medium'),
+                  ),
+                  // Only show uptime on tablet and desktop
+                  _buildQuickStat(
+                    'Revenue',
+                    '₹${(stats['monthlyRevenue'] / 1000).toStringAsFixed(0)}K',
+                    FontAwesomeIcons.chartLine,
+                    AppColors.success,
+                    isMobile: isMobile,
                   ),
                 ],
-              ],
-            );
-          }),
+              );
+            }),
         ],
       ),
     ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2);

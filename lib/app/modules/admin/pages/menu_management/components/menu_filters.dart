@@ -44,7 +44,7 @@ class MenuFilters extends StatelessWidget {
 
     return Container(
       margin: EdgeInsets.symmetric(
-        horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+        horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
         vertical: ResponsiveHelper.getSpacing(context, 'small'),
       ),
       padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
@@ -136,15 +136,14 @@ class MenuFilters extends StatelessWidget {
             onChanged: (_) => onSearchChanged(),
           ),
         ),
-        SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'xsmall')),
 
         // Category filter dropdown
         Expanded(child: _buildCategoryDropdown(context)),
-        SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
-
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'xs')),
         // Sort by dropdown
         Expanded(child: _buildSortByDropdown(context)),
-        SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'xs')),
 
         // Available only checkbox
         _buildAvailabilityFilter(context),
@@ -175,7 +174,7 @@ class MenuFilters extends StatelessWidget {
             context,
             mobile: 12.0,
             tablet: 14.0,
-            desktop: 16.0,
+            desktop: 10.0,
           ),
           vertical: ResponsiveHelper.getResponsiveSpacing(
             context,
@@ -189,7 +188,7 @@ class MenuFilters extends StatelessWidget {
             context,
             mobile: 12.0,
             tablet: 13.0,
-            desktop: 14.0,
+            desktop: 12.0,
           ),
         ),
       ),
@@ -251,7 +250,7 @@ class MenuFilters extends StatelessWidget {
             context,
             mobile: 12.0,
             tablet: 14.0,
-            desktop: 16.0,
+            desktop: 10.0,
           ),
           vertical: ResponsiveHelper.getResponsiveSpacing(
             context,

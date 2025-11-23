@@ -46,8 +46,8 @@ class StaffDashboard extends StatelessWidget {
       padding: EdgeInsets.symmetric(
         horizontal: ResponsiveHelper.isMobile(Get.context!)
             ? ResponsiveHelper.getSpacing(Get.context!, 'medium')
-            : ResponsiveHelper.getSpacing(Get.context!, 'xlarge'),
-        vertical: ResponsiveHelper.getSpacing(Get.context!, 'large'),
+            : ResponsiveHelper.getSpacing(Get.context!, 'large'),
+        vertical: ResponsiveHelper.getSpacing(Get.context!, 'medium'),
       ),
       decoration: AppDecorations.floatingCard(),
       child: Row(
@@ -72,17 +72,10 @@ class StaffDashboard extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          // Quick Stats
-          () {
-            final stats = controller.getTodayStats();
-            if (ResponsiveHelper.isMobile(Get.context!)) {
-              return _buildQuickStat(
-                'Students',
-                '${stats['totalStudents']}',
-                FontAwesomeIcons.users,
-                AppColors.primary,
-              );
-            } else {
+          // Quick Stats - Hidden on mobile
+          if (!ResponsiveHelper.isMobile(Get.context!)) ...[
+            () {
+              final stats = controller.getTodayStats();
               return Row(
                 children: [
                   _buildQuickStat(
@@ -92,7 +85,7 @@ class StaffDashboard extends StatelessWidget {
                     AppColors.primary,
                   ),
                   SizedBox(
-                    width: ResponsiveHelper.getSpacing(Get.context!, 'large'),
+                    width: ResponsiveHelper.getSpacing(Get.context!, 'medium'),
                   ),
                   _buildQuickStat(
                     'Breakfast',
@@ -101,7 +94,7 @@ class StaffDashboard extends StatelessWidget {
                     AppColors.warning,
                   ),
                   SizedBox(
-                    width: ResponsiveHelper.getSpacing(Get.context!, 'large'),
+                    width: ResponsiveHelper.getSpacing(Get.context!, 'medium'),
                   ),
                   _buildQuickStat(
                     'Dinner',
@@ -111,8 +104,8 @@ class StaffDashboard extends StatelessWidget {
                   ),
                 ],
               );
-            }
-          }(),
+            }(),
+          ],
         ],
       ),
     ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2);

@@ -124,9 +124,9 @@ class ResponsiveConstants {
     'card': {'mobile': 1.0, 'tablet': 1.1, 'desktop': 1.2},
     'actionCard': {'mobile': 1.2, 'tablet': 1.1, 'desktop': 1.3},
     'menuCard': {'mobile': 0.8, 'tablet': 0.9, 'desktop': 1.1},
-    'statsCard': {'mobile': 1.0, 'tablet': 1.2, 'desktop': 1.2},
+    'statsCard': {'mobile': 1.0, 'tablet': 1.3, 'desktop': 1.0},
     'quickAction': {'mobile': 1.3, 'tablet': 1.1, 'desktop': 1.3},
-    'studentCard': {'mobile': 1.0, 'tablet': 1.1, 'desktop': 1.2},
+    'studentCard': {'mobile': 1.0, 'tablet': 1.1, 'desktop': 1.1},
   };
 
   // ==================== CONTAINER WIDTHS ====================

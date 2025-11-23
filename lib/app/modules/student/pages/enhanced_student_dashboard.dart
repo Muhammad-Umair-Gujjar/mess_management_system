@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import '../../../../core/theme/app_decorations.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/responsive_helper.dart';
 import '../../../widgets/common/responsive_dashboard_layout.dart';
 import '../student_controller.dart';
 import 'student_home_page/student_home_page.dart';
@@ -30,7 +30,7 @@ class EnhancedStudentDashboard extends StatelessWidget {
       currentIndex: controller.currentPageIndex,
       onItemSelected: controller.changePage,
       menuItems: controller.navigationItems,
-      header: _buildTopAppBar(controller),
+      header: _buildTopAppBar(context, controller),
       onLogoutPressed: () => Get.offAllNamed('/'),
       child: Obx(() {
         final currentIndex = controller.currentPageIndex.value;
@@ -51,14 +51,21 @@ class EnhancedStudentDashboard extends StatelessWidget {
     );
   }
 
-  Widget _buildTopAppBar(StudentController controller) {
+  Widget _buildTopAppBar(BuildContext context, StudentController controller) {
     return Container(
-      height: 80.h,
-      padding: EdgeInsets.symmetric(horizontal: 32.w),
+      height: ResponsiveHelper.getValue<double>(
+        context,
+        mobile: 55,
+        tablet: 60,
+        desktop: 65,
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+      ),
       child: GlassmorphicContainer(
         width: double.infinity,
         height: double.infinity,
-        borderRadius: 20.r,
+        borderRadius: ResponsiveHelper.getSpacing(context, 'large'),
         blur: 20,
         alignment: Alignment.center,
         border: 2,
@@ -75,7 +82,9 @@ class EnhancedStudentDashboard extends StatelessWidget {
           ],
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.w),
+          padding: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+          ),
           child: Row(
             children: [
               // Page Title
@@ -86,13 +95,13 @@ class EnhancedStudentDashboard extends StatelessWidget {
                   children: [
                     Text(
                       controller.getCurrentPageTitle(),
-                      style: AppTextStyles.heading5.copyWith(
+                      style: AppTextStyles.heading4.copyWith(
                         color: AppColors.textPrimary,
                       ),
                     ),
                     Text(
                       controller.getCurrentPageSubtitle(),
-                      style: AppTextStyles.caption.copyWith(
+                      style: AppTextStyles.body1.copyWith(
                         color: AppColors.textLight,
                       ),
                     ),
@@ -130,89 +139,113 @@ class EnhancedStudentDashboard extends StatelessWidget {
   }
 
   Widget _buildPlaceholderPage(String title, IconData icon, Color color) {
-    // Responsive scaling for mobile
-    final isMobile = ScreenUtil().screenWidth < 600;
-    final double outerPadding = isMobile ? 16.r : 40.r;
-    final double innerPadding = isMobile ? 40.r : 48.r;
-    final double iconContainerPadding = isMobile ? 40.r : 24.r;
-    final double iconSize = isMobile ? 112.sp : 64.sp;
-    final double titleFontSize = isMobile
-        ? 42.sp
-        : AppTextStyles.heading3.fontSize ?? 28.sp;
-    final double subtitleFontSize = isMobile
-        ? 26.sp
-        : AppTextStyles.subtitle1.fontSize ?? 16.sp;
-    final double bodyFontSize = isMobile
-        ? 20.sp
-        : AppTextStyles.body2.fontSize ?? 14.sp;
-    final double gap1 = isMobile ? 36.h : 24.h;
-    final double gap2 = isMobile ? 24.h : 12.h;
-    final double gap3 = isMobile ? 36.h : 24.h;
-    final double chipHorizontal = isMobile ? 36.w : 24.w;
-    final double chipVertical = isMobile ? 22.h : 12.h;
-    final double chipRadius = isMobile ? 32.r : 20.r;
+    return Builder(
+      builder: (context) {
+        return Container(
+          padding: ResponsiveHelper.getPadding(context, 'padding'),
+          child: Center(
+            child: Container(
+              padding: ResponsiveHelper.getValue<EdgeInsets>(
+                context,
+                mobile: const EdgeInsets.all(32),
+                tablet: const EdgeInsets.all(40),
+                desktop: const EdgeInsets.all(48),
+              ),
+              decoration: AppDecorations.glassmorphicContainer(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: ResponsiveHelper.getValue<EdgeInsets>(
+                      context,
+                      mobile: const EdgeInsets.all(32),
+                      tablet: const EdgeInsets.all(28),
+                      desktop: const EdgeInsets.all(24),
+                    ),
+                    decoration: AppDecorations.gradientContainer(
+                      gradient: LinearGradient(
+                        colors: [color, color.withOpacity(0.7)],
+                      ),
+                    ),
+                    child: Icon(
+                      icon,
+                      size: ResponsiveHelper.getIconSize(context, 'xlarge'),
+                      color: Colors.white,
+                    ),
+                  ).animate().scale(duration: 600.ms),
 
-    return Container(
-      padding: EdgeInsets.all(outerPadding),
-      child: Center(
-        child: Container(
-          padding: EdgeInsets.all(innerPadding),
-          decoration: AppDecorations.glassmorphicContainer(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: EdgeInsets.all(iconContainerPadding),
-                decoration: AppDecorations.gradientContainer(
-                  gradient: LinearGradient(
-                    colors: [color, color.withOpacity(0.7)],
+                  SizedBox(
+                    height: ResponsiveHelper.getSpacing(context, 'xlarge'),
                   ),
-                ),
-                child: Icon(icon, size: iconSize, color: Colors.white),
-              ).animate().scale(duration: 600.ms),
 
-              SizedBox(height: gap1),
+                  Text(
+                    title,
+                    style: AppTextStyles.heading2.copyWith(
+                      color: color,
+                      fontSize: ResponsiveHelper.getFontSize(
+                        context,
+                        'heading2',
+                      ),
+                    ),
+                  ).animate().fadeIn(delay: 300.ms),
 
-              Text(
-                title,
-                style: AppTextStyles.heading3.copyWith(
-                  color: color,
-                  fontSize: titleFontSize,
-                ),
-              ).animate().fadeIn(delay: 300.ms),
-
-              SizedBox(height: gap2),
-
-              Text(
-                'Coming Soon!',
-                style: AppTextStyles.subtitle1.copyWith(
-                  fontSize: subtitleFontSize,
-                ),
-              ).animate().fadeIn(delay: 500.ms),
-
-              SizedBox(height: gap3),
-
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: chipHorizontal,
-                  vertical: chipVertical,
-                ),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(chipRadius),
-                ),
-                child: Text(
-                  'Advanced features are under development',
-                  style: AppTextStyles.body2.copyWith(
-                    color: color,
-                    fontSize: bodyFontSize,
+                  SizedBox(
+                    height: ResponsiveHelper.getSpacing(context, 'medium'),
                   ),
-                ),
-              ).animate().fadeIn(delay: 700.ms).slideY(begin: 0.3),
-            ],
+
+                  Text(
+                    'Coming Soon!',
+                    style: AppTextStyles.subtitle1.copyWith(
+                      fontSize: ResponsiveHelper.getFontSize(
+                        context,
+                        'subtitle1',
+                      ),
+                    ),
+                  ).animate().fadeIn(delay: 500.ms),
+
+                  SizedBox(
+                    height: ResponsiveHelper.getSpacing(context, 'xlarge'),
+                  ),
+
+                  Container(
+                    padding: ResponsiveHelper.getValue<EdgeInsets>(
+                      context,
+                      mobile: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 16,
+                      ),
+                      tablet: const EdgeInsets.symmetric(
+                        horizontal: 28,
+                        vertical: 14,
+                      ),
+                      desktop: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 12,
+                      ),
+                    ),
+                    decoration: BoxDecoration(
+                      color: color.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(
+                        ResponsiveHelper.getSpacing(context, 'large'),
+                      ),
+                    ),
+                    child: Text(
+                      'Advanced features are under development',
+                      style: AppTextStyles.body2.copyWith(
+                        color: color,
+                        fontSize: ResponsiveHelper.getFontSize(
+                          context,
+                          'body2',
+                        ),
+                      ),
+                    ),
+                  ).animate().fadeIn(delay: 700.ms).slideY(begin: 0.3),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

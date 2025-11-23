@@ -4,7 +4,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/utils/responsive_helper.dart';
-import '../../../../../widgets/responsive/responsive_widgets.dart';
 
 class StatCard extends StatelessWidget {
   final String title;
@@ -25,7 +24,7 @@ class StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-          width: ResponsiveHelper.isMobile(context) ? double.infinity : 200,
+          width: ResponsiveHelper.isMobile(context) ? null : 200,
           padding: EdgeInsets.all(
             ResponsiveHelper.getSpacing(context, 'medium'),
           ),
@@ -50,7 +49,7 @@ class StatCard extends StatelessWidget {
                 ),
                 child: Icon(
                   icon,
-                  size: ResponsiveHelper.getIconSize(context, 'medium'),
+                  size: ResponsiveHelper.getIconSize(context, 'small'),
                   color: Colors.white,
                 ),
               ),
@@ -59,16 +58,20 @@ class StatCard extends StatelessWidget {
 
               Text(
                 value,
-                style: AppTextStyles.heading4.copyWith(
+                style: AppTextStyles.heading5.copyWith(
                   color: color,
+    
                   fontWeight: FontWeight.w700,
                 ),
               ),
 
               Text(
                 title,
+                maxLines: 1,
                 style: AppTextStyles.body2.copyWith(
                   color: AppColors.textSecondary,
+
+                  overflow: TextOverflow.ellipsis,
                 ),
                 textAlign: TextAlign.center,
               ),

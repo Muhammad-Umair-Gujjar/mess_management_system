@@ -105,7 +105,7 @@ class MenuItemCard extends StatelessWidget {
             Expanded(
               child: Text(
                 item['name'] ?? 'Unknown Item',
-                style: AppTextStyles.heading4.copyWith(
+                style: AppTextStyles.heading5.copyWith(
                   color: AppColors.textPrimary,
                 ),
               ),
@@ -173,13 +173,13 @@ class MenuItemCard extends StatelessWidget {
           icon: FontAwesomeIcons.tag,
           text: item['category'] ?? 'Unknown',
         ),
-        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
         _buildMetadataItem(
           context,
           icon: FontAwesomeIcons.clock,
           text: item['preparationTime'] ?? 'N/A',
         ),
-        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
         _buildMetadataItem(
           context,
           icon: FontAwesomeIcons.fire,
@@ -208,7 +208,7 @@ class MenuItemCard extends StatelessWidget {
           ),
           color: AppColors.textSecondary,
         ),
-        SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'xs')),
         Text(
           text,
           style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
@@ -284,7 +284,7 @@ class MenuItemCard extends StatelessWidget {
           icon,
           size: ResponsiveHelper.getResponsiveIconSize(
             context,
-            mobile: 14.0,
+            mobile: 13.0,
             tablet: 15.0,
             desktop: 16.0,
           ),

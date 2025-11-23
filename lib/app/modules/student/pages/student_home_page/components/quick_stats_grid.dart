@@ -23,7 +23,7 @@ class QuickStatsGrid extends StatelessWidget {
         GridCardData(
           title: 'Meals Attended',
           value: '${monthlyStats['attendedMeals']}',
-          subtitle: 'This Month',
+          // subtitle: 'This Month',
           icon: FontAwesomeIcons.check,
           color: AppColors.success,
           trend: '+8%',
@@ -33,7 +33,7 @@ class QuickStatsGrid extends StatelessWidget {
         GridCardData(
           title: 'Monthly Bill',
           value: '₹${monthlyBill.toStringAsFixed(0)}',
-          subtitle: 'Current',
+          // subtitle: 'Current',
           icon: FontAwesomeIcons.receipt,
           color: AppColors.warning,
           trend: '+5%',
@@ -43,7 +43,7 @@ class QuickStatsGrid extends StatelessWidget {
         GridCardData(
           title: 'Attendance Rate',
           value: '${attendanceRate.toStringAsFixed(1)}%',
-          subtitle: 'Overall',
+          // subtitle: 'Overall',
           icon: FontAwesomeIcons.chartLine,
           color: AppColors.primary,
           trend: '+2%',
@@ -53,7 +53,7 @@ class QuickStatsGrid extends StatelessWidget {
         GridCardData(
           title: 'Days Active',
           value: '${DateTime.now().day}',
-          subtitle: 'This Month',
+          // subtitle: 'This Month',
           icon: FontAwesomeIcons.calendar,
           color: AppColors.info,
           trend: '${DateTime.now().day}d',

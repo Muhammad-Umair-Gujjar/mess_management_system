@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -36,17 +35,17 @@ class AttendanceCalendarCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(24.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           _buildHeader(context),
-          SizedBox(height: 24.h),
-          _buildCalendar(),
-          SizedBox(height: 24.h),
-          _buildLegend(),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+          _buildCalendar(context),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+          _buildLegend(context),
         ],
       ),
     ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.3);
@@ -56,51 +55,59 @@ class AttendanceCalendarCard extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Attendance Calendar',
-              style: AppTextStyles.heading4.copyWith(
-                fontSize: ResponsiveHelper.getResponsiveFontSize(
-                  context,
-                  mobile: 22,
-                  tablet: 24,
-                  desktop: 24,
+        Expanded(
+          flex: 2,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Attendance Calendar',
+                style: AppTextStyles.heading4.copyWith(
+                  fontSize: ResponsiveHelper.getResponsiveFontSize(
+                    context,
+                    mobile: 22,
+                    tablet: 24,
+                    desktop: 22,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 4.h),
-            Text(
-              'Track your daily meal attendance',
-              style: AppTextStyles.body2.copyWith(
-                color: AppColors.textLight,
-                fontSize: ResponsiveHelper.getResponsiveFontSize(
-                  context,
-                  mobile: 16,
-                  tablet: 16,
-                  desktop: 14,
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'xs')),
+              Text(
+                'Track your daily meal attendance',
+                style: AppTextStyles.body2.copyWith(
+                  color: AppColors.textLight,
+                  fontSize: ResponsiveHelper.getResponsiveFontSize(
+                    context,
+                    mobile: 16,
+                    tablet: 16,
+                    desktop: 14,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-        _buildFormatToggle(),
+        Expanded(child: _buildFormatToggle(context)),
       ],
     );
   }
 
-  Widget _buildFormatToggle() {
+  Widget _buildFormatToggle(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+        // vertical: ResponsiveHelper.getSpacing(context, 'xs'),
+      ),
       decoration: BoxDecoration(
         color: AppColors.primary.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getSpacing(context, 'medium'),
+        ),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<CalendarFormat>(
           value: calendarFormat,
-          style: AppTextStyles.body2.copyWith(color: AppColors.primary),
+          style: AppTextStyles.body1.copyWith(color: AppColors.primary),
           dropdownColor: Colors.white,
           items: const [
             DropdownMenuItem(value: CalendarFormat.month, child: Text('Month')),
@@ -120,7 +127,7 @@ class AttendanceCalendarCard extends StatelessWidget {
     );
   }
 
-  Widget _buildCalendar() {
+  Widget _buildCalendar(BuildContext context) {
     return TableCalendar<Attendance>(
       firstDay: DateTime.utc(2020, 1, 1),
       lastDay: DateTime.utc(2030, 12, 31),
@@ -137,15 +144,21 @@ class AttendanceCalendarCard extends StatelessWidget {
         todayTextStyle: AppTextStyles.body2.copyWith(color: Colors.white),
         selectedDecoration: BoxDecoration(
           gradient: AppColors.primaryGradient,
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(
+            ResponsiveHelper.getSpacing(context, 'small'),
+          ),
         ),
         todayDecoration: BoxDecoration(
           color: AppColors.accent,
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(
+            ResponsiveHelper.getSpacing(context, 'small'),
+          ),
         ),
         markerDecoration: BoxDecoration(
           color: AppColors.success,
-          borderRadius: BorderRadius.circular(4.r),
+          borderRadius: BorderRadius.circular(
+            ResponsiveHelper.getSpacing(context, 'xs'),
+          ),
         ),
         markersMaxCount: 2,
         canMarkersOverflow: false,
@@ -157,12 +170,12 @@ class AttendanceCalendarCard extends StatelessWidget {
         leftChevronIcon: Icon(
           FontAwesomeIcons.chevronLeft,
           color: AppColors.primary,
-          size: 16.sp,
+          size: ResponsiveHelper.getIconSize(context, 'small'),
         ),
         rightChevronIcon: Icon(
           FontAwesomeIcons.chevronRight,
           color: AppColors.primary,
-          size: 16.sp,
+          size: ResponsiveHelper.getIconSize(context, 'small'),
         ),
       ),
       daysOfWeekStyle: DaysOfWeekStyle(
@@ -182,7 +195,7 @@ class AttendanceCalendarCard extends StatelessWidget {
       calendarBuilders: CalendarBuilders(
         markerBuilder: (context, day, events) {
           if (events.isNotEmpty) {
-            return _buildAttendanceMarkers(events.cast<Attendance>());
+            return _buildAttendanceMarkers(context, events.cast<Attendance>());
           }
           return null;
         },
@@ -190,7 +203,10 @@ class AttendanceCalendarCard extends StatelessWidget {
     );
   }
 
-  Widget _buildAttendanceMarkers(List<Attendance> attendances) {
+  Widget _buildAttendanceMarkers(
+    BuildContext context,
+    List<Attendance> attendances,
+  ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: attendances.take(2).map((attendance) {
@@ -207,19 +223,27 @@ class AttendanceCalendarCard extends StatelessWidget {
         }
 
         return Container(
-          margin: EdgeInsets.symmetric(horizontal: 1.w),
-          child: Icon(icon, size: 8.sp, color: color),
+          margin: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'xs') / 2,
+          ),
+          child: Icon(
+            icon,
+            size: ResponsiveHelper.getIconSize(context, 'xsmall'),
+            color: color,
+          ),
         );
       }).toList(),
     );
   }
 
-  Widget _buildLegend() {
+  Widget _buildLegend(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.r),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
       decoration: BoxDecoration(
         color: AppColors.background,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getSpacing(context, 'medium'),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,18 +254,25 @@ class AttendanceCalendarCard extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
           Wrap(
-            spacing: 16.w,
-            runSpacing: 8.h,
+            spacing: ResponsiveHelper.getSpacing(context, 'medium'),
+            runSpacing: ResponsiveHelper.getSpacing(context, 'small'),
             children: [
               _buildLegendItem(
+                context,
                 FontAwesomeIcons.sun,
                 'Breakfast',
                 AppColors.warning,
               ),
-              _buildLegendItem(FontAwesomeIcons.moon, 'Dinner', AppColors.info),
               _buildLegendItem(
+                context,
+                FontAwesomeIcons.moon,
+                'Dinner',
+                AppColors.info,
+              ),
+              _buildLegendItem(
+                context,
                 FontAwesomeIcons.xmark,
                 'Absent',
                 AppColors.error,
@@ -253,12 +284,21 @@ class AttendanceCalendarCard extends StatelessWidget {
     );
   }
 
-  Widget _buildLegendItem(IconData icon, String label, Color color) {
+  Widget _buildLegendItem(
+    BuildContext context,
+    IconData icon,
+    String label,
+    Color color,
+  ) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 12.sp, color: color),
-        SizedBox(width: 8.w),
+        Icon(
+          icon,
+          size: ResponsiveHelper.getIconSize(context, 'xsmall'),
+          color: color,
+        ),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
         Text(label, style: AppTextStyles.body2),
       ],
     );

@@ -50,7 +50,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'xlarge')),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
       decoration: AppDecorations.floatingCard(),
       child: Form(
         key: _formKey,
@@ -77,31 +77,33 @@ class _FeedbackFormState extends State<FeedbackForm> {
                     color: Colors.white,
                   ),
                 ),
-                SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Share Your Feedback',
-                      style: AppTextStyles.heading5,
-    
-                    ),
-                    SizedBox(
-                      height:
-                          ResponsiveHelper.getSpacing(context, 'small') * 0.5,
-                    ),
-                    Text(
-                      'Help us improve our services',
-                      style: AppTextStyles.body2.copyWith(
-                        color: AppColors.textLight,
+                SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Share Your Feedback',
+                        style: AppTextStyles.heading5,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        height: ResponsiveHelper.getSpacing(context, 'xs') * 0.5,
+                      ),
+                      Text(
+                        'Help us improve our services',
+                        style: AppTextStyles.body2.copyWith(
+                          color: AppColors.textLight,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
 
-            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
 
             // Rating Selection
             Text(
@@ -112,85 +114,90 @@ class _FeedbackFormState extends State<FeedbackForm> {
             ),
             SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(5, (index) {
-                final rating = index + 1;
-                final emojiData = ratingEmojis[index];
-                final isSelected = selectedRating == rating;
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: List.generate(5, (index) {
+                  final rating = index + 1;
+                  final emojiData = ratingEmojis[index];
+                  final isSelected = selectedRating == rating;
 
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedRating = rating;
-                    });
-                  },
-                  child:
-                      Container(
-                            padding: EdgeInsets.all(
-                              ResponsiveHelper.getSpacing(context, 'small'),
-                            ),
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? emojiData['color'].withOpacity(0.2)
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(
-                                ResponsiveHelper.getSpacing(context, 'medium'),
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedRating = rating;
+                      });
+                    },
+                    child:
+                        Container(
+                              padding: EdgeInsets.all(
+                                ResponsiveHelper.getSpacing(context, 'small'),
                               ),
-                              border: Border.all(
+                              decoration: BoxDecoration(
                                 color: isSelected
-                                    ? emojiData['color']
+                                    ? emojiData['color'].withOpacity(0.2)
                                     : Colors.transparent,
-                                width: 2,
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  emojiData['emoji'],
-                                  style: TextStyle(
-                                    fontSize:
-                                        ResponsiveHelper.getResponsiveFontSize(
-                                          context,
-                                          mobile: 16,
-                                          tablet: 22,
-                                          desktop: 16,
-                                        ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: ResponsiveHelper.getSpacing(
+                                borderRadius: BorderRadius.circular(
+                                  ResponsiveHelper.getSpacing(
                                     context,
-                                    'small',
+                                    'medium',
                                   ),
                                 ),
-                                Text(
-                                  emojiData['label'],
-                                  style: AppTextStyles.caption.copyWith(
-                                    // Changed from caption to body2
-                                    color: isSelected
-                                        ? emojiData['color']
-                                        : AppColors.textLight,
-                                    fontWeight: isSelected
-                                        ? FontWeight.w600
-                                        : FontWeight.normal,
-                                    fontSize:
-                                        ResponsiveHelper.getResponsiveFontSize(
-                                          context,
-                                          mobile: 14, // Larger text on mobile
-                                          tablet: 20,
-                                          desktop: 12,
-                                        ),
-                                  ),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? emojiData['color']
+                                      : Colors.transparent,
+                                  width: 2,
                                 ),
-                              ],
-                            ),
-                          )
-                          .animate(delay: Duration(milliseconds: index * 100))
-                          .fadeIn(duration: 600.ms)
-                          .scale(begin: const Offset(0.8, 0.8)),
-                );
-              }),
+                              ),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    emojiData['emoji'],
+                                    style: TextStyle(
+                                      fontSize:
+                                          ResponsiveHelper.getResponsiveFontSize(
+                                            context,
+                                            mobile: 16,
+                                            tablet: 22,
+                                            desktop: 16,
+                                          ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: ResponsiveHelper.getSpacing(
+                                      context,
+                                      'small',
+                                    ),
+                                  ),
+                                  Text(
+                                    emojiData['label'],
+                                    style: AppTextStyles.caption.copyWith(
+                                      color: isSelected
+                                          ? emojiData['color']
+                                          : AppColors.textLight,
+                                      fontWeight: isSelected
+                                          ? FontWeight.w600
+                                          : FontWeight.normal,
+                                      fontSize:
+                                          ResponsiveHelper.getResponsiveFontSize(
+                                            context,
+                                            mobile: 14,
+                                            tablet: 20,
+                                            desktop: 12,
+                                          ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                            .animate(delay: Duration(milliseconds: index * 100))
+                            .fadeIn(duration: 600.ms)
+                            .scale(begin: const Offset(0.8, 0.8)),
+                  );
+                }),
+              ),
             ),
 
             SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),

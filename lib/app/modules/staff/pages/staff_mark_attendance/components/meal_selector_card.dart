@@ -33,6 +33,9 @@ class MealSelectorCard extends StatelessWidget {
             child: CustomTabBar(
               selectedIndex: selectedTabIndex,
               onTap: onTabChanged,
+              tabHeight: 40.0, // Reduced height from default 56.0
+              selectedIconSize: 'small', // Makes selected icon small
+              unselectedIconSize: 'small', // Makes unselected icon extra small
               tabs: [
                 CustomTabBarItem(
                   label: 'Mark Attendance',
@@ -50,8 +53,8 @@ class MealSelectorCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(
                 ResponsiveHelper.getSpacing(context, 'small'),
               ),
-              selectedTextStyle: AppTextStyles.body1.copyWith(
-                fontWeight: FontWeight.w600,
+              selectedTextStyle: AppTextStyles.body2.copyWith(
+                fontWeight: FontWeight.w500,
               ),
               unselectedTextStyle: AppTextStyles.body2,
             ),
@@ -99,9 +102,7 @@ class MealSelectorCard extends StatelessWidget {
                   size: ResponsiveHelper.getIconSize(context, 'xsmall'),
                   color: isSelected ? Colors.white : color,
                 ),
-                SizedBox(
-                  width: ResponsiveHelper.getSpacing(context, 'xxsmall'),
-                ),
+                SizedBox(width: ResponsiveHelper.getSpacing(context, 'xs')),
                 Text(
                   meal,
                   style: AppTextStyles.body2.copyWith(

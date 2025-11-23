@@ -41,7 +41,7 @@ class MealRatesCard extends StatelessWidget {
       children: [
         Text('Current Meal Rates', style: AppTextStyles.heading5),
         const Spacer(),
-        Container(
+        if(!ResponsiveHelper.isMobile(context))Container(
           padding: EdgeInsets.symmetric(
             horizontal: ResponsiveHelper.getSpacing(context, 'small'),
             vertical: ResponsiveHelper.getSpacing(context, 'small') * 0.5,

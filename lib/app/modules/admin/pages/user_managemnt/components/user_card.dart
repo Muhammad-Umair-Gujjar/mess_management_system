@@ -41,44 +41,147 @@ class UserCard extends StatelessWidget {
                   : AppColors.error.withOpacity(0.3),
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  // User Avatar
-                  _buildUserAvatar(context, role),
-                  SizedBox(
-                    width: ResponsiveHelper.getSpacing(context, 'medium'),
-                  ),
-
-                  // User Info
-                  _buildUserInfo(context, role),
-
-                  // Status and Actions
-                  _buildStatusAndActions(context, isActive),
-
-                  SizedBox(
-                    width: ResponsiveHelper.getSpacing(context, 'small'),
-                  ),
-
-                  // Action Menu
-                  _buildActionMenu(context, isActive),
-                ],
-              ),
-            ],
-          ),
+          child: ResponsiveHelper.isMobile(context)
+              ? _buildMobileLayout(context, role, isActive)
+              : _buildDesktopLayout(context, role, isActive),
         )
         .animate(delay: Duration(milliseconds: 100 * index))
         .fadeIn(duration: 600.ms)
         .slideX(begin: -0.3);
   }
 
+  Widget _buildMobileLayout(BuildContext context, String role, bool isActive) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Top row with avatar, name and actions
+        Row(
+          children: [
+            _buildUserAvatar(context, role),
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    user['name'],
+                    style: AppTextStyles.subtitle1.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    user['email'],
+                    style: AppTextStyles.body2.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            _buildActionMenu(context, isActive),
+          ],
+        ),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+        // Bottom row with role, status and room info
+        Row(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+                vertical: ResponsiveHelper.getSpacing(context, 'xs'),
+              ),
+              decoration: BoxDecoration(
+                color: _getRoleColor(role).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(
+                  ResponsiveHelper.getBorderRadius(context, 'small'),
+                ),
+              ),
+              child: Text(
+                role,
+                style: AppTextStyles.caption.copyWith(
+                  color: _getRoleColor(role),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+                vertical: ResponsiveHelper.getSpacing(context, 'xs'),
+              ),
+              decoration: BoxDecoration(
+                color: isActive
+                    ? AppColors.success.withOpacity(0.1)
+                    : AppColors.error.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(
+                  ResponsiveHelper.getBorderRadius(context, 'small'),
+                ),
+              ),
+              child: Text(
+                user['status'],
+                style: AppTextStyles.caption.copyWith(
+                  color: isActive ? AppColors.success : AppColors.error,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            if (user['roomNumber'] != null) ...[
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
+              Expanded(
+                child: Text(
+                  'Room: ${user['roomNumber']}',
+                  style: AppTextStyles.caption.copyWith(
+                    color: AppColors.textLight,
+                  ),
+                  textAlign: TextAlign.right,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDesktopLayout(BuildContext context, String role, bool isActive) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            // User Avatar
+            _buildUserAvatar(context, role),
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+
+            // User Info
+            _buildUserInfo(context, role),
+
+            // Status and Actions
+            _buildStatusAndActions(context, isActive),
+
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
+
+            // Action Menu
+            _buildActionMenu(context, isActive),
+          ],
+        ),
+      ],
+    );
+  }
+
   Widget _buildUserAvatar(BuildContext context, String role) {
     return Container(
-      width: ResponsiveHelper.getIconSize(context, 'large'),
-      height: ResponsiveHelper.getIconSize(context, 'large'),
+      width: ResponsiveHelper.isMobile(context)
+          ? ResponsiveHelper.getIconSize(context, 'medium')
+          : ResponsiveHelper.getIconSize(context, 'large'),
+      height: ResponsiveHelper.isMobile(context)
+          ? ResponsiveHelper.getIconSize(context, 'medium')
+          : ResponsiveHelper.getIconSize(context, 'large'),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [_getRoleColor(role), _getRoleColor(role).withOpacity(0.7)],
@@ -177,10 +280,11 @@ class UserCard extends StatelessWidget {
           ),
         ),
         SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
-        if(!ResponsiveHelper.isMobile(context))Text(
-          'Last: ${user['lastLogin']}',
-          style: AppTextStyles.caption.copyWith(color: AppColors.textLight),
-        ),
+        if (!ResponsiveHelper.isMobile(context))
+          Text(
+            'Last: ${user['lastLogin']}',
+            style: AppTextStyles.caption.copyWith(color: AppColors.textLight),
+          ),
       ],
     );
   }

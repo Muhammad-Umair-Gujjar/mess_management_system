@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
-import '../../widgets/common/reusable_button.dart';
-import '../../../core/theme/app_decorations.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/utils/responsive_helper.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -128,7 +125,9 @@ class _SplashScreenState extends State<SplashScreen>
                       Expanded(flex: 6, child: _buildMainContent()),
                       Expanded(flex: 2, child: _buildLoadingSection()),
                       if (_showContent) _buildQuickActions(),
-                      SizedBox(height: 40.h),
+                      SizedBox(
+                        height: ResponsiveHelper.getSpacing(context, 'large'),
+                      ),
                     ],
                   ),
                 ),
@@ -147,11 +146,23 @@ class _SplashScreenState extends State<SplashScreen>
         children: [
           // App Logo/Animation
           Container(
-            width: 180.w,
-            height: 180.h,
+            width: ResponsiveHelper.getValue<double>(
+              context,
+              mobile: 120,
+              tablet: 150,
+              desktop: 180,
+            ),
+            height: ResponsiveHelper.getValue<double>(
+              context,
+              mobile: 120,
+              tablet: 150,
+              desktop: 180,
+            ),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(30.r),
+              borderRadius: BorderRadius.circular(
+                ResponsiveHelper.getBorderRadius(context, 'large'),
+              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.2),
@@ -165,14 +176,14 @@ class _SplashScreenState extends State<SplashScreen>
               children: [
                 Icon(
                   Icons.restaurant_menu,
-                  size: 80.sp,
+                  size: ResponsiveHelper.getIconSize(context, 'largeIcon'),
                   color: AppColors.primary,
                 ),
-                SizedBox(height: 8.h),
+                SizedBox(height: ResponsiveHelper.getSpacing(context, 'xs')),
                 Text(
                   'MessMaster',
                   style: TextStyle(
-                    fontSize: 20.sp,
+                    fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
                     fontWeight: FontWeight.bold,
                     color: AppColors.primary,
                   ),
@@ -181,32 +192,32 @@ class _SplashScreenState extends State<SplashScreen>
             ),
           ),
 
-          SizedBox(height: 40.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
 
           // App Title and Subtitle
           Text(
             'MessMaster',
             style: TextStyle(
-              fontSize: 42.sp,
+              fontSize: ResponsiveHelper.getFontSize(context, 'heading1'),
               fontWeight: FontWeight.bold,
               color: Colors.white,
               letterSpacing: 2,
             ),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
           Text(
             'Smart Meal Management System',
             style: TextStyle(
-              fontSize: 18.sp,
+              fontSize: ResponsiveHelper.getFontSize(context, 'heading5'),
               color: Colors.white.withValues(alpha: 0.9),
               fontWeight: FontWeight.w400,
             ),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'xs')),
           Text(
             'Attendance • Billing • Menu Planning',
             style: TextStyle(
-              fontSize: 14.sp,
+              fontSize: ResponsiveHelper.getFontSize(context, 'body3'),
               color: Colors.white.withValues(alpha: 0.7),
             ),
           ),
@@ -222,14 +233,24 @@ class _SplashScreenState extends State<SplashScreen>
         // Loading indicator
         if (!_isDataLoaded) ...[
           SizedBox(
-            width: 40.w,
-            height: 40.w,
+            width: ResponsiveHelper.getValue<double>(
+              context,
+              mobile: 30,
+              tablet: 35,
+              desktop: 40,
+            ),
+            height: ResponsiveHelper.getValue<double>(
+              context,
+              mobile: 30,
+              tablet: 35,
+              desktop: 40,
+            ),
             child: CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               strokeWidth: 3,
             ),
           ),
-          SizedBox(height: 20.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
         ],
 
         // Loading text
@@ -239,7 +260,7 @@ class _SplashScreenState extends State<SplashScreen>
             _loadingText,
             key: ValueKey(_loadingText),
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: ResponsiveHelper.getFontSize(context, 'body2'),
               color: Colors.white.withValues(alpha: 0.8),
               fontWeight: FontWeight.w500,
             ),
@@ -247,8 +268,12 @@ class _SplashScreenState extends State<SplashScreen>
         ),
 
         if (_isDataLoaded) ...[
-          SizedBox(height: 20.h),
-          Icon(Icons.check_circle, color: Colors.green[300], size: 32.sp),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+          Icon(
+            Icons.check_circle,
+            color: Colors.green[300],
+            size: ResponsiveHelper.getIconSize(context, 'medium'),
+          ),
         ],
       ],
     );
@@ -256,32 +281,37 @@ class _SplashScreenState extends State<SplashScreen>
 
   Widget _buildQuickActions() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 40.w),
+      padding: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+      ),
       child: Column(
         children: [
           Text(
             'Quick Access',
             style: TextStyle(
-              fontSize: 18.sp,
+              fontSize: ResponsiveHelper.getFontSize(context, 'heading5'),
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _buildQuickActionButton(
+                context,
                 'Student Login',
                 Icons.school,
                 () => Get.offAllNamed('/landing', arguments: 'student'),
               ),
               _buildQuickActionButton(
+                context,
                 'Staff Login',
                 Icons.person_outline,
                 () => Get.offAllNamed('/landing', arguments: 'staff'),
               ),
               _buildQuickActionButton(
+                context,
                 'Admin Login',
                 Icons.admin_panel_settings,
                 () => Get.offAllNamed('/landing', arguments: 'admin'),
@@ -294,6 +324,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Widget _buildQuickActionButton(
+    BuildContext context,
     String title,
     IconData icon,
     VoidCallback onTap,
@@ -301,21 +332,34 @@ class _SplashScreenState extends State<SplashScreen>
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 80.w,
-        padding: EdgeInsets.symmetric(vertical: 12.h),
+        width: ResponsiveHelper.getValue<double>(
+          context,
+          mobile: 60,
+          tablet: 70,
+          desktop: 80,
+        ),
+        padding: EdgeInsets.symmetric(
+          vertical: ResponsiveHelper.getSpacing(context, 'small'),
+        ),
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.2),
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(
+            ResponsiveHelper.getBorderRadius(context, 'small'),
+          ),
           border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
         ),
         child: Column(
           children: [
-            Icon(icon, color: Colors.white, size: 24.sp),
-            SizedBox(height: 4.h),
+            Icon(
+              icon,
+              color: Colors.white,
+              size: ResponsiveHelper.getIconSize(context, 'small'),
+            ),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xs')),
             Text(
               title,
               style: TextStyle(
-                fontSize: 12.sp,
+                fontSize: ResponsiveHelper.getFontSize(context, 'body3'),
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
               ),

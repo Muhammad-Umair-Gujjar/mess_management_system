@@ -29,8 +29,8 @@ class QuickActionsRow extends StatelessWidget {
 
   /// Mobile layout - compact buttons with smaller text
   Widget _buildMobileLayout(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+    return Row(
+    
       children: [
         ReusableButton(
           text: 'Mark All Present',
@@ -39,7 +39,7 @@ class QuickActionsRow extends StatelessWidget {
           size: ButtonSize.small,
           onPressed: onMarkAllPresent,
         ),
-        SizedBox(height: ResponsiveHelper.getSpacing(context, 'xsmall')),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
         ReusableButton(
           text: 'Mark All Absent',
           icon: FontAwesomeIcons.xmark,

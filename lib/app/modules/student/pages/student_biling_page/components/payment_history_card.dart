@@ -51,7 +51,7 @@ class PaymentHistoryCard extends StatelessWidget {
         if(ResponsiveHelper.isDesktop(context))Icon(
           FontAwesomeIcons.chartLine,
           color: AppColors.primary,
-          size: ResponsiveHelper.getIconSize(context, 'large'),
+          size: ResponsiveHelper.getIconSize(context, 'medium'),
         ),
       ],
     );

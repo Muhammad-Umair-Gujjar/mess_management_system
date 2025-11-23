@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../student_controller.dart';
 
 class AttendanceStatsCard extends StatelessWidget {
@@ -15,16 +15,23 @@ class AttendanceStatsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: BoxConstraints(maxHeight: 400.h),
-      padding: EdgeInsets.all(24.r),
+      constraints: BoxConstraints(
+        maxHeight: ResponsiveHelper.getValue<double>(
+          context,
+          mobile: 400,
+          tablet: 450,
+          desktop: 500,
+        ),
+      ),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           _buildHeader(),
-          SizedBox(height: 20.h),
-          _buildStats(),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+          _buildStats(context),
         ],
       ),
     ).animate().fadeIn(delay: 800.ms).slideY(begin: 0.3);
@@ -34,45 +41,43 @@ class AttendanceStatsCard extends StatelessWidget {
     return Text('Monthly Overview', style: AppTextStyles.heading5);
   }
 
-  Widget _buildStats() {
-    return Builder(
-      builder: (context) {
-        final monthlyStats = controller.getMonthlyStats();
-        final attendanceRate = controller.attendanceRate.value;
+  Widget _buildStats(BuildContext context) {
+    final monthlyStats = controller.getMonthlyStats();
+    final attendanceRate = controller.attendanceRate.value;
 
-        return Column(
-          children: [
-            _StatRow(
-              label: 'Meals Attended',
-              value: '${monthlyStats['attendedMeals']}',
-              color: AppColors.success,
-            ),
-            SizedBox(height: 12.h),
-            _StatRow(
-              label: 'Meals Missed',
-              value: '${monthlyStats['missedMeals']}',
-              color: AppColors.error,
-            ),
-            SizedBox(height: 12.h),
-            _StatRow(
-              label: 'Attendance Rate',
-              value: '${attendanceRate.toStringAsFixed(1)}%',
-              color: AppColors.primary,
-            ),
-            SizedBox(height: 20.h),
-            _buildProgressBar(attendanceRate),
-          ],
-        );
-      },
+    return Column(
+      children: [
+        _StatRow(
+          label: 'Meals Attended',
+          value: '${monthlyStats['attendedMeals']}',
+          color: AppColors.success,
+        ),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
+        _StatRow(
+          label: 'Meals Missed',
+          value: '${monthlyStats['missedMeals']}',
+          color: AppColors.error,
+        ),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
+        _StatRow(
+          label: 'Attendance Rate',
+          value: '${attendanceRate.toStringAsFixed(1)}%',
+          color: AppColors.primary,
+        ),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+        _buildProgressBar(context, attendanceRate),
+      ],
     );
   }
 
-  Widget _buildProgressBar(double attendanceRate) {
+  Widget _buildProgressBar(BuildContext context, double attendanceRate) {
     return Container(
-      height: 8.h,
+      height: ResponsiveHelper.getSpacing(context, 'small'),
       decoration: BoxDecoration(
         color: Colors.grey.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(4.r),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getSpacing(context, 'xs'),
+        ),
       ),
       child: FractionallySizedBox(
         alignment: Alignment.centerLeft,
@@ -80,7 +85,9 @@ class AttendanceStatsCard extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             gradient: AppColors.primaryGradient,
-            borderRadius: BorderRadius.circular(4.r),
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getSpacing(context, 'xs'),
+            ),
           ),
         ),
       ),

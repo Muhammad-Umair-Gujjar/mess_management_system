@@ -84,7 +84,7 @@ class AttendanceMarkingView extends StatelessWidget {
               'Mark $selectedMeal Attendance',
               style: AppTextStyles.heading5.copyWith(fontSize: 18),
             ),
-            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xxsmall')),
+            // SizedBox(height: ResponsiveHelper.getSpacing(context, 'xxsmall')),
             Text(
               DateFormat('EEEE, MMMM d, yyyy').format(selectedDay),
               style: AppTextStyles.body2.copyWith(

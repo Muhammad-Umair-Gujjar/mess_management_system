@@ -29,6 +29,8 @@ class CustomTabBar extends StatelessWidget {
   final double? indicatorHeight;
   final TextStyle? selectedTextStyle;
   final TextStyle? unselectedTextStyle;
+  final String? selectedIconSize;
+  final String? unselectedIconSize;
 
   const CustomTabBar({
     Key? key,
@@ -49,6 +51,8 @@ class CustomTabBar extends StatelessWidget {
     this.indicatorHeight,
     this.selectedTextStyle,
     this.unselectedTextStyle,
+    this.selectedIconSize,
+    this.unselectedIconSize,
   }) : super(key: key);
 
   @override
@@ -118,11 +122,11 @@ class CustomTabBar extends StatelessWidget {
                             size: isSelected
                                 ? ResponsiveHelper.getIconSize(
                                     context,
-                                    'medium',
+                                    selectedIconSize ?? 'small',
                                   )
                                 : ResponsiveHelper.getIconSize(
                                     context,
-                                    'small',
+                                    unselectedIconSize ?? 'small',
                                   ),
                             color: isSelected
                                 ? Colors.white

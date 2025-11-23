@@ -26,18 +26,18 @@ class CalendarView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
-      decoration: AppDecorations.floatingCard(),
-      child: Column(
-        children: [
-          // Calendar Header
-          Text('Attendance Overview', style: AppTextStyles.heading5),
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
-
-          // Calendar
-          Expanded(
-            child: TableCalendar(
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
+        decoration: AppDecorations.floatingCard(),
+        child: Column(
+          children: [
+            // Calendar Header
+            Text('Attendance Overview', style: AppTextStyles.heading5),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+      
+            // Calendar
+            TableCalendar(
               firstDay: DateTime.utc(2020, 1, 1),
               lastDay: DateTime.utc(2030, 12, 31),
               focusedDay: focusedDay,
@@ -82,8 +82,8 @@ class CalendarView extends StatelessWidget {
               onDaySelected: onDaySelected,
               onPageChanged: onPageChanged,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -162,7 +162,7 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
           MenuHeader(onAddItem: () => _showAddItemDialog()),
           Container(
             margin: EdgeInsets.symmetric(
-              horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+              // horizontal: ResponsiveHelper.getSpacing(context, 'small'),
               vertical: ResponsiveHelper.getSpacing(context, 'medium'),
             ),
             decoration: AppDecorations.floatingCard(),

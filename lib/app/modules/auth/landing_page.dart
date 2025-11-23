@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/responsive_helper.dart';
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
@@ -21,12 +21,12 @@ class LandingPage extends StatelessWidget {
               'Choose Your Role',
               style: AppTextStyles.heading1.copyWith(
                 color: const Color(0xFF2D3748),
-                fontSize: 50.sp,
+                fontSize: ResponsiveHelper.getFontSize(context, 'heading1'),
                 fontWeight: FontWeight.w600,
               ),
             ),
 
-            SizedBox(height: 64.h),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
 
             // Role Selection Cards
             Row(
@@ -34,22 +34,25 @@ class LandingPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildRoleCard(
+                  context,
                   'Student',
                   'Access your meal plans, attendance, and billing',
                   FontAwesomeIcons.graduationCap,
                   const Color(0xFF3182CE),
                   () => Get.toNamed('/student'),
                 ),
-                SizedBox(width: 32.w),
+                SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
                 _buildRoleCard(
+                  context,
                   'Mess Staff',
                   'Mark attendance, manage daily operations',
                   FontAwesomeIcons.userTie,
                   const Color(0xFF38A169),
                   () => Get.toNamed('/staff'),
                 ),
-                SizedBox(width: 32.w),
+                SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
                 _buildRoleCard(
+                  context,
                   'Administrator',
                   'Full system control, analytics, and management',
                   FontAwesomeIcons.userShield,
@@ -65,6 +68,7 @@ class LandingPage extends StatelessWidget {
   }
 
   Widget _buildRoleCard(
+    BuildContext context,
     String title,
     String description,
     IconData icon,
@@ -76,12 +80,24 @@ class LandingPage extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          width: 440.w,
-          height: 470.h,
-          padding: EdgeInsets.symmetric(vertical: 48.h, horizontal: 32.w),
+          width: ResponsiveHelper.getValue<double>(
+            context,
+            mobile: 150,
+            tablet: 210,
+            desktop: 240,
+          ),
+          height: ResponsiveHelper.getValue<double>(
+            context,
+            mobile: 280,
+            tablet: 300,
+            desktop: 300,
+          ),
+          padding: ResponsiveHelper.getPadding(context, 'cardPadding'),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(35.r),
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getBorderRadius(context, 'large'),
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.13),
@@ -101,35 +117,41 @@ class LandingPage extends StatelessWidget {
             children: [
               // Icon Container
               Container(
-                width: 90.w,
-                height: 90.h,
+                width: ResponsiveHelper.getIconSize(context, 'largeIcon'),
+                height: ResponsiveHelper.getIconSize(context, 'largeIcon'),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(18.r),
+                  borderRadius: BorderRadius.circular(
+                    ResponsiveHelper.getBorderRadius(context, 'medium'),
+                  ),
                 ),
-                child: Icon(icon, size: 50.sp, color: color),
+                child: Icon(
+                  icon,
+                  size: ResponsiveHelper.getIconSize(context, 'medium'),
+                  color: color,
+                ),
               ),
 
-              SizedBox(height: 28.h),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
               // Title
               Text(
                 title,
                 style: AppTextStyles.heading4.copyWith(
                   color: const Color(0xFF2D3748),
-                  fontSize: 32.sp,
+                  fontSize: ResponsiveHelper.getFontSize(context, 'heading4'),
                   fontWeight: FontWeight.w700,
                 ),
               ),
 
-              SizedBox(height: 18.h),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
 
               // Description
               Text(
                 description,
                 style: AppTextStyles.body2.copyWith(
                   color: const Color(0xFF718096),
-                  fontSize: 22.sp,
+                  fontSize: ResponsiveHelper.getFontSize(context, 'body2'),
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 3,
@@ -141,16 +163,18 @@ class LandingPage extends StatelessWidget {
               // Access Button
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 16.h),
+                padding: ResponsiveHelper.getPadding(context, 'small'),
                 decoration: BoxDecoration(
                   color: color,
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(
+                    ResponsiveHelper.getBorderRadius(context, 'small'),
+                  ),
                 ),
                 child: Text(
                   'Access Dashboard',
                   style: AppTextStyles.button.copyWith(
                     color: Colors.white,
-                    fontSize: 22.sp,
+                    fontSize: ResponsiveHelper.getFontSize(context, 'button'),
                     fontWeight: FontWeight.w700,
                   ),
                   textAlign: TextAlign.center,

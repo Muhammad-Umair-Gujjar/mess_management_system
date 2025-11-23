@@ -32,7 +32,7 @@ class UserFilters extends StatelessWidget {
     final isMobile = ResponsiveHelper.isMobile(context);
 
     return Container(
-      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -82,15 +82,16 @@ class UserFilters extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          flex: 3,
+          flex: 4,
           child: ReusableTextField(
             hintText: r'Search users by name or email...',
             type: TextFieldType.search,
             onChanged: onSearchChanged,
           ),
         ),
-        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
         Expanded(
+          flex: 2,
           child: SizedBox(
             width: ResponsiveHelper.getComponentDimension(
               context,
@@ -101,6 +102,7 @@ class UserFilters extends StatelessWidget {
         ),
         SizedBox(width: ResponsiveHelper.getSpacing(context, 'xs')),
         Expanded(
+          flex: 2,
           child: SizedBox(
             width: ResponsiveHelper.getComponentDimension(
               context,
@@ -109,13 +111,13 @@ class UserFilters extends StatelessWidget {
             child: _buildStatusDropdown(context),
           ),
         ),
-        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
         Expanded(
           child: ReusableButton(
             text: 'Add User',
             icon: FontAwesomeIcons.userPlus,
             type: ButtonType.primary,
-            size: ButtonSize.medium,
+            size: ButtonSize.small,
             onPressed: onAddUser,
           ),
         ),
@@ -132,7 +134,9 @@ class UserFilters extends StatelessWidget {
         labelText: 'Role',
         labelStyle: TextStyle(fontSize: 14),
         border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
+        contentPadding: EdgeInsets.symmetric(horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+        vertical: ResponsiveHelper.getSpacing(context, 'medium')
+        ),
         isDense: true,
       ),
       value: selectedRole.isEmpty ? null : selectedRole,
@@ -160,7 +164,8 @@ class UserFilters extends StatelessWidget {
         labelText: 'Status',
         labelStyle: TextStyle(fontSize: 14),
         border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
+        contentPadding: EdgeInsets.symmetric(horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+        vertical: ResponsiveHelper.getSpacing(context, 'medium')),
         isDense: true,
       ),
       value: selectedStatus.isEmpty ? null : selectedStatus,
