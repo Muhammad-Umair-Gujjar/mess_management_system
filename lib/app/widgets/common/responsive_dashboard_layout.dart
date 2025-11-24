@@ -67,7 +67,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
       key: _scaffoldKey,
       backgroundColor: AppColors.background,
       drawer: (!isDesktop)
-          ? _buildResponsiveDrawer()
+          ? SafeArea(child: _buildResponsiveDrawer())
           : null, // Only provide drawer for mobile/tablet
       appBar: (!isDesktop)
           ? _buildResponsiveAppBar()
@@ -173,8 +173,8 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
   Widget _buildResponsiveDrawer() {
     final drawerWidth = ResponsiveHelper.getValue<double>(
       context,
-      mobile: MediaQuery.of(context).size.width * 0.45,
-      tablet: MediaQuery.of(context).size.width * 0.35,
+      mobile: MediaQuery.of(context).size.width * 0.56,
+      tablet: MediaQuery.of(context).size.width * 0.45,
       desktop: 250,
     );
 

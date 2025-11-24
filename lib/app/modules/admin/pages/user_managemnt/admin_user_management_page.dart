@@ -27,7 +27,7 @@ class _AdminUserManagementPageState extends State<AdminUserManagementPage> {
 
     return Container(
       decoration: AppDecorations.backgroundGradient(),
-      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'small')),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

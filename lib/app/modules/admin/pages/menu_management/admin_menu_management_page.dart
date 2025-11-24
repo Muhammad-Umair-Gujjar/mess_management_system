@@ -168,6 +168,10 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
             decoration: AppDecorations.floatingCard(),
             child: CustomTabBar(
               selectedIndex: selectedTabIndex,
+              padding: EdgeInsets.all(
+                ResponsiveHelper.getSpacing(context, 'xsmall'),
+              ),
+              tabHeight: 45,
               onTap: (index) {
                 setState(() {
                   selectedTabIndex = index;
@@ -276,7 +280,7 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
 
     return Container(
       margin: EdgeInsets.symmetric(
-        horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+        horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
       ),
       child: ListView.builder(
         itemCount: filteredItems.length,
@@ -296,23 +300,30 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
   /// Builds the categories management tab
   Widget _buildCategoriesTab() {
     return Container(
-      margin: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
+      margin: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        // mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
               Expanded(
+                flex: 2,
                 child: ReusableTextField(
                   controller: _categoryController,
                   hintText: 'Enter category name...',
                   prefixIcon: Icons.category,
                 ),
               ),
-              SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
               ElevatedButton(
                 onPressed: _addCategory,
                 child: Text('Add Category'),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+                    vertical: ResponsiveHelper.getSpacing(context, 'small'),
+                  ),
+                ),
               ),
             ],
           ),

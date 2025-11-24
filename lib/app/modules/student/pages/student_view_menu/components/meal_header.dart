@@ -18,8 +18,8 @@ class MealHeader extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: ResponsiveHelper.getSpacing(context, 'xlarge') * 2,
-          height: ResponsiveHelper.getSpacing(context, 'xlarge') * 2,
+          width: ResponsiveHelper.getSpacing(context, 'large') * 2,
+          height: ResponsiveHelper.getSpacing(context, 'medium') * 2,
           decoration: BoxDecoration(
             gradient: menuItem.mealType == MealType.breakfast
                 ? LinearGradient(

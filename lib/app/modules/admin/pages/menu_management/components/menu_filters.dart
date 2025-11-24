@@ -76,8 +76,8 @@ class MenuFilters extends StatelessWidget {
             Expanded(child: _buildCategoryDropdown(context)),
             SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
             Expanded(child: _buildSortByDropdown(context)),
-             SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
-            Expanded(child: _buildAvailabilityFilter(context)),
+            //  SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
+            // Expanded(child: _buildAvailabilityFilter(context)),
             
           ],
         ),
@@ -127,22 +127,22 @@ class MenuFilters extends StatelessWidget {
       children: [
         // Search field - takes more space
         Expanded(
-          flex: 2,
+          flex: 5,
           child: ReusableTextField(
             controller: searchController,
             hintText: 'Search menu items...',
-            prefixIcon: Icons.search,
+            // prefixIcon: Icons.search,
             type: TextFieldType.search,
             onChanged: (_) => onSearchChanged(),
           ),
         ),
-        SizedBox(width: ResponsiveHelper.getSpacing(context, 'xsmall')),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'xs')),
 
         // Category filter dropdown
-        Expanded(child: _buildCategoryDropdown(context)),
+        Expanded( flex: 3, child: _buildCategoryDropdown(context)),
         SizedBox(width: ResponsiveHelper.getSpacing(context, 'xs')),
         // Sort by dropdown
-        Expanded(child: _buildSortByDropdown(context)),
+        Expanded(flex: 3, child: _buildSortByDropdown(context)),
         SizedBox(width: ResponsiveHelper.getSpacing(context, 'xs')),
 
         // Available only checkbox

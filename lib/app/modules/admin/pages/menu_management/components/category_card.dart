@@ -95,7 +95,9 @@ class CategoryCard extends StatelessWidget {
         children: [
           Text(
             category['name'] ?? 'Unknown Category',
-            style: AppTextStyles.heading4.copyWith(
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.heading5.copyWith(
               color: AppColors.textPrimary,
             ),
           ),

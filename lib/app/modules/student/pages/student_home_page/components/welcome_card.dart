@@ -92,6 +92,8 @@ class WelcomeCard extends StatelessWidget {
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
           Text(
             'Welcome back! Check your meal attendance, view today\'s menu, and manage your billing.',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: AppTextStyles.body1.copyWith(
               color: Colors.white.withOpacity(0.8),
               fontSize: ResponsiveHelper.getFontSize(context, 'body1'),

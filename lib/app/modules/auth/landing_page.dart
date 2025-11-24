@@ -12,58 +12,129 @@ class LandingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Title
-            Text(
-              'Choose Your Role',
-              style: AppTextStyles.heading1.copyWith(
-                color: const Color(0xFF2D3748),
-                fontSize: ResponsiveHelper.getFontSize(context, 'heading1'),
-                fontWeight: FontWeight.w600,
+      body: SafeArea(
+        child: ResponsiveHelper.isMobile(context)
+            ? SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top:
+                        ResponsiveHelper.getSpacing(context, 'large') * 3, // Extra top padding for mobile
+                    bottom: ResponsiveHelper.getSpacing(context, 'large'),
+                    left: ResponsiveHelper.getSpacing(context, 'medium'),
+                    right: ResponsiveHelper.getSpacing(context, 'medium'),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildTitle(context),
+                      SizedBox(
+                        height: ResponsiveHelper.getSpacing(context, 'large'),
+                      ),
+                      _buildMobileLayout(context),
+                    ],
+                  ),
+                ),
+              )
+            : Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildTitle(context),
+                    SizedBox(
+                      height: ResponsiveHelper.getSpacing(context, 'large'),
+                    ),
+                    _buildDesktopLayout(context),
+                  ],
+                ),
               ),
-            ),
-
-            SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
-
-            // Role Selection Cards
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildRoleCard(
-                  context,
-                  'Student',
-                  'Access your meal plans, attendance, and billing',
-                  FontAwesomeIcons.graduationCap,
-                  const Color(0xFF3182CE),
-                  () => Get.toNamed('/student'),
-                ),
-                SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
-                _buildRoleCard(
-                  context,
-                  'Mess Staff',
-                  'Mark attendance, manage daily operations',
-                  FontAwesomeIcons.userTie,
-                  const Color(0xFF38A169),
-                  () => Get.toNamed('/staff'),
-                ),
-                SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
-                _buildRoleCard(
-                  context,
-                  'Administrator',
-                  'Full system control, analytics, and management',
-                  FontAwesomeIcons.userShield,
-                  const Color(0xFFE53E3E),
-                  () => Get.toNamed('/admin'),
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
+    );
+  }
+
+  Widget _buildTitle(BuildContext context) {
+    return Text(
+      'Choose Your Role',
+      style: AppTextStyles.heading1.copyWith(
+        color: const Color(0xFF2D3748),
+        fontSize: ResponsiveHelper.getFontSize(context, 'heading1'),
+        fontWeight: FontWeight.w600,
+      ),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  /// Mobile layout - vertical stack for role cards
+  Widget _buildMobileLayout(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+      ),
+      child: Column(
+        children: [
+          _buildRoleCard(
+            context,
+            'Student',
+            'Access your meal plans, attendance, and billing',
+            FontAwesomeIcons.graduationCap,
+            const Color(0xFF3182CE),
+            () => Get.toNamed('/student'),
+          ),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+          _buildRoleCard(
+            context,
+            'Mess Staff',
+            'Mark attendance, manage daily operations',
+            FontAwesomeIcons.userTie,
+            const Color(0xFF38A169),
+            () => Get.toNamed('/staff'),
+          ),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+          _buildRoleCard(
+            context,
+            'Administrator',
+            'Full system control, analytics, and management',
+            FontAwesomeIcons.userShield,
+            const Color(0xFFE53E3E),
+            () => Get.toNamed('/admin'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Desktop/Tablet layout - horizontal row for role cards
+  Widget _buildDesktopLayout(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildRoleCard(
+          context,
+          'Student',
+          'Access your meal plans, attendance, and billing',
+          FontAwesomeIcons.graduationCap,
+          const Color(0xFF3182CE),
+          () => Get.toNamed('/student'),
+        ),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+        _buildRoleCard(
+          context,
+          'Mess Staff',
+          'Mark attendance, manage daily operations',
+          FontAwesomeIcons.userTie,
+          const Color(0xFF38A169),
+          () => Get.toNamed('/staff'),
+        ),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+        _buildRoleCard(
+          context,
+          'Administrator',
+          'Full system control, analytics, and management',
+          FontAwesomeIcons.userShield,
+          const Color(0xFFE53E3E),
+          () => Get.toNamed('/admin'),
+        ),
+      ],
     );
   }
 
@@ -80,15 +151,17 @@ class LandingPage extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          width: ResponsiveHelper.getValue<double>(
-            context,
-            mobile: 150,
-            tablet: 210,
-            desktop: 240,
-          ),
+          width: ResponsiveHelper.isMobile(context)
+              ? double.infinity
+              : ResponsiveHelper.getValue<double>(
+                  context,
+                  mobile: 150,
+                  tablet: 210,
+                  desktop: 240,
+                ),
           height: ResponsiveHelper.getValue<double>(
             context,
-            mobile: 280,
+            mobile: 200,
             tablet: 300,
             desktop: 300,
           ),

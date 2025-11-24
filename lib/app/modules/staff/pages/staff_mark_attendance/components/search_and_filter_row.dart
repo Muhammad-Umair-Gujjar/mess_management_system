@@ -35,7 +35,7 @@ class SearchAndFilterRow extends StatelessWidget {
 
         // Filter dropdown - full width
         Expanded(
-          flex: 1,
+          flex: 2,
           child: DropdownButtonFormField<String>(
             decoration: InputDecoration(
               labelText: 'Filter by Status',

@@ -18,11 +18,11 @@ class QuickActionsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResponsiveCard(
-      paddingType: 'large',
+      paddingType: 'medium',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(),
+          _buildHeader(context),
           ResponsiveSpacing(spacingType: 'sectionMargin'),
           _buildActionsGrid(context),
         ],
@@ -30,7 +30,7 @@ class QuickActionsCard extends StatelessWidget {
     ).animate().fadeIn(delay: 800.ms).slideY(begin: 0.3);
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Row(
       children: [
         ResponsiveIcon(
@@ -38,8 +38,8 @@ class QuickActionsCard extends StatelessWidget {
           sizeType: 'medium',
           color: AppColors.warning,
         ),
-        ResponsiveSpacing(spacingType: 'itemSpacing', isVertical: false),
-        ResponsiveText(text: 'Quick Actions', styleType: 'heading5'),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+        ResponsiveText(text: 'Quick Actions', styleType: 'heading5',fontWeight: FontWeight.bold,),
       ],
     );
   }

@@ -26,6 +26,7 @@ class ManagementTabSelector extends StatelessWidget {
       child: CustomTabBar(
         selectedIndex: selectedTabIndex,
         onTap: onTabChanged,
+        tabHeight: 45,
         tabs: [
           CustomTabBarItem(
             label: 'Active Students',

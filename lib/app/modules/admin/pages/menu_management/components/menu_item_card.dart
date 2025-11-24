@@ -37,21 +37,130 @@ class MenuItemCard extends StatelessWidget {
       decoration: AppDecorations.floatingCard(),
       child: Padding(
         padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
-        child: Row(
+        child: ResponsiveHelper.isMobile(context)
+            ? _buildMobileLayout(context)
+            : _buildDesktopLayout(context),
+      ),
+    );
+  }
+
+  /// Builds the mobile layout with vertical organization
+  Widget _buildMobileLayout(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Top row: Image, name, price and availability
+        Row(
           children: [
-            // Item image placeholder
             _buildItemImage(context),
-
             SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
-
-            // Item details section
-            Expanded(child: _buildItemDetails(context)),
-
-            // Price and actions section
-            _buildPriceAndActions(context),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          item['name'] ?? 'Unknown Item',
+                          style: AppTextStyles.heading5.copyWith(
+                            color: AppColors.textPrimary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      _buildAvailabilityBadge(context),
+                    ],
+                  ),
+                  SizedBox(height: ResponsiveHelper.getSpacing(context, 'xs')),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          item['description'] ?? 'No description available',
+                          style: AppTextStyles.body2.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Text(
+                        '₹${(item['price'] ?? 0.0).toStringAsFixed(0)}',
+                        style: AppTextStyles.heading5.copyWith(
+                          color: AppColors.adminRole,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
-      ),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+        // Bottom row: Metadata and actions
+        Row(
+          children: [
+            Expanded(child: _buildItemMetadata(context)),
+            _buildMobileActionButtons(context),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// Builds the desktop/tablet layout with horizontal organization
+  Widget _buildDesktopLayout(BuildContext context) {
+    return Row(
+      children: [
+        // Item image placeholder
+        _buildItemImage(context),
+
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+
+        // Item details section
+        Expanded(child: _buildItemDetails(context)),
+
+        // Price and actions section
+        _buildPriceAndActions(context),
+      ],
+    );
+  }
+
+  /// Builds compact action buttons for mobile
+  Widget _buildMobileActionButtons(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildActionButton(
+          context,
+          icon: FontAwesomeIcons.pen,
+          color: AppColors.adminRole,
+          onPressed: onEdit,
+          tooltip: 'Edit item',
+        ),
+        _buildActionButton(
+          context,
+          icon: (item['isAvailable'] ?? false)
+              ? FontAwesomeIcons.eyeSlash
+              : FontAwesomeIcons.eye,
+          color: (item['isAvailable'] ?? false) ? Colors.orange : Colors.green,
+          onPressed: onToggleAvailability,
+          tooltip: (item['isAvailable'] ?? false)
+              ? 'Make unavailable'
+              : 'Make available',
+        ),
+        _buildActionButton(
+          context,
+          icon: FontAwesomeIcons.trash,
+          color: Colors.red,
+          onPressed: onDelete,
+          tooltip: 'Delete item',
+        ),
+      ],
     );
   }
 
@@ -166,27 +275,49 @@ class MenuItemCard extends StatelessWidget {
 
   /// Builds the item metadata row (category, time, calories)
   Widget _buildItemMetadata(BuildContext context) {
-    return Row(
-      children: [
-        _buildMetadataItem(
-          context,
-          icon: FontAwesomeIcons.tag,
-          text: item['category'] ?? 'Unknown',
-        ),
-        SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
-        _buildMetadataItem(
-          context,
-          icon: FontAwesomeIcons.clock,
-          text: item['preparationTime'] ?? 'N/A',
-        ),
-        SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
-        _buildMetadataItem(
-          context,
-          icon: FontAwesomeIcons.fire,
-          text: '${item['calories'] ?? 0} cal',
-        ),
-      ],
-    );
+    return ResponsiveHelper.isMobile(context)
+        ? Wrap(
+            spacing: ResponsiveHelper.getSpacing(context, 'small'),
+            runSpacing: ResponsiveHelper.getSpacing(context, 'xs'),
+            children: [
+              _buildMetadataItem(
+                context,
+                icon: FontAwesomeIcons.tag,
+                text: item['category'] ?? 'Unknown',
+              ),
+              _buildMetadataItem(
+                context,
+                icon: FontAwesomeIcons.clock,
+                text: item['preparationTime'] ?? 'N/A',
+              ),
+              _buildMetadataItem(
+                context,
+                icon: FontAwesomeIcons.fire,
+                text: '${item['calories'] ?? 0} cal',
+              ),
+            ],
+          )
+        : Row(
+            children: [
+              _buildMetadataItem(
+                context,
+                icon: FontAwesomeIcons.tag,
+                text: item['category'] ?? 'Unknown',
+              ),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
+              _buildMetadataItem(
+                context,
+                icon: FontAwesomeIcons.clock,
+                text: item['preparationTime'] ?? 'N/A',
+              ),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
+              _buildMetadataItem(
+                context,
+                icon: FontAwesomeIcons.fire,
+                text: '${item['calories'] ?? 0} cal',
+              ),
+            ],
+          );
   }
 
   /// Builds a single metadata item with icon and text

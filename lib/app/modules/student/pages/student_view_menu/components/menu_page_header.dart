@@ -31,7 +31,9 @@ class MenuPageHeader extends StatelessWidget {
                 SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
                 Text(
                   'Plan your meals for the week',
+                  maxLines: 2,
                   style: AppTextStyles.body2.copyWith(
+                    overflow: TextOverflow.ellipsis,
                     color: AppColors.textLight,
                     fontSize: ResponsiveHelper.getFontSize(context, 'body2'),
                   ),

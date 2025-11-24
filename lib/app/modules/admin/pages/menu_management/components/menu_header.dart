@@ -19,7 +19,7 @@ class MenuHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
       decoration: AppDecorations.floatingCard(),
       child: Row(
         children: [
@@ -69,6 +69,8 @@ class MenuHeader extends StatelessWidget {
                 SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
                 Text(
                   'Manage menu categories, items, and nutritional information',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.body3.copyWith(
                     color: AppColors.textSecondary,
                   ),

@@ -56,19 +56,19 @@ class AttendanceCalendarCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
-          flex: 2,
+          flex: 3,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Attendance Calendar',
-                style: AppTextStyles.heading4.copyWith(
-                  fontSize: ResponsiveHelper.getResponsiveFontSize(
-                    context,
-                    mobile: 22,
-                    tablet: 24,
-                    desktop: 22,
-                  ),
+                style: AppTextStyles.heading5.copyWith(
+                  // fontSize: ResponsiveHelper.getResponsiveFontSize(
+                  //   context,
+                  //   mobile: 22,
+                  //   tablet: 24,
+                  //   desktop: 22,
+                  // ),
                 ),
               ),
               SizedBox(height: ResponsiveHelper.getSpacing(context, 'xs')),
@@ -87,7 +87,7 @@ class AttendanceCalendarCard extends StatelessWidget {
             ],
           ),
         ),
-        Expanded(child: _buildFormatToggle(context)),
+        Expanded(flex: 2, child: _buildFormatToggle(context)),
       ],
     );
   }

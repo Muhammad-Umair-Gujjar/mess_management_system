@@ -73,7 +73,7 @@ class NutritionAnalytics extends StatelessWidget {
         children: [
           Text(
             'Average Nutritional Values',
-            style: AppTextStyles.heading4.copyWith(
+            style: AppTextStyles.heading5.copyWith(
               color: AppColors.textPrimary,
             ),
           ),
@@ -133,7 +133,7 @@ class NutritionAnalytics extends StatelessWidget {
         children: [
           Text(
             'Nutrition by Category',
-            style: AppTextStyles.heading4.copyWith(
+            style: AppTextStyles.heading5.copyWith(
               color: AppColors.textPrimary,
             ),
           ),
@@ -164,7 +164,7 @@ class NutritionAnalytics extends StatelessWidget {
         children: [
           Text(
             'Popular Items - Detailed Nutrition',
-            style: AppTextStyles.heading4.copyWith(
+            style: AppTextStyles.heading5.copyWith(
               color: AppColors.textPrimary,
             ),
           ),
@@ -205,16 +205,21 @@ class NutritionAnalytics extends StatelessWidget {
         children: [
           Text(
             '${value is double ? value.toStringAsFixed(1) : value}',
-            style: AppTextStyles.heading4.copyWith(
+            maxLines: 1,
+            style: AppTextStyles.heading5.copyWith(
+              
+            overflow: TextOverflow.ellipsis,
               color: color,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'xs')),
           Text(unit, style: AppTextStyles.caption.copyWith(color: color)),
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
           Text(
             label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: AppTextStyles.caption.copyWith(
               color: AppColors.textSecondary,
             ),

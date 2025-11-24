@@ -58,11 +58,11 @@ class UserFilters extends StatelessWidget {
         SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
         Row(
           children: [
-            Flexible(child: _buildRoleDropdown(context)),
+            Expanded(flex: 2, child: _buildRoleDropdown(context)),
             SizedBox(width: ResponsiveHelper.getSpacing(context, 'xsmall')),
-            Flexible(child: _buildStatusDropdown(context)),
+            Expanded(flex: 2, child: _buildStatusDropdown(context)),
             SizedBox(width: ResponsiveHelper.getSpacing(context, 'xsmall')),
-            Expanded(
+            Flexible(
               child: ReusableButton(
                 text: 'Add User',
                 icon: FontAwesomeIcons.userPlus,

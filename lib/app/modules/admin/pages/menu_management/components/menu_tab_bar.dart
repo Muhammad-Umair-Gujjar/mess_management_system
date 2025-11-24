@@ -25,8 +25,8 @@ class MenuTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(
-        // horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+      padding: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
         vertical: ResponsiveHelper.getSpacing(context, 'medium'),
       ),
       decoration: AppDecorations.floatingCard(),
@@ -48,7 +48,6 @@ class MenuTabBar extends StatelessWidget {
         ],
         selectedIndex: selectedIndex,
         onTap: onTabChanged,
-
         selectedColor: AppColors.adminRole,
         unselectedColor: AppColors.textSecondary,
         indicatorColor: AppColors.adminRole,

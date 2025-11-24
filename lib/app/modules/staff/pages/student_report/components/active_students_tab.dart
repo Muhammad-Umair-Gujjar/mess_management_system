@@ -33,23 +33,24 @@ class ActiveStudentsTab extends StatelessWidget {
           // Header with search
           Row(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Active Students', style: AppTextStyles.heading5),
-                  Obx(
-                    () => Text(
-                      '${controller.filteredStudents.length} students enrolled',
-                      style: AppTextStyles.body2.copyWith(
-                        color: AppColors.textLight,
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Active Students', style: AppTextStyles.heading5),
+                    Obx(
+                      () => Text(
+                        '${controller.filteredStudents.length} students enrolled',
+                        style: AppTextStyles.body2.copyWith(
+                          color: AppColors.textLight,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              const Spacer(),
-              SizedBox(
-                width: isMobile ? 200 : 300,
+              Expanded(
                 child: ReusableTextField(
                   hintText: 'Search students...',
                   type: TextFieldType.search,

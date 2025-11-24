@@ -30,6 +30,7 @@ class MealSelectorCard extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
+            flex: 2,
             child: CustomTabBar(
               selectedIndex: selectedTabIndex,
               onTap: onTabChanged,
@@ -59,7 +60,7 @@ class MealSelectorCard extends StatelessWidget {
               unselectedTextStyle: AppTextStyles.body2,
             ),
           ),
-          SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+          // SizedBox(width: ResponsiveHelper.getSpacing(context, 'xs')),
           _buildMealTypeChips(context),
         ],
       ),

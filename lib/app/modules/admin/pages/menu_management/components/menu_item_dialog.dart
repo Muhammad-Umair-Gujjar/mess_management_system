@@ -45,7 +45,7 @@ class MenuItemDialog extends StatelessWidget {
       child: Container(
         width: ResponsiveHelper.getResponsiveSpacing(
           context,
-          mobile: 400.0,
+          mobile: MediaQuery.of(context).size.width * 0.9,
           tablet: 500.0,
           desktop: 600.0,
         ),
