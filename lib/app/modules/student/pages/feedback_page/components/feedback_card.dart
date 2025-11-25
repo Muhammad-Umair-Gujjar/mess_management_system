@@ -177,8 +177,8 @@ class FeedbackCard extends StatelessWidget {
             ],
           ),
         )
-        .animate(delay: Duration(milliseconds: index * 100))
-        .fadeIn(duration: 600.ms)
+        .animate(delay: Duration(milliseconds: 100))
+        .fadeIn(duration: 300.ms)
         .slideX(begin: 0.2);
   }
 

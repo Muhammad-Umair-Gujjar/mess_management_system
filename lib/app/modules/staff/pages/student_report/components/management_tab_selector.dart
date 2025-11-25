@@ -49,6 +49,6 @@ class ManagementTabSelector extends StatelessWidget {
         ),
         unselectedTextStyle: AppTextStyles.body2,
       ),
-    ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.3);
+    ).animate().fadeIn(duration: 300.ms).slideY(begin: -0.3);
   }
 }

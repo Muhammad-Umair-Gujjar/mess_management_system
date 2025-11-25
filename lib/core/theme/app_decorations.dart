@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../constants/app_colors.dart';
+import '../utils/responsive_helper.dart';
+import '../constants/responsive_constants.dart';
 
 class AppDecorations {
   // Neumorphic Container Decoration
@@ -8,28 +9,35 @@ class AppDecorations {
     Color? color,
     double? borderRadius,
     bool isPressed = false,
+    BuildContext? context,
   }) {
+    final radius =
+        borderRadius ??
+        (context != null
+            ? ResponsiveHelper.getBorderRadius(context, 'large')
+            : 24.0);
+
     return BoxDecoration(
       color: color ?? AppColors.cardBackground,
-      borderRadius: BorderRadius.circular(borderRadius ?? 24.r),
+      borderRadius: BorderRadius.circular(radius),
       boxShadow: isPressed
           ? [
               BoxShadow(
                 color: AppColors.shadowMedium,
-                offset: Offset(1.w, 1.h),
-                blurRadius: 2.r,
+                offset: const Offset(1.0, 1.0),
+                blurRadius: 2.0,
               ),
             ]
           : [
               BoxShadow(
                 color: AppColors.shadowLight,
-                offset: Offset(8.w, 8.h),
-                blurRadius: 16.r,
+                offset: const Offset(8.0, 8.0),
+                blurRadius: 16.0,
               ),
               BoxShadow(
                 color: Colors.white.withOpacity(0.8),
-                offset: Offset(-8.w, -8.h),
-                blurRadius: 16.r,
+                offset: const Offset(-8.0, -8.0),
+                blurRadius: 16.0,
               ),
             ],
     );
@@ -40,16 +48,23 @@ class AppDecorations {
     Color? color,
     double? borderRadius,
     double opacity = 0.25,
+    BuildContext? context,
   }) {
+    final radius =
+        borderRadius ??
+        (context != null
+            ? ResponsiveHelper.getBorderRadius(context, 'large')
+            : 24.0);
+
     return BoxDecoration(
       color: (color ?? Colors.white).withOpacity(opacity),
-      borderRadius: BorderRadius.circular(borderRadius ?? 24.r),
+      borderRadius: BorderRadius.circular(radius),
       border: Border.all(color: Colors.white.withOpacity(0.18), width: 1.5),
       boxShadow: [
         BoxShadow(
           color: Colors.black.withOpacity(0.1),
-          offset: Offset(0, 8.h),
-          blurRadius: 32.r,
+          offset: const Offset(0, 8.0),
+          blurRadius: 32.0,
         ),
       ],
     );
@@ -60,37 +75,54 @@ class AppDecorations {
     required Gradient gradient,
     double? borderRadius,
     List<BoxShadow>? boxShadow,
+    BuildContext? context,
   }) {
+    final radius =
+        borderRadius ??
+        (context != null
+            ? ResponsiveHelper.getBorderRadius(context, 'large')
+            : 24.0);
+
     return BoxDecoration(
       gradient: gradient,
-      borderRadius: BorderRadius.circular(borderRadius ?? 24.r),
+      borderRadius: BorderRadius.circular(radius),
       boxShadow:
           boxShadow ??
           [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
-              offset: Offset(0, 4.h),
-              blurRadius: 16.r,
+              offset: const Offset(0, 4.0),
+              blurRadius: 16.0,
             ),
           ],
     );
   }
 
   // Floating Card Decoration
-  static BoxDecoration floatingCard({Color? color, double? borderRadius}) {
+  static BoxDecoration floatingCard({
+    Color? color,
+    double? borderRadius,
+    BuildContext? context,
+  }) {
+    final radius =
+        borderRadius ??
+        (context != null
+            ? ResponsiveHelper.getBorderRadius(context, 'large')
+            : 24.0);
+
     return BoxDecoration(
       color: color ?? AppColors.cardBackground,
-      borderRadius: BorderRadius.circular(borderRadius ?? 24.r),
+      borderRadius: BorderRadius.circular(radius),
       boxShadow: [
         BoxShadow(
           color: AppColors.shadowLight,
-          offset: Offset(0, 12.h),
-          blurRadius: 24.r,
+          offset: const Offset(0, 12.0),
+          blurRadius: 24.0,
         ),
         BoxShadow(
           color: AppColors.shadowMedium,
-          offset: Offset(0, 4.h),
-          blurRadius: 8.r,
+          offset: const Offset(0, 4.0),
+          blurRadius: 8.0,
         ),
       ],
     );
@@ -102,15 +134,22 @@ class AppDecorations {
     Gradient? borderGradient,
     double? borderRadius,
     double borderWidth = 2.0,
+    BuildContext? context,
   }) {
+    final radius =
+        borderRadius ??
+        (context != null
+            ? ResponsiveHelper.getBorderRadius(context, 'large')
+            : 24.0);
+
     return BoxDecoration(
       color: backgroundColor ?? AppColors.cardBackground,
-      borderRadius: BorderRadius.circular(borderRadius ?? 24.r),
+      borderRadius: BorderRadius.circular(radius),
       boxShadow: [
         BoxShadow(
           color: AppColors.shadowLight,
-          offset: Offset(0, 8.h),
-          blurRadius: 24.r,
+          offset: const Offset(0, 8.0),
+          blurRadius: 24.0,
         ),
       ],
     );
@@ -129,9 +168,13 @@ class AppDecorations {
   }
 
   // Animated Shimmer Decoration
-  static BoxDecoration shimmerContainer() {
+  static BoxDecoration shimmerContainer({BuildContext? context}) {
+    final radius = context != null
+        ? ResponsiveHelper.getBorderRadius(context, 'large')
+        : 24.0;
+
     return BoxDecoration(
-      borderRadius: BorderRadius.circular(24.r),
+      borderRadius: BorderRadius.circular(radius),
       gradient: LinearGradient(
         begin: Alignment(-1.0, -0.3),
         end: Alignment(1.0, 0.3),
@@ -150,28 +193,35 @@ class AppDecorations {
     Color? color,
     double? borderRadius,
     bool isHovered = false,
+    BuildContext? context,
   }) {
+    final radius =
+        borderRadius ??
+        (context != null
+            ? ResponsiveHelper.getBorderRadius(context, 'large')
+            : 24.0);
+
     return BoxDecoration(
       color: color ?? AppColors.cardBackground,
-      borderRadius: BorderRadius.circular(borderRadius ?? 24.r),
+      borderRadius: BorderRadius.circular(radius),
       boxShadow: isHovered
           ? [
               BoxShadow(
                 color: AppColors.primary.withOpacity(0.2),
-                offset: Offset(0, 12.h),
-                blurRadius: 32.r,
+                offset: const Offset(0, 12.0),
+                blurRadius: 32.0,
               ),
               BoxShadow(
                 color: AppColors.shadowMedium,
-                offset: Offset(0, 4.h),
-                blurRadius: 12.r,
+                offset: const Offset(0, 4.0),
+                blurRadius: 12.0,
               ),
             ]
           : [
               BoxShadow(
                 color: AppColors.shadowLight,
-                offset: Offset(0, 4.h),
-                blurRadius: 12.r,
+                offset: const Offset(0, 4.0),
+                blurRadius: 12.0,
               ),
             ],
     );
@@ -186,74 +236,82 @@ class AppBorders {
     return Border.all(color: Colors.transparent, width: width);
   }
 
-  static BorderRadius get defaultRadius => BorderRadius.circular(24.r);
-  static BorderRadius get smallRadius => BorderRadius.circular(12.r);
-  static BorderRadius get largeRadius => BorderRadius.circular(32.r);
-  static BorderRadius get extraLargeRadius => BorderRadius.circular(48.r);
+  static BorderRadius get defaultRadius => BorderRadius.circular(24.0);
+  static BorderRadius get smallRadius => BorderRadius.circular(12.0);
+  static BorderRadius get largeRadius => BorderRadius.circular(32.0);
+  static BorderRadius get extraLargeRadius => BorderRadius.circular(48.0);
 }
 
 class AppShadows {
   static List<BoxShadow> get light => [
     BoxShadow(
       color: AppColors.shadowLight,
-      offset: Offset(0, 2.h),
-      blurRadius: 8.r,
+      offset: const Offset(0, 2.0),
+      blurRadius: 8.0,
     ),
   ];
 
   static List<BoxShadow> get medium => [
     BoxShadow(
       color: AppColors.shadowMedium,
-      offset: Offset(0, 4.h),
-      blurRadius: 16.r,
+      offset: const Offset(0, 4.0),
+      blurRadius: 16.0,
     ),
   ];
 
   static List<BoxShadow> get heavy => [
     BoxShadow(
       color: AppColors.shadowDark,
-      offset: Offset(0, 8.h),
-      blurRadius: 32.r,
+      offset: const Offset(0, 8.0),
+      blurRadius: 32.0,
     ),
   ];
 
   static List<BoxShadow> get floating => [
     BoxShadow(
       color: AppColors.shadowLight,
-      offset: Offset(0, 12.h),
-      blurRadius: 24.r,
+      offset: const Offset(0, 12.0),
+      blurRadius: 24.0,
     ),
     BoxShadow(
       color: AppColors.shadowMedium,
-      offset: Offset(0, 4.h),
-      blurRadius: 8.r,
+      offset: const Offset(0, 4.0),
+      blurRadius: 8.0,
     ),
   ];
 
   static List<BoxShadow> coloredShadow(Color color, {double opacity = 0.3}) => [
     BoxShadow(
       color: color.withOpacity(opacity),
-      offset: Offset(0, 8.h),
-      blurRadius: 24.r,
+      offset: const Offset(0, 8.0),
+      blurRadius: 24.0,
     ),
   ];
 
-  static BoxDecoration glassmorphicCard() {
+  static BoxDecoration glassmorphicCard({BuildContext? context}) {
+    final radius = context != null
+        ? ResponsiveHelper.getBorderRadius(context, 'large')
+        : 24.0;
+
     return BoxDecoration(
       gradient: LinearGradient(
         colors: [Colors.white.withOpacity(0.25), Colors.white.withOpacity(0.1)],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
-      borderRadius: BorderRadius.circular(24.r),
+      borderRadius: BorderRadius.circular(radius),
       border: Border.all(color: Colors.white.withOpacity(0.18), width: 1.5),
       boxShadow: [
         BoxShadow(
           color: Colors.black.withOpacity(0.1),
-          offset: Offset(0, 8.h),
-          blurRadius: 24.r,
+          offset: const Offset(0, 8.0),
+          blurRadius: 24.0,
         ),
       ],
     );
   }
 }
+
+
+
+

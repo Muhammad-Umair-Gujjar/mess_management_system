@@ -66,7 +66,7 @@ class CustomGridView extends StatelessWidget {
     this.shrinkWrap = false,
     this.physics,
     this.showAnimation = true,
-    this.animationDelay = const Duration(milliseconds: 100),
+    this.animationDelay = const Duration(milliseconds: 300),
     this.cardStyle = CustomGridCardStyle.elevated,
   }) : super(key: key);
 
@@ -138,7 +138,7 @@ class CustomGridView extends StatelessWidget {
               milliseconds: animationDelay.inMilliseconds * index,
             ),
           )
-          .fadeIn(duration: 600.ms)
+          .fadeIn(duration: 300.ms)
           .scale(begin: const Offset(0.8, 0.8));
     }
 
@@ -422,7 +422,9 @@ class CustomGridView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'small')),
+              padding: EdgeInsets.all(
+                ResponsiveHelper.getSpacing(context, 'small'),
+              ),
               decoration: BoxDecoration(
                 color: item.color.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(iconBorderRadius),

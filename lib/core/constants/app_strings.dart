@@ -112,3 +112,6 @@ class AppStrings {
   static const String privacyPolicy = "Privacy Policy";
   static const String termsOfService = "Terms of Service";
 }
+
+
+

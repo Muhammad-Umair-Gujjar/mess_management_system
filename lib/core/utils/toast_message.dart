@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mess_management/core/theme/app_theme.dart';
 import '../constants/app_colors.dart';
 
@@ -19,21 +18,25 @@ class ToastMessage {
       backgroundColor: AppColors.success.withOpacity(0.9),
       colorText: Colors.white,
       icon: Container(
-        padding: EdgeInsets.all(8.r),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(50.r),
+          borderRadius: BorderRadius.circular(50.0),
         ),
-        child: Icon(FontAwesomeIcons.check, color: Colors.white, size: 16.sp),
+        child: const Icon(
+          FontAwesomeIcons.check,
+          color: Colors.white,
+          size: 16.0,
+        ),
       ),
       duration: const Duration(seconds: 3),
       margin: EdgeInsets.only(
-        top: 60.h,
-        right: 20.w,
-        left: Get.width > 600 ? Get.width * 0.6 : 20.w,
+        top: 60.0,
+        right: 20.0,
+        left: Get.width > 600 ? Get.width * 0.6 : 20.0,
       ),
-      borderRadius: 12.r,
-      animationDuration: const Duration(milliseconds: 500),
+      borderRadius: 12.0,
+      animationDuration: const Duration(milliseconds: 300),
       forwardAnimationCurve: Curves.easeOutBack,
       reverseAnimationCurve: Curves.easeInBack,
       titleText: Text(
@@ -41,14 +44,14 @@ class ToastMessage {
         style: AppTextStyles.body1.copyWith(
           color: Colors.white,
           fontWeight: FontWeight.bold,
-          fontSize: 16.sp,
+          fontSize: 16.0,
         ),
       ),
       messageText: Text(
         message,
         style: AppTextStyles.body2.copyWith(
           color: Colors.white.withOpacity(0.9),
-          fontSize: 14.sp,
+          fontSize: 14.0,
         ),
       ),
     );
@@ -63,21 +66,25 @@ class ToastMessage {
       backgroundColor: AppColors.error.withOpacity(0.9),
       colorText: Colors.white,
       icon: Container(
-        padding: EdgeInsets.all(8.r),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(50.r),
+          borderRadius: BorderRadius.circular(50.0),
         ),
-        child: Icon(FontAwesomeIcons.xmark, color: Colors.white, size: 16.sp),
+        child: const Icon(
+          FontAwesomeIcons.xmark,
+          color: Colors.white,
+          size: 16.0,
+        ),
       ),
       duration: const Duration(seconds: 4),
       margin: EdgeInsets.only(
-        top: 60.h,
-        right: 20.w,
-        left: Get.width > 600 ? Get.width * 0.6 : 20.w,
+        top: 60.0,
+        right: 20.0,
+        left: Get.width > 600 ? Get.width * 0.6 : 20.0,
       ),
-      borderRadius: 12.r,
-      animationDuration: const Duration(milliseconds: 500),
+      borderRadius: 12.0,
+      animationDuration: const Duration(milliseconds: 300),
       forwardAnimationCurve: Curves.easeOutBack,
       reverseAnimationCurve: Curves.easeInBack,
       titleText: Text(
@@ -85,14 +92,14 @@ class ToastMessage {
         style: AppTextStyles.body1.copyWith(
           color: Colors.white,
           fontWeight: FontWeight.bold,
-          fontSize: 16.sp,
+          fontSize: 16.0,
         ),
       ),
       messageText: Text(
         message,
         style: AppTextStyles.body2.copyWith(
           color: Colors.white.withOpacity(0.9),
-          fontSize: 14.sp,
+          fontSize: 14.0,
         ),
       ),
     );
@@ -107,25 +114,25 @@ class ToastMessage {
       backgroundColor: AppColors.warning.withOpacity(0.9),
       colorText: Colors.white,
       icon: Container(
-        padding: EdgeInsets.all(8.r),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(50.r),
+          borderRadius: BorderRadius.circular(50.0),
         ),
-        child: Icon(
+        child: const Icon(
           FontAwesomeIcons.triangleExclamation,
           color: Colors.white,
-          size: 16.sp,
+          size: 16.0,
         ),
       ),
       duration: const Duration(seconds: 4),
       margin: EdgeInsets.only(
-        top: 60.h,
-        right: 20.w,
-        left: Get.width > 600 ? Get.width * 0.6 : 20.w,
+        top: 60.0,
+        right: 20.0,
+        left: Get.width > 600 ? Get.width * 0.6 : 20.0,
       ),
-      borderRadius: 12.r,
-      animationDuration: const Duration(milliseconds: 500),
+      borderRadius: 12.0,
+      animationDuration: const Duration(milliseconds: 300),
       forwardAnimationCurve: Curves.easeOutBack,
       reverseAnimationCurve: Curves.easeInBack,
       titleText: Text(
@@ -133,14 +140,14 @@ class ToastMessage {
         style: AppTextStyles.body1.copyWith(
           color: Colors.white,
           fontWeight: FontWeight.bold,
-          fontSize: 16.sp,
+          fontSize: 16.0,
         ),
       ),
       messageText: Text(
         message,
         style: AppTextStyles.body2.copyWith(
           color: Colors.white.withOpacity(0.9),
-          fontSize: 14.sp,
+          fontSize: 14.0,
         ),
       ),
     );
@@ -155,25 +162,25 @@ class ToastMessage {
       backgroundColor: AppColors.info.withOpacity(0.9),
       colorText: Colors.white,
       icon: Container(
-        padding: EdgeInsets.all(8.r),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(50.r),
+          borderRadius: BorderRadius.circular(50.0),
         ),
-        child: Icon(
+        child: const Icon(
           FontAwesomeIcons.circleInfo,
           color: Colors.white,
-          size: 16.sp,
+          size: 16.0,
         ),
       ),
       duration: const Duration(seconds: 3),
       margin: EdgeInsets.only(
-        top: 60.h,
-        right: 20.w,
-        left: Get.width > 600 ? Get.width * 0.6 : 20.w,
+        top: 60.0,
+        right: 20.0,
+        left: Get.width > 600 ? Get.width * 0.6 : 20.0,
       ),
-      borderRadius: 12.r,
-      animationDuration: const Duration(milliseconds: 500),
+      borderRadius: 12.0,
+      animationDuration: const Duration(milliseconds: 300),
       forwardAnimationCurve: Curves.easeOutBack,
       reverseAnimationCurve: Curves.easeInBack,
       titleText: Text(
@@ -181,14 +188,14 @@ class ToastMessage {
         style: AppTextStyles.body1.copyWith(
           color: Colors.white,
           fontWeight: FontWeight.bold,
-          fontSize: 16.sp,
+          fontSize: 16.0,
         ),
       ),
       messageText: Text(
         message,
         style: AppTextStyles.body2.copyWith(
           color: Colors.white.withOpacity(0.9),
-          fontSize: 14.sp,
+          fontSize: 14.0,
         ),
       ),
     );
@@ -210,21 +217,21 @@ class ToastMessage {
       backgroundColor: backgroundColor.withOpacity(0.9),
       colorText: textColor,
       icon: Container(
-        padding: EdgeInsets.all(8.r),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: textColor.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(50.r),
+          borderRadius: BorderRadius.circular(50.0),
         ),
-        child: Icon(icon, color: textColor, size: 16.sp),
+        child: Icon(icon, color: textColor, size: 16.0),
       ),
       duration: duration,
       margin: EdgeInsets.only(
-        top: 60.h,
-        right: 20.w,
-        left: Get.width > 600 ? Get.width * 0.6 : 20.w,
+        top: 60.0,
+        right: 20.0,
+        left: Get.width > 600 ? Get.width * 0.6 : 20.0,
       ),
-      borderRadius: 12.r,
-      animationDuration: const Duration(milliseconds: 500),
+      borderRadius: 12.0,
+      animationDuration: const Duration(milliseconds: 300),
       forwardAnimationCurve: Curves.easeOutBack,
       reverseAnimationCurve: Curves.easeInBack,
       titleText: Text(
@@ -232,14 +239,14 @@ class ToastMessage {
         style: AppTextStyles.body1.copyWith(
           color: textColor,
           fontWeight: FontWeight.bold,
-          fontSize: 16.sp,
+          fontSize: 16.0,
         ),
       ),
       messageText: Text(
         message,
         style: AppTextStyles.body2.copyWith(
           color: textColor.withOpacity(0.9),
-          fontSize: 14.sp,
+          fontSize: 14.0,
         ),
       ),
     );
@@ -254,10 +261,10 @@ class ToastMessage {
       backgroundColor: AppColors.primary.withOpacity(0.9),
       colorText: Colors.white,
       icon: Container(
-        padding: EdgeInsets.all(8.r),
-        child: SizedBox(
-          width: 16.sp,
-          height: 16.sp,
+        padding: const EdgeInsets.all(8.0),
+        child: const SizedBox(
+          width: 16.0,
+          height: 16.0,
           child: CircularProgressIndicator(
             strokeWidth: 2,
             valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
@@ -266,12 +273,12 @@ class ToastMessage {
       ),
       duration: const Duration(seconds: 30), // Long duration for loading
       margin: EdgeInsets.only(
-        top: 60.h,
-        right: 20.w,
-        left: Get.width > 600 ? Get.width * 0.6 : 20.w,
+        top: 60.0,
+        right: 20.0,
+        left: Get.width > 600 ? Get.width * 0.6 : 20.0,
       ),
-      borderRadius: 12.r,
-      animationDuration: const Duration(milliseconds: 500),
+      borderRadius: 12.0,
+      animationDuration: const Duration(milliseconds: 300),
       forwardAnimationCurve: Curves.easeOutBack,
       reverseAnimationCurve: Curves.easeInBack,
       titleText: Text(
@@ -279,14 +286,14 @@ class ToastMessage {
         style: AppTextStyles.body1.copyWith(
           color: Colors.white,
           fontWeight: FontWeight.bold,
-          fontSize: 16.sp,
+          fontSize: 16.0,
         ),
       ),
       messageText: Text(
         message,
         style: AppTextStyles.body2.copyWith(
           color: Colors.white.withOpacity(0.9),
-          fontSize: 14.sp,
+          fontSize: 14.0,
         ),
       ),
     );

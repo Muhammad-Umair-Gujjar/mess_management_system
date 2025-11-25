@@ -74,6 +74,10 @@ class QuickActionsCard extends StatelessWidget {
               .toList(),
         ],
       ),
-    ).animate().fadeIn(duration: 800.ms).slideX(begin: 0.3);
+    ).animate().fadeIn(duration:  300.ms ).slideX(begin: 0.3);
   }
 }
+
+
+
+

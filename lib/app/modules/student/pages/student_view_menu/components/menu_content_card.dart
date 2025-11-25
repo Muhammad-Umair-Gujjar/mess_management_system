@@ -81,6 +81,6 @@ class MenuContentCard extends StatelessWidget {
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 800.ms).slideY(begin: 0.3);
+    ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.3);
   }
 }

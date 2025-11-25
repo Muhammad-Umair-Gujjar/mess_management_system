@@ -47,7 +47,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
   void initState() {
     super.initState();
     _drawerAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: const  Duration(milliseconds: 300) ,
       vsync: this,
     );
   }
@@ -86,12 +86,12 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
                   desktop: 250,
                 ),
                 child: _buildDesktopSidebar(),
-              ).animate().slideX(begin: -1.0, duration: 600.ms),
+              ).animate().slideX(begin: -1.0, duration:  300.ms ),
 
             // Main Content Area
             Expanded(
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
+                duration: const  Duration(milliseconds: 300) ,
                 margin: ResponsiveHelper.getMargin(context, 'contentMargin'),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +108,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
                     Expanded(
                       child: AnimatedScale(
                         scale: ResponsiveHelper.isMobile(context) ? 1.0 : 1.0,
-                        duration: const Duration(milliseconds: 300),
+                        duration: const  Duration(milliseconds: 300) ,
                         child: SizedBox(
                           width: double.infinity,
                           child: widget.child,
@@ -225,7 +225,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
                           final isSelected = widget.currentIndex.value == index;
                           return _buildDrawerMenuItem(item, index, isSelected);
                         })
-                        .animate(delay: Duration(milliseconds: 100 * index))
+                         .animate(delay: Duration(milliseconds: 50)) 
                         .slideX(begin: -0.5)
                         .fadeIn();
                   },
@@ -303,7 +303,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
           ),
         ],
       ),
-    ).animate().fadeIn(delay: 200.ms).scale(begin: const Offset(0.8, 0.8));
+    ).animate().fadeIn(delay:  300.ms ).scale(begin: const Offset(0.8, 0.8));
   }
 
   Widget _buildDrawerMenuItem(NavigationItem item, int index, bool isActive) {
@@ -322,7 +322,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
             Navigator.pop(context);
           },
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            duration: const  Duration(milliseconds: 300) ,
             padding: ResponsiveHelper.getPadding(context, 'cardPadding'),
             decoration: BoxDecoration(
               gradient: isActive ? _getRoleGradient(widget.userRole) : null,
@@ -349,7 +349,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
             child: Row(
               children: [
                 AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
+                  duration: const  Duration(milliseconds: 300) ,
                   padding: EdgeInsets.all(
                     ResponsiveHelper.getSpacing(context, 'xs'),
                   ),
@@ -538,3 +538,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
     }
   }
 }
+
+
+
+

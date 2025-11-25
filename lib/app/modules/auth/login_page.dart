@@ -105,7 +105,7 @@ class LoginPage extends StatelessWidget {
                 color: Colors.white,
                 size: 24,
               ),
-            ).animate().scale(delay: 200.ms),
+            ).animate().scale(delay:  300.ms ),
             const SizedBox(width: 16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,13 +116,13 @@ class LoginPage extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
-                ).animate().fadeIn(delay: 300.ms).slideX(begin: -0.3),
+                ).animate().fadeIn(delay:  300.ms ).slideX(begin: -0.3),
                 Text(
                   AppStrings.appVersion,
                   style: Theme.of(Get.context!).textTheme.bodySmall?.copyWith(
                     color: AppColors.textLight,
                   ),
-                ).animate().fadeIn(delay: 400.ms).slideX(begin: -0.3),
+                ).animate().fadeIn(delay:  300.ms ).slideX(begin: -0.3),
               ],
             ),
           ],
@@ -151,7 +151,7 @@ class LoginPage extends StatelessWidget {
               ),
             ],
           ),
-        ).animate().fadeIn(delay: 500.ms).slideX(begin: 0.3),
+        ).animate().fadeIn(delay:  300.ms ).slideX(begin: 0.3),
       ],
     );
   }
@@ -170,7 +170,7 @@ class LoginPage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
-              speed: const Duration(milliseconds: 100),
+              speed: const  Duration(milliseconds: 300) ,
             ),
           ],
           totalRepeatCount: 1,
@@ -184,7 +184,7 @@ class LoginPage extends StatelessWidget {
             color: AppColors.primary,
             fontWeight: FontWeight.w600,
           ),
-        ).animate().fadeIn(delay: 1000.ms).slideX(begin: -0.3),
+        ).animate().fadeIn(delay:  300.ms ).slideX(begin: -0.3),
         
         const SizedBox(height: 32),
         
@@ -225,7 +225,7 @@ class LoginPage extends StatelessWidget {
               ],
             ),
           ).animate()
-            .fadeIn(delay: (1200 + index * 200).ms)
+            .fadeIn(delay: (1200 +  100 ).ms)
             .slideX(begin: -0.3);
         }).toList(),
       ],
@@ -244,7 +244,7 @@ class LoginPage extends StatelessWidget {
               fontWeight: FontWeight.bold,
               color: AppColors.textPrimary,
             ),
-          ).animate().fadeIn(delay: 600.ms).slideY(begin: -0.3),
+          ).animate().fadeIn(delay:  300.ms ).slideY(begin: -0.3),
           
           const SizedBox(height: 40),
           
@@ -281,7 +281,7 @@ class LoginPage extends StatelessWidget {
                 ),
               ],
             ),
-          ).animate().fadeIn(delay: 1200.ms).slideY(begin: 0.3),
+          ).animate().fadeIn(delay:  300.ms ).slideY(begin: 0.3),
         ],
       ),
     );
@@ -337,7 +337,7 @@ class LoginPage extends StatelessWidget {
           isLoading: authController.isLoading.value,
         )),
       ).animate()
-        .fadeIn(delay: (800 + index * 200).ms)
+        .fadeIn(delay: (800 +  100 ).ms)
         .slideX(begin: 0.3);
     }).toList();
   }
@@ -376,3 +376,6 @@ class BackgroundPatternPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+
+
+

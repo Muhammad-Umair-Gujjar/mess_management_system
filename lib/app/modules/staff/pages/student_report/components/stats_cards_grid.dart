@@ -27,21 +27,21 @@ class StatsCardsGrid extends StatelessWidget {
             '${controller.allStudents.where((s) => s['isApproved'] == true).length}',
         icon: FontAwesomeIcons.userCheck,
         color: AppColors.success,
-        delay: 200,
+        delay: 100,
       ),
       StatCard(
         title: 'Pending Approval',
         value: '${controller.getPendingApprovals().length}',
         icon: FontAwesomeIcons.clock,
         color: AppColors.warning,
-        delay: 400,
+        delay: 200,
       ),
       StatCard(
         title: 'This Month',
         value: '${(controller.allStudents.length * 0.15).round()}',
         icon: FontAwesomeIcons.userPlus,
         color: AppColors.info,
-        delay: 600,
+        delay: 300,
       ),
     ];
 

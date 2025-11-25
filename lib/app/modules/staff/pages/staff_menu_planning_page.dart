@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -62,7 +61,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
           // Week Selector and Tabs
           _buildHeader(),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: 24.0),
 
           // Main Content
           Expanded(
@@ -81,7 +80,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
 
   Widget _buildHeader() {
     return Container(
-      padding: EdgeInsets.all(20.r),
+      padding: EdgeInsets.all(20.0),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         children: [
@@ -97,12 +96,12 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
                 size: ButtonSize.small,
                 onPressed: () => _changeWeek(-1),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12.0),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 decoration: BoxDecoration(
                   gradient: AppColors.primaryGradient,
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
                 child: Text(
                   _getWeekRangeText(),
@@ -112,7 +111,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
                   ),
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12.0),
               ReusableButton(
                 text: 'Next Week',
                 icon: FontAwesomeIcons.chevronRight,
@@ -123,14 +122,14 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
             ],
           ),
 
-          SizedBox(height: 20.h),
+          SizedBox(height: 20.0),
 
           // Tab Selector
           TabBar(
             controller: _tabController,
             indicator: BoxDecoration(
               gradient: AppColors.successGradient,
-              borderRadius: BorderRadius.circular(12.r),
+              borderRadius: BorderRadius.circular(12.0),
             ),
             labelColor: Colors.white,
             unselectedLabelColor: AppColors.textSecondary,
@@ -143,8 +142,8 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(FontAwesomeIcons.calendar, size: 16.sp),
-                    SizedBox(width: 8.w),
+                    Icon(FontAwesomeIcons.calendar, size: 16.0),
+                    SizedBox(width: 8.0),
                     Text('Weekly Planner'),
                   ],
                 ),
@@ -153,8 +152,8 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(FontAwesomeIcons.utensils, size: 16.sp),
-                    SizedBox(width: 8.w),
+                    Icon(FontAwesomeIcons.utensils, size: 16.0),
+                    SizedBox(width: 8.0),
                     Text('Menu Items'),
                   ],
                 ),
@@ -163,12 +162,12 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.3);
+    ).animate().fadeIn(duration:  300.ms ).slideY(begin: -0.3);
   }
 
   Widget _buildWeeklyPlannerTab(StaffController controller, bool isMobile) {
     return Container(
-      padding: EdgeInsets.all(24.r),
+      padding: EdgeInsets.all(24.0),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         children: [
@@ -184,7 +183,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
                 size: ButtonSize.medium,
                 onPressed: _saveWeeklyMenu,
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 12.0),
               ReusableButton(
                 text: 'Generate Menu',
                 icon: FontAwesomeIcons.wandMagicSparkles,
@@ -195,7 +194,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
             ],
           ),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: 24.0),
 
           // Weekly Schedule Grid
           Expanded(
@@ -203,7 +202,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 800.ms).slideX(begin: -0.3);
+    ).animate().fadeIn(duration:  300.ms ).slideX(begin: -0.3);
   }
 
   Widget _buildDesktopMenuGrid() {
@@ -212,18 +211,18 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
         children: [
           // Header Row
           Container(
-            padding: EdgeInsets.symmetric(vertical: 16.h),
+            padding: EdgeInsets.symmetric(vertical: 16.0),
             child: Row(
               children: [
-                SizedBox(width: 120.w), // Space for meal type column
+                SizedBox(width: 120.0), // Space for meal type column
                 ..._weekDays
                     .map(
                       (day) => Expanded(
                         child: Container(
-                          padding: EdgeInsets.all(12.r),
+                          padding: EdgeInsets.all(12.0),
                           decoration: BoxDecoration(
                             gradient: AppColors.primaryGradient,
-                            borderRadius: BorderRadius.circular(12.r),
+                            borderRadius: BorderRadius.circular(12.0),
                           ),
                           child: Text(
                             day,
@@ -245,19 +244,19 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
           ..._mealTypes
               .map(
                 (mealType) => Container(
-                  margin: EdgeInsets.only(bottom: 16.h),
+                  margin: EdgeInsets.only(bottom: 16.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Meal Type Label
                       Container(
-                        width: 120.w,
-                        padding: EdgeInsets.all(16.r),
+                        width: 120.0,
+                        padding: EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
                           color: mealType == 'Breakfast'
                               ? AppColors.warning.withOpacity(0.1)
                               : AppColors.info.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12.r),
+                          borderRadius: BorderRadius.circular(12.0),
                         ),
                         child: Column(
                           children: [
@@ -265,12 +264,12 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
                               mealType == 'Breakfast'
                                   ? FontAwesomeIcons.sun
                                   : FontAwesomeIcons.moon,
-                              size: 24.sp,
+                              size: 24.0,
                               color: mealType == 'Breakfast'
                                   ? AppColors.warning
                                   : AppColors.info,
                             ),
-                            SizedBox(height: 8.h),
+                            SizedBox(height: 8.0),
                             Text(
                               mealType,
                               style: AppTextStyles.body2.copyWith(
@@ -285,7 +284,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
                         ),
                       ),
 
-                      SizedBox(width: 16.w),
+                      SizedBox(width: 16.0),
 
                       // Menu Items for Each Day
                       ..._weekDays.asMap().entries.map((entry) {
@@ -312,8 +311,8 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
       itemBuilder: (context, dayIndex) {
         final day = _weekDays[dayIndex];
         return Container(
-          margin: EdgeInsets.only(bottom: 16.h),
-          padding: EdgeInsets.all(16.r),
+          margin: EdgeInsets.only(bottom: 16.0),
+          padding: EdgeInsets.all(16.0),
           decoration: AppDecorations.floatingCard(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -324,13 +323,13 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
                   color: AppColors.primary,
                 ),
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 16.0),
               Row(
                 children: _mealTypes
                     .map(
                       (mealType) => Expanded(
                         child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: 4.w),
+                          margin: EdgeInsets.symmetric(horizontal: 4.0),
                           child: _buildMenuItemCard(
                             day,
                             mealType,
@@ -358,11 +357,11 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
     final menuItems = _getMenuForDayAndMeal(day, mealType);
 
     return Container(
-          height: compact ? 120.h : 180.h,
-          padding: EdgeInsets.all(12.r),
+          height: compact ? 120.0 : 180.0,
+          padding: EdgeInsets.all(12.0),
           decoration: BoxDecoration(
             color: AppColors.cardBackground,
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(12.0),
             border: Border.all(color: AppColors.textLight.withOpacity(0.2)),
           ),
           child: Column(
@@ -375,12 +374,12 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
                       mealType == 'Breakfast'
                           ? FontAwesomeIcons.sun
                           : FontAwesomeIcons.moon,
-                      size: 12.sp,
+                      size: 12.0,
                       color: mealType == 'Breakfast'
                           ? AppColors.warning
                           : AppColors.info,
                     ),
-                    SizedBox(width: 4.w),
+                    SizedBox(width: 4.0),
                     Text(
                       mealType,
                       style: AppTextStyles.caption.copyWith(
@@ -389,7 +388,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
                     ),
                   ],
                 ),
-                SizedBox(height: 8.h),
+                SizedBox(height: 8.0),
               ],
 
               Expanded(
@@ -399,11 +398,11 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
                     children: menuItems
                         .map(
                           (item) => Container(
-                            margin: EdgeInsets.only(bottom: 4.h),
+                            margin: EdgeInsets.only(bottom: 4.0),
                             child: Text(
                               item,
                               style: AppTextStyles.body2.copyWith(
-                                fontSize: compact ? 11.sp : 13.sp,
+                                fontSize: compact ? 11.0 : 13.0,
                               ),
                             ),
                           ),
@@ -416,25 +415,25 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
               GestureDetector(
                 onTap: () => _editDayMenu(day, mealType),
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 8.w),
+                  padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(6.r),
+                    borderRadius: BorderRadius.circular(6.0),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
                         FontAwesomeIcons.pencil,
-                        size: 10.sp,
+                        size: 10.0,
                         color: AppColors.primary,
                       ),
-                      SizedBox(width: 4.w),
+                      SizedBox(width: 4.0),
                       Text(
                         'Edit',
                         style: AppTextStyles.caption.copyWith(
                           color: AppColors.primary,
-                          fontSize: 10.sp,
+                          fontSize: 10.0,
                         ),
                       ),
                     ],
@@ -444,14 +443,14 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
             ],
           ),
         )
-        .animate(delay: Duration(milliseconds: dayIndex * 100))
-        .fadeIn(duration: 600.ms)
+        .animate(delay: Duration(milliseconds: 100))
+        .fadeIn(duration:  300.ms )
         .scale(begin: const Offset(0.8, 0.8));
   }
 
   Widget _buildMenuItemsTab(StaffController controller, bool isMobile) {
     return Container(
-      padding: EdgeInsets.all(24.r),
+      padding: EdgeInsets.all(24.0),
       decoration: AppDecorations.floatingCard(),
       child: Column(
         children: [
@@ -461,7 +460,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
               Text('Menu Item Library', style: AppTextStyles.heading5),
               const Spacer(),
               SizedBox(
-                width: 250.w,
+                width: 250.0,
                 child: ReusableTextField(
                   hintText: 'Search menu items...',
                   type: TextFieldType.search,
@@ -470,7 +469,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
                   },
                 ),
               ),
-              SizedBox(width: 16.w),
+              SizedBox(width: 16.0),
               ReusableButton(
                 text: 'Add Item',
                 icon: FontAwesomeIcons.plus,
@@ -481,7 +480,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
             ],
           ),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: 24.0),
 
           // Menu Categories
           Expanded(
@@ -489,9 +488,9 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Categories Sidebar
-                Container(width: 200.w, child: _buildCategoriesList()),
+                Container(width: 200.0, child: _buildCategoriesList()),
 
-                SizedBox(width: 24.w),
+                SizedBox(width: 24.0),
 
                 // Menu Items Grid
                 Expanded(child: _buildMenuItemsGrid()),
@@ -516,17 +515,17 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
       children: categories
           .map(
             (category) => Container(
-              margin: EdgeInsets.only(bottom: 8.h),
+              margin: EdgeInsets.only(bottom: 8.0),
               child: ListTile(
                 leading: Container(
-                  padding: EdgeInsets.all(8.r),
+                  padding: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: Icon(
                     category['icon'] as IconData,
-                    size: 16.sp,
+                    size: 16.0,
                     color: AppColors.primary,
                   ),
                 ),
@@ -537,10 +536,10 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
                   ),
                 ),
                 trailing: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                   decoration: BoxDecoration(
                     color: AppColors.textLight.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12.r),
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
                   child: Text(
                     '${category['count']}',
@@ -606,8 +605,8 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
       crossAxisCount: 4, // Desktop: 4 columns
       tabletCrossAxisCount: 3, // Tablet: 3 columns
       mobileCrossAxisCount: 2, // Mobile: 2 columns
-      crossAxisSpacing: 16.w,
-      mainAxisSpacing: 16.h,
+      crossAxisSpacing: 16.0,
+      mainAxisSpacing: 16.0,
       childAspectRatio: 0.85,
       mobileAspectRatio: 0.85,
       tabletAspectRatio: 0.85,
@@ -633,7 +632,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
               ),
             ),
             PopupMenuButton(
-              icon: Icon(FontAwesomeIcons.ellipsisVertical, size: 16.sp),
+              icon: Icon(FontAwesomeIcons.ellipsisVertical, size: 16.0),
               itemBuilder: (context) => [
                 const PopupMenuItem(child: Text('Edit')),
                 const PopupMenuItem(child: Text('Delete')),
@@ -641,12 +640,12 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
             ),
           ],
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 8.0),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           decoration: BoxDecoration(
             color: AppColors.info.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           child: Text(
             item['category'] as String,
@@ -659,20 +658,20 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
         const Spacer(),
         Row(
           children: [
-            Icon(FontAwesomeIcons.fire, size: 12.sp, color: AppColors.warning),
-            SizedBox(width: 4.w),
+            Icon(FontAwesomeIcons.fire, size: 12.0, color: AppColors.warning),
+            SizedBox(width: 4.0),
             Text('${item['calories']} cal', style: AppTextStyles.caption),
           ],
         ),
-        SizedBox(height: 4.h),
+        SizedBox(height: 4.0),
         Row(
           children: [
             Icon(
               FontAwesomeIcons.indianRupee,
-              size: 12.sp,
+              size: 12.0,
               color: AppColors.success,
             ),
-            SizedBox(width: 4.w),
+            SizedBox(width: 4.0),
             Text(
               '₹${item['price']}',
               style: AppTextStyles.body2.copyWith(
@@ -714,8 +713,8 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
       AlertDialog(
         title: Text('Edit $mealType Menu - $day'),
         content: Container(
-          width: 400.w,
-          height: 300.h,
+          width: 400.0,
+          height: 300.0,
           child: ReusableTextField(
             label: 'Menu Items (one per line)',
             maxLines: 10,
@@ -743,7 +742,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
       AlertDialog(
         title: Text('Add Menu Item'),
         content: Container(
-          width: 400.w,
+          width: 400.0,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -751,9 +750,9 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
                 label: 'Item Name',
                 hintText: 'Enter item name',
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 16.0),
               ReusableTextField(label: 'Category', hintText: 'Select category'),
-              SizedBox(height: 16.h),
+              SizedBox(height: 16.0),
               Row(
                 children: [
                   Expanded(
@@ -763,7 +762,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
                       hintText: 'Cal',
                     ),
                   ),
-                  SizedBox(width: 16.w),
+                  SizedBox(width: 16.0),
                   Expanded(
                     child: ReusableTextField(
                       label: 'Price (₹)',
@@ -800,3 +799,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
     ToastMessage.success('Random menu generated for the week');
   }
 }
+
+
+
+

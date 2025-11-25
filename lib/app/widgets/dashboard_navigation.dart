@@ -131,7 +131,7 @@ class DashboardNavigation extends StatelessWidget {
               size: ResponsiveHelper.getIconSize(context, 'large'),
               color: Colors.white,
             ),
-          ).animate().scale(delay: 200.ms),
+          ).animate().scale(delay: 300.ms),
 
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
@@ -152,7 +152,7 @@ class DashboardNavigation extends StatelessWidget {
               color: Colors.white.withOpacity(0.8),
               letterSpacing: 1.2,
             ),
-          ).animate().fadeIn(delay: 400.ms).slideX(begin: -0.3),
+          ).animate().fadeIn(delay: 300.ms).slideX(begin: -0.3),
 
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
 
@@ -162,7 +162,7 @@ class DashboardNavigation extends StatelessWidget {
               color: Colors.white.withOpacity(0.7),
             ),
             textAlign: TextAlign.center,
-          ).animate().fadeIn(delay: 500.ms).slideX(begin: -0.3),
+          ).animate().fadeIn(delay: 300.ms).slideX(begin: -0.3),
         ],
       ),
     );
@@ -184,7 +184,7 @@ class DashboardNavigation extends StatelessWidget {
                 currentIndex.value == index,
               ),
             )
-            .animate(delay: Duration(milliseconds: 600 + index * 100))
+            .animate(delay: Duration(milliseconds: 50))
             .fadeIn()
             .slideX(begin: -0.3);
       },
@@ -206,7 +206,7 @@ class DashboardNavigation extends StatelessWidget {
         child: GestureDetector(
           onTap: () => onItemSelected(index),
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 300),
             padding: ResponsiveHelper.getPadding(context, 'medium'),
             decoration: BoxDecoration(
               gradient: isActive ? _getRoleGradient(userRole) : null,
@@ -235,7 +235,7 @@ class DashboardNavigation extends StatelessWidget {
             child: Row(
               children: [
                 AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 300),
                   padding: ResponsiveHelper.getPadding(context, 'small'),
                   decoration: BoxDecoration(
                     color: isActive
@@ -259,11 +259,8 @@ class DashboardNavigation extends StatelessWidget {
                     item.title,
                     style: AppTextStyles.navMenuItem.copyWith(
                       color: isActive ? Colors.white : AppColors.textPrimary,
-                      fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-                      fontSize: ResponsiveHelper.getFontSize(
-                        context,
-                        'menuItem',
-                      ),
+                      fontWeight: FontWeight.w400,
+                      // fontSize: 16.0,
                     ),
                   ),
                 ),
@@ -362,7 +359,7 @@ class DashboardNavigation extends StatelessWidget {
           ),
         ],
       ),
-    ).animate().fadeIn(delay: 1000.ms).slideY(begin: 0.3);
+    ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.3);
   }
 
   void _handleLogout() {

@@ -128,12 +128,12 @@ class RecentActivityCard extends StatelessWidget {
                     ],
                   ),
                 )
-                .animate(delay: Duration(milliseconds: 200 + (index * 100)))
-                .fadeIn(duration: 600.ms)
+                .animate(delay: Duration(milliseconds: 50))
+                .fadeIn(duration: 300.ms)
                 .slideX(begin: -0.3);
           }),
         ],
       ),
-    ).animate().fadeIn(duration: 800.ms).slideY(begin: 0.3);
+    ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.3);
   }
 }

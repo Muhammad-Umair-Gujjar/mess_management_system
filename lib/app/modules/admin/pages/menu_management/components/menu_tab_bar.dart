@@ -6,12 +6,6 @@ import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../../app/widgets/custom_tab_bar.dart';
 
-/// Tab bar component for Menu Management page
-///
-/// This widget creates a custom tab bar with three tabs:
-/// - Menu Items: For managing individual food items
-/// - Categories: For managing food categories
-/// - Nutrition: For viewing nutritional analytics
 class MenuTabBar extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onTabChanged;
@@ -26,8 +20,8 @@ class MenuTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
-        vertical: ResponsiveHelper.getSpacing(context, 'medium'),
+        horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+        vertical: ResponsiveHelper.getSpacing(context, 'large'),
       ),
       decoration: AppDecorations.floatingCard(),
       child: CustomUnderlineTabBar(
@@ -52,9 +46,12 @@ class MenuTabBar extends StatelessWidget {
         unselectedColor: AppColors.textSecondary,
         indicatorColor: AppColors.adminRole,
         indicatorHeight: 3,
-
         showIcons: true,
       ),
     );
   }
 }
+
+
+
+

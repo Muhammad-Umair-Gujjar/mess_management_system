@@ -29,7 +29,7 @@ class RecentActivityCard extends StatelessWidget {
           _buildActivitiesList(context),
         ],
       ),
-    ).animate().fadeIn(delay: 700.ms).slideX(begin: -0.3);
+    ).animate().fadeIn(delay: 300.ms).slideX(begin: -0.3);
   }
 
   Widget _buildHeader(BuildContext context) {
@@ -159,7 +159,7 @@ class _ActivityItem extends StatelessWidget {
           ),
         ],
       ),
-    ).animate(delay: (index * 100).ms).fadeIn().slideX(begin: 0.2);
+    ).animate(delay: (100).ms).fadeIn().slideX(begin: 0.2);
   }
 
   Widget _buildActivityIcon(BuildContext context) {

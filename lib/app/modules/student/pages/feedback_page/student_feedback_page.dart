@@ -22,7 +22,7 @@ class _StudentFeedbackPageState extends State<StudentFeedbackPage>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
     _animationController.forward();

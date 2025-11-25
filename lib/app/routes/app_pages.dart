@@ -12,13 +12,13 @@ class AppPages {
       name: '/',
       page: () => const SplashScreen(),
       transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 400),
+      transitionDuration: const  Duration(milliseconds: 300) ,
     ),
     GetPage(
       name: '/landing',
       page: () => const LandingPage(),
       transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 400),
+      transitionDuration: const  Duration(milliseconds: 300) ,
     ),
     GetPage(
       name: '/login',
@@ -29,19 +29,23 @@ class AppPages {
       name: '/student',
       page: () => const EnhancedStudentDashboard(),
       transition: Transition.rightToLeft,
-      transitionDuration: const Duration(milliseconds: 400),
+      transitionDuration: const  Duration(milliseconds: 300) ,
     ),
     GetPage(
       name: '/staff',
       page: () => const StaffDashboard(),
       transition: Transition.rightToLeft,
-      transitionDuration: const Duration(milliseconds: 400),
+      transitionDuration: const  Duration(milliseconds: 300) ,
     ),
     GetPage(
       name: '/admin',
       page: () => const AdminDashboard(),
       transition: Transition.rightToLeft,
-      transitionDuration: const Duration(milliseconds: 400),
+      transitionDuration: const  Duration(milliseconds: 300) ,
     ),
   ];
 }
+
+
+
+

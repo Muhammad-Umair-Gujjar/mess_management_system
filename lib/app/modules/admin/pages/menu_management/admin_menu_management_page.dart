@@ -169,7 +169,7 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
             child: CustomTabBar(
               selectedIndex: selectedTabIndex,
               padding: EdgeInsets.all(
-                ResponsiveHelper.getSpacing(context, 'xsmall'),
+                ResponsiveHelper.getSpacing(context, 'medium'),
               ),
               tabHeight: 45,
               onTap: (index) {
@@ -565,3 +565,7 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
     );
   }
 }
+
+
+
+

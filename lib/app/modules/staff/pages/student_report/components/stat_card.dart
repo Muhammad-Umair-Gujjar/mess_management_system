@@ -60,7 +60,7 @@ class StatCard extends StatelessWidget {
                 value,
                 style: AppTextStyles.heading5.copyWith(
                   color: color,
-    
+
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -79,7 +79,7 @@ class StatCard extends StatelessWidget {
           ),
         )
         .animate(delay: Duration(milliseconds: delay))
-        .fadeIn(duration: 800.ms)
+        .fadeIn(duration: 300.ms)
         .scale(begin: const Offset(0.8, 0.8));
   }
 }

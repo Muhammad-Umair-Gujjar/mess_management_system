@@ -31,7 +31,7 @@ class _StaffAttendancePageState extends State<StaffAttendancePage>
   void initState() {
     super.initState();
     _markAllController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
   }

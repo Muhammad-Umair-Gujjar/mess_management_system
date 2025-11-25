@@ -47,7 +47,7 @@ class NutritionalInfoCard extends StatelessWidget {
           ),
         ],
       ),
-    ).animate(delay: 1000.ms).fadeIn(duration: 800.ms).slideX(begin: -0.3);
+    ).animate(delay: 300.ms).fadeIn(duration: 300.ms).slideX(begin: -0.3);
   }
 
   Widget _buildNutritionProgress(

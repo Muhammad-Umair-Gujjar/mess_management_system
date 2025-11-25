@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -36,7 +35,7 @@ class ResponsiveTopNavbar extends StatefulWidget
   });
 
   @override
-  Size get preferredSize => Size.fromHeight(80.h);
+  Size get preferredSize => const Size.fromHeight(80);
 
   @override
   State<ResponsiveTopNavbar> createState() => _ResponsiveTopNavbarState();
@@ -88,29 +87,29 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
         boxShadow: [
           BoxShadow(
             color: AppColors.shadowMedium,
-            blurRadius: 20.r,
-            offset: Offset(0, 4.h),
+            blurRadius: 15.0,
+            offset: Offset(0, 2.0),
           ),
         ],
         border: Border(
           bottom: BorderSide(
             color: AppColors.primary.withOpacity(0.1),
-            width: 1.w,
+            width: 1.0,
           ),
         ),
       ),
       child: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: isMobile ? 16.w : 32.w,
-            vertical: 12.h,
+            horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+            vertical: ResponsiveHelper.getSpacing(context, 'medium'),
           ),
           child: Row(
             children: [
               // Menu/Logo Section
               _buildLeadingSection(isMobile, isTablet),
 
-              SizedBox(width: 16.w),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
 
               // Title Section
               if (!isMobile) _buildTitleSection(),
@@ -120,7 +119,7 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
               // Search Section
               if (widget.showSearch) _buildSearchSection(isMobile),
 
-              SizedBox(width: 16.w),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
 
               // Actions Section
               _buildActionsSection(isMobile, isTablet),
@@ -139,32 +138,39 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
             onPressed: widget.onMenuPressed,
             icon: Icon(
               FontAwesomeIcons.bars,
-              size: 24.sp,
+              size: ResponsiveHelper.getIconSize(context, 'medium'),
               color: AppColors.textPrimary,
             ),
             tooltip: 'Menu',
           ),
-          SizedBox(width: 8.w),
+          SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
         ],
         // Logo
         Container(
-          padding: EdgeInsets.all(8.r),
+          padding: EdgeInsets.all(
+            ResponsiveHelper.getSpacing(context, 'small'),
+          ),
           decoration: BoxDecoration(
             gradient: AppColors.primaryGradient,
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getBorderRadius(context, 'medium'),
+            ),
           ),
           child: Icon(
             FontAwesomeIcons.graduationCap,
-            size: isMobile ? 20.sp : 24.sp,
+            size: ResponsiveHelper.getIconSize(
+              context,
+              isMobile ? 'small' : 'medium',
+            ),
             color: Colors.white,
           ),
         ),
         if (!isMobile) ...[
-          SizedBox(width: 12.w),
+          SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
           Text(
             'MessMaster',
             style: AppTextStyles.heading5.copyWith(
-              fontSize: 22.sp,
+              fontSize: ResponsiveHelper.getFontSize(context, 'heading5'),
               fontWeight: FontWeight.w700,
               color: AppColors.textPrimary,
             ),
@@ -182,7 +188,7 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
         Text(
           widget.title,
           style: AppTextStyles.heading5.copyWith(
-            fontSize: 20.sp,
+            fontSize: ResponsiveHelper.getFontSize(context, 'heading5'),
             color: AppColors.textPrimary,
           ),
         ),
@@ -191,7 +197,7 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
             '${widget.userRole} Dashboard',
             style: AppTextStyles.caption.copyWith(
               color: AppColors.textLight,
-              fontSize: 12.sp,
+              fontSize: ResponsiveHelper.getFontSize(context, 'caption'),
             ),
           ),
       ],
@@ -207,15 +213,23 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
             children: [
               if (_isSearchExpanded)
                 Container(
-                  width: 200.w * _searchAnimation.value,
+                  width:
+                      ResponsiveHelper.getContainerWidth(
+                        context,
+                        mobileRatio: 0.5,
+                      ) *
+                      _searchAnimation.value,
                   child: ReusableTextField(
                     controller: _searchTextController,
                     type: TextFieldType.search,
                     hintText: 'Search...',
                     onChanged: widget.onSearchChanged,
                     contentPadding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 8.h,
+                      horizontal: ResponsiveHelper.getSpacing(
+                        context,
+                        'medium',
+                      ),
+                      vertical: ResponsiveHelper.getSpacing(context, 'small'),
                     ),
                   ),
                 ),
@@ -235,7 +249,7 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
                   _isSearchExpanded
                       ? FontAwesomeIcons.xmark
                       : FontAwesomeIcons.magnifyingGlass,
-                  size: 20.sp,
+                  size: ResponsiveHelper.getIconSize(context, 'small'),
                   color: AppColors.textPrimary,
                 ),
               ),
@@ -247,13 +261,20 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
 
     // Desktop search
     return Container(
-      width: 300.w,
+      width: ResponsiveHelper.getContainerWidth(
+        context,
+        tabletRatio: 0.4,
+        desktopRatio: 0.3,
+      ),
       child: ReusableTextField(
         controller: _searchTextController,
         type: TextFieldType.search,
         hintText: 'Search students, menus, reports...',
         onChanged: widget.onSearchChanged,
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+          vertical: ResponsiveHelper.getSpacing(context, 'medium'),
+        ),
       ),
     );
   }
@@ -268,13 +289,13 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
           badgeCount: 3,
         ),
 
-        SizedBox(width: 12.w),
+        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
 
         // User Profile
         if (!isMobile) _buildUserProfile(),
 
         if (isMobile || isTablet) ...[
-          SizedBox(width: 12.w),
+          SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
           _buildActionButton(
             icon: FontAwesomeIcons.rightFromBracket,
             onPressed: widget.onLogoutPressed,
@@ -294,38 +315,57 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
     return Stack(
       children: [
         Container(
-          padding: EdgeInsets.all(12.r),
+          padding: EdgeInsets.all(
+            ResponsiveHelper.getSpacing(context, 'medium'),
+          ),
           decoration: BoxDecoration(
             color: AppColors.cardBackground,
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getBorderRadius(context, 'medium'),
+            ),
             border: Border.all(
               color: AppColors.textLight.withOpacity(0.2),
-              width: 1.w,
+              width: 1.0,
             ),
           ),
-          child: Icon(icon, size: 20.sp, color: color ?? AppColors.textPrimary),
-        ).animate().scale(delay: 200.ms),
+          child: Icon(
+            icon,
+            size: ResponsiveHelper.getIconSize(context, 'small'),
+            color: color ?? AppColors.textPrimary,
+          ),
+        ).animate().scale(delay: 300.ms),
         if (badgeCount != null && badgeCount > 0)
           Positioned(
             right: 0,
             top: 0,
             child: Container(
-              padding: EdgeInsets.all(4.r),
+              padding: EdgeInsets.all(4.0),
               decoration: BoxDecoration(
                 color: AppColors.error,
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.circular(
+                  ResponsiveHelper.getBorderRadius(context, 'small'),
+                ),
               ),
-              constraints: BoxConstraints(minWidth: 18.w, minHeight: 18.h),
+              constraints: BoxConstraints(
+                minWidth: ResponsiveHelper.getComponentDimension(
+                  context,
+                  'badgeSize',
+                ),
+                minHeight: ResponsiveHelper.getComponentDimension(
+                  context,
+                  'badgeSize',
+                ),
+              ),
               child: Text(
                 badgeCount > 9 ? '9+' : badgeCount.toString(),
                 style: AppTextStyles.caption.copyWith(
                   color: Colors.white,
-                  fontSize: 10.sp,
+                  fontSize: ResponsiveHelper.getFontSize(context, 'caption'),
                   fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,
               ),
-            ).animate().scale(delay: 400.ms),
+            ).animate().scale(delay: 300.ms),
           ),
       ],
     );
@@ -337,22 +377,40 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
       child: GestureDetector(
         onTap: () => _showUserMenu(),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          padding: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+            vertical: ResponsiveHelper.getSpacing(context, 'small'),
+          ),
           decoration: BoxDecoration(
             gradient: _getUserRoleGradient(),
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getBorderRadius(context, 'medium'),
+            ),
             boxShadow: [
               BoxShadow(
                 color: AppColors.primary.withOpacity(0.2),
-                blurRadius: 8.r,
-                offset: Offset(0, 2.h),
+                blurRadius: ResponsiveHelper.getValue(
+                  context,
+                  mobile: 6.0,
+                  tablet: 8.0,
+                  desktop: 8.0,
+                ),
+                offset: Offset(
+                  0,
+                  ResponsiveHelper.getValue(
+                    context,
+                    mobile: 2.0,
+                    tablet: 2.0,
+                    desktop: 2.0,
+                  ),
+                ),
               ),
             ],
           ),
           child: Row(
             children: [
               CircleAvatar(
-                radius: 16.r,
+                radius: ResponsiveHelper.getIconSize(context, 'medium') * 0.75,
                 backgroundColor: Colors.white.withOpacity(0.2),
                 child: Text(
                   (widget.userName?.substring(0, 1).toUpperCase()) ?? 'U',
@@ -362,7 +420,7 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
                   ),
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -372,22 +430,25 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
                     style: AppTextStyles.body2.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
-                      fontSize: 14.sp,
+                      fontSize: ResponsiveHelper.getFontSize(context, 'body2'),
                     ),
                   ),
                   Text(
                     widget.userRole ?? 'User',
                     style: AppTextStyles.caption.copyWith(
                       color: Colors.white.withOpacity(0.8),
-                      fontSize: 11.sp,
+                      fontSize: ResponsiveHelper.getFontSize(
+                        context,
+                        'caption',
+                      ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
               Icon(
                 FontAwesomeIcons.chevronDown,
-                size: 12.sp,
+                size: ResponsiveHelper.getIconSize(context, 'small'),
                 color: Colors.white,
               ),
             ],
@@ -443,8 +504,11 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
           value: 'profile',
           child: Row(
             children: [
-              Icon(FontAwesomeIcons.user, size: 16.sp),
-              SizedBox(width: 12.w),
+              Icon(
+                FontAwesomeIcons.user,
+                size: ResponsiveHelper.getIconSize(context, 'medium'),
+              ),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
               Text('Profile', style: AppTextStyles.body2),
             ],
           ),
@@ -453,8 +517,11 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
           value: 'settings',
           child: Row(
             children: [
-              Icon(FontAwesomeIcons.gear, size: 16.sp),
-              SizedBox(width: 12.w),
+              Icon(
+                FontAwesomeIcons.gear,
+                size: ResponsiveHelper.getIconSize(context, 'medium'),
+              ),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
               Text('Settings', style: AppTextStyles.body2),
             ],
           ),
@@ -465,10 +532,10 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
             children: [
               Icon(
                 FontAwesomeIcons.rightFromBracket,
-                size: 16.sp,
+                size: ResponsiveHelper.getIconSize(context, 'medium'),
                 color: AppColors.error,
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
               Text(
                 'Logout',
                 style: AppTextStyles.body2.copyWith(color: AppColors.error),
@@ -478,7 +545,11 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
         ),
       ],
       elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.getBorderRadius(context, 'medium'),
+        ),
+      ),
     ).then((value) {
       if (value == 'logout') {
         widget.onLogoutPressed?.call();

@@ -393,3 +393,7 @@ class ResponsiveHelper {
     return MediaQuery.of(context).viewInsets.bottom;
   }
 }
+
+
+
+

@@ -17,7 +17,7 @@ class LoginController extends GetxController {
     isLoading.value = true;
 
     // Simulate loading delay for smooth transition
-    Future.delayed(const Duration(milliseconds: 800), () {
+    Future.delayed(const  Duration(milliseconds: 300) , () {
       isLoading.value = false;
 
       switch (role.toLowerCase()) {
@@ -64,3 +64,7 @@ class LoginController extends GetxController {
     // Clean up resources
   }
 }
+
+
+
+

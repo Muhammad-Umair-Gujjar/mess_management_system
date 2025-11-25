@@ -64,7 +64,7 @@ class MealSelectorCard extends StatelessWidget {
           _buildMealTypeChips(context),
         ],
       ),
-    ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.3);
+    ).animate().fadeIn(duration: 300.ms).slideY(begin: -0.3);
   }
 
   Widget _buildMealTypeChips(BuildContext context) {
@@ -76,7 +76,7 @@ class MealSelectorCard extends StatelessWidget {
         return GestureDetector(
           onTap: () => onMealChanged(meal),
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 300),
             margin: EdgeInsets.only(
               left: ResponsiveHelper.getSpacing(context, 'xsmall'),
             ),

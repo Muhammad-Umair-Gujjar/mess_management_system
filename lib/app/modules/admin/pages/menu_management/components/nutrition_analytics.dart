@@ -50,7 +50,7 @@ class NutritionAnalytics extends StatelessWidget {
   Widget _buildSectionTitle(BuildContext context) {
     return Text(
       'Nutritional Overview',
-      style: AppTextStyles.heading4.copyWith(color: AppColors.textPrimary),
+      style: AppTextStyles.heading5.copyWith(color: AppColors.textPrimary),
     );
   }
 
@@ -400,3 +400,7 @@ class NutritionAnalytics extends StatelessWidget {
     return total / items.length;
   }
 }
+
+
+
+

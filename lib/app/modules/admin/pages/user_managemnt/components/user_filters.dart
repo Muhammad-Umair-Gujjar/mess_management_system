@@ -44,7 +44,7 @@ class UserFilters extends StatelessWidget {
           ],
         ],
       ),
-    ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.3);
+    ).animate().fadeIn(duration:  300.ms ).slideY(begin: -0.3);
   }
 
   Widget _buildMobileLayout(BuildContext context) {
@@ -184,3 +184,7 @@ class UserFilters extends StatelessWidget {
     );
   }
 }
+
+
+
+

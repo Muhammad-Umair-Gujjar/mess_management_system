@@ -25,7 +25,7 @@ class _StaffStudentManagementPageState extends State<StaffStudentManagementPage>
   void initState() {
     super.initState();
     _listAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
     _listAnimationController.forward();

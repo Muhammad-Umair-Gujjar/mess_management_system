@@ -48,6 +48,10 @@ class StatCard extends StatelessWidget {
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 600.ms).scale(begin: const Offset(0.95, 0.95));
+    ).animate().fadeIn(duration:  300.ms ).scale(begin: const Offset(0.95, 0.95));
   }
 }
+
+
+
+

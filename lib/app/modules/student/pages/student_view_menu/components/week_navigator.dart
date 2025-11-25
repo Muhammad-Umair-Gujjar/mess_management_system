@@ -47,8 +47,7 @@ class WeekNavigator extends StatelessWidget {
                       ),
                       padding: EdgeInsets.symmetric(
                         vertical: ResponsiveHelper.getSpacing(context, 'xs'),
-                        horizontal:
-                            ResponsiveHelper.getSpacing(context, 'xs'),
+                        horizontal: ResponsiveHelper.getSpacing(context, 'xs'),
                       ),
                       decoration: BoxDecoration(
                         gradient: isSelected ? AppColors.primaryGradient : null,
@@ -122,8 +121,8 @@ class WeekNavigator extends StatelessWidget {
                         ],
                       ),
                     )
-                    .animate(delay: Duration(milliseconds: index * 100))
-                    .fadeIn(duration: 600.ms)
+                    .animate(delay: Duration(milliseconds: 100))
+                    .fadeIn(duration: 300.ms)
                     .slideX(begin: 0.3),
           );
         },

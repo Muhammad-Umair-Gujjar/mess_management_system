@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:glassmorphism/glassmorphism.dart';
@@ -8,6 +7,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_decorations.dart';
 import '../../core/utils/toast_message.dart';
+import '../../core/utils/responsive_helper.dart';
 
 class LandingAppBar extends StatelessWidget {
   final bool showBackButton;
@@ -22,12 +22,15 @@ class LandingAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80.h,
-      padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 16.h),
+      height: ResponsiveHelper.getComponentDimension(context, 'appBarHeight'),
+      padding: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+        vertical: ResponsiveHelper.getSpacing(context, 'medium'),
+      ),
       child: GlassmorphicContainer(
         width: double.infinity,
         height: double.infinity,
-        borderRadius: 20.r,
+        borderRadius: ResponsiveHelper.getBorderRadius(context, 'large'),
         blur: 20,
         alignment: Alignment.center,
         border: 2,
@@ -44,26 +47,28 @@ class LandingAppBar extends StatelessWidget {
           ],
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 32.w),
+          padding: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+          ),
           child: Row(
             children: [
               // Logo and Brand
-              _buildLogo().animate().fadeIn(delay: 200.ms).slideX(begin: -0.3),
+              _buildLogo().animate().fadeIn(delay:  300.ms ).slideX(begin: -0.3),
 
               const Spacer(),
 
               // Navigation Menu
               _buildNavigationMenu()
                   .animate()
-                  .fadeIn(delay: 400.ms)
+                  .fadeIn(delay:  300.ms )
                   .slideY(begin: -0.3),
 
-              SizedBox(width: 32.w),
+              SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
 
               // Action Buttons
               _buildActionButtons()
                   .animate()
-                  .fadeIn(delay: 600.ms)
+                  .fadeIn(delay:  300.ms )
                   .slideX(begin: 0.3),
             ],
           ),
@@ -77,17 +82,17 @@ class LandingAppBar extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            padding: EdgeInsets.all(12.r),
+            padding: const EdgeInsets.all(12.0),
             decoration: AppDecorations.gradientContainer(
               gradient: AppColors.primaryGradient,
             ),
             child: Icon(
               FontAwesomeIcons.utensils,
               color: Colors.white,
-              size: 24.sp,
+              size: 24.0,
             ),
           ),
-          SizedBox(width: 16.w),
+          SizedBox(width: 16.0),
           Flexible(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,13 +134,13 @@ class LandingAppBar extends StatelessWidget {
           Icons.star_outline,
           () => _scrollToSection('features'),
         ),
-        SizedBox(width: 32.w),
+        SizedBox(width: 32.0),
         _buildNavItem(
           'About',
           Icons.info_outline,
           () => _scrollToSection('about'),
         ),
-        SizedBox(width: 32.w),
+        SizedBox(width: 32.0),
         _buildNavItem(
           'Contact',
           Icons.contact_support_outlined,
@@ -151,12 +156,12 @@ class LandingAppBar extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.r)),
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.0)),
           child: Row(
             children: [
-              Icon(icon, size: 16.sp, color: AppColors.textSecondary),
-              SizedBox(width: 8.w),
+              Icon(icon, size: 16.0, color: AppColors.textSecondary),
+              SizedBox(width: 8.0),
               Text(title, style: AppTextStyles.navMenuItem),
             ],
           ),
@@ -174,23 +179,23 @@ class LandingAppBar extends StatelessWidget {
           child: GestureDetector(
             onTap: () => Get.toNamed('/login'),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
               decoration: BoxDecoration(
                 border: Border.all(color: AppColors.primary, width: 1.5),
-                borderRadius: BorderRadius.circular(12.r),
+                borderRadius: BorderRadius.circular(12.0),
               ),
               child: Text(
                 'Login',
                 style: AppTextStyles.button.copyWith(
                   color: AppColors.primary,
-                  fontSize: 14.sp,
+                  fontSize: 14.0,
                 ),
               ),
             ),
           ),
         ),
 
-        SizedBox(width: 16.w),
+        SizedBox(width: 16.0),
 
         // Quick Access Button
         MouseRegion(
@@ -198,17 +203,17 @@ class LandingAppBar extends StatelessWidget {
           child: GestureDetector(
             onTap: () => _showQuickAccessDialog(),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
               decoration: AppDecorations.gradientContainer(
                 gradient: AppColors.primaryGradient,
               ),
               child: Row(
                 children: [
-                  Icon(Icons.dashboard, color: Colors.white, size: 16.sp),
-                  SizedBox(width: 8.w),
+                  Icon(Icons.dashboard, color: Colors.white, size: 16.0),
+                  SizedBox(width: 8.0),
                   Text(
                     'Quick Access',
-                    style: AppTextStyles.button.copyWith(fontSize: 14.sp),
+                    style: AppTextStyles.button.copyWith(fontSize: 14.0),
                   ),
                 ],
               ),
@@ -229,20 +234,20 @@ class LandingAppBar extends StatelessWidget {
       Dialog(
         backgroundColor: Colors.transparent,
         child: Container(
-          width: 400.w,
-          padding: EdgeInsets.all(32.r),
+          width: 400.0,
+          padding: EdgeInsets.all(32.0),
           decoration: AppDecorations.glassmorphicContainer(),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text('Quick Access', style: AppTextStyles.heading4),
-              SizedBox(height: 24.h),
+              SizedBox(height: 24.0),
               Text(
                 'Select your role to continue',
                 style: AppTextStyles.subtitle2,
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 32.h),
+              SizedBox(height: 32.0),
               Column(
                 children: [
                   _buildQuickAccessButton(
@@ -251,14 +256,14 @@ class LandingAppBar extends StatelessWidget {
                     AppColors.studentRole,
                     () => Get.offNamed('/student'),
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 16.0),
                   _buildQuickAccessButton(
                     'Mess Staff',
                     FontAwesomeIcons.userTie,
                     AppColors.staffRole,
                     () => Get.offNamed('/staff'),
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 16.0),
                   _buildQuickAccessButton(
                     'Administrator',
                     FontAwesomeIcons.userShield,
@@ -270,7 +275,7 @@ class LandingAppBar extends StatelessWidget {
             ],
           ),
         ),
-      ).animate().fadeIn(duration: 300.ms).scale(begin: const Offset(0.8, 0.8)),
+      ).animate().fadeIn(duration:  300.ms ).scale(begin: const Offset(0.8, 0.8)),
     );
   }
 
@@ -289,23 +294,23 @@ class LandingAppBar extends StatelessWidget {
         },
         child: Container(
           width: double.infinity,
-          padding: EdgeInsets.all(16.r),
+          padding: EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(16.r),
+            borderRadius: BorderRadius.circular(16.0),
             border: Border.all(color: color.withOpacity(0.3)),
           ),
           child: Row(
             children: [
               Container(
-                padding: EdgeInsets.all(12.r),
+                padding: EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
                   color: color,
-                  borderRadius: BorderRadius.circular(8.r),
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: Icon(icon, color: Colors.white, size: 20.sp),
+                child: Icon(icon, color: Colors.white, size: 20.0),
               ),
-              SizedBox(width: 16.w),
+              SizedBox(width: 16.0),
               Expanded(
                 child: Text(
                   title,
@@ -315,7 +320,7 @@ class LandingAppBar extends StatelessWidget {
                   ),
                 ),
               ),
-              Icon(Icons.arrow_forward_ios, color: color, size: 16.sp),
+              Icon(Icons.arrow_forward_ios, color: color, size: 16.0),
             ],
           ),
         ),
@@ -323,3 +328,7 @@ class LandingAppBar extends StatelessWidget {
     );
   }
 }
+
+
+
+

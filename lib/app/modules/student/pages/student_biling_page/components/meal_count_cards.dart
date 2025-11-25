@@ -41,7 +41,7 @@ class MealCountCards extends StatelessWidget {
             count: stats['dinnerCount'] ?? 0,
             icon: FontAwesomeIcons.moon,
             color: AppColors.info,
-            delay: 200,
+            delay: 100,
             countAnimationController: countAnimationController,
           ),
         ),
@@ -135,7 +135,7 @@ class _MealCountCard extends StatelessWidget {
           ),
         )
         .animate(delay: Duration(milliseconds: delay))
-        .fadeIn(duration: 800.ms)
+        .fadeIn(duration: 300.ms)
         .scale(begin: const Offset(0.8, 0.8));
   }
 }

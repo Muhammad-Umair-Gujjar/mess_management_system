@@ -298,10 +298,10 @@ class StaffController extends GetxController {
       'breakfastAbsent': totalStudents - breakfastPresent,
       'dinnerAbsent': totalStudents - dinnerPresent,
       'breakfastAttendanceRate': totalStudents > 0
-          ? (breakfastPresent / totalStudents * 100)
+          ? (breakfastPresent /  100 )
           : 0.0,
       'dinnerAttendanceRate': totalStudents > 0
-          ? (dinnerPresent / totalStudents * 100)
+          ? (dinnerPresent /  100 )
           : 0.0,
     };
   }
@@ -328,7 +328,7 @@ class StaffController extends GetxController {
       'totalPresent': totalPresent,
       'totalAbsent': totalPossibleMeals - totalPresent,
       'weeklyAttendanceRate': totalPossibleMeals > 0
-          ? (totalPresent / totalPossibleMeals * 100)
+          ? (totalPresent /  100 )
           : 0.0,
     };
   }
@@ -358,7 +358,7 @@ class StaffController extends GetxController {
         'date': day,
         'present': present,
         'total': totalPossible,
-        'percentage': totalPossible > 0 ? (present / totalPossible * 100) : 0.0,
+        'percentage': totalPossible > 0 ? (present /  100 ) : 0.0,
       };
     }).toList();
   }
@@ -438,3 +438,7 @@ class StaffController extends GetxController {
     }
   }
 }
+
+
+
+

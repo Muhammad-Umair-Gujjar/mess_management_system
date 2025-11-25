@@ -27,7 +27,7 @@ class QuickActionsCard extends StatelessWidget {
           _buildActionsGrid(context),
         ],
       ),
-    ).animate().fadeIn(delay: 800.ms).slideY(begin: 0.3);
+    ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.3);
   }
 
   Widget _buildHeader(BuildContext context) {
@@ -39,7 +39,11 @@ class QuickActionsCard extends StatelessWidget {
           color: AppColors.warning,
         ),
         SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
-        ResponsiveText(text: 'Quick Actions', styleType: 'heading5',fontWeight: FontWeight.bold,),
+        ResponsiveText(
+          text: 'Quick Actions',
+          styleType: 'heading5',
+          fontWeight: FontWeight.bold,
+        ),
       ],
     );
   }

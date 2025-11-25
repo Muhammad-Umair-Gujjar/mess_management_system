@@ -34,7 +34,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       child: AppBar(
         title: title != null
-            ? Text(title!).animate().fadeIn(delay: 200.ms).slideX(begin: -0.3)
+            ? Text(title!).animate().fadeIn(delay:  300.ms ).slideX(begin: -0.3)
             : null,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -42,10 +42,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ? IconButton(
                 onPressed: onBackPressed ?? () => Get.back(),
                 icon: const Icon(Icons.arrow_back_ios_rounded),
-              ).animate().fadeIn(delay: 100.ms).scale()
+              ).animate().fadeIn(delay:  300.ms ).scale()
             : null,
         actions: actions
-            ?.map((action) => action.animate().fadeIn(delay: 300.ms).scale())
+            ?.map((action) => action.animate().fadeIn(delay:  300.ms ).scale())
             .toList(),
       ),
     );
@@ -95,7 +95,7 @@ class CustomDrawer extends StatelessWidget {
                         color: AppColors.primary,
                         size: 30,
                       ),
-                    ).animate().scale(delay: 200.ms),
+                    ).animate().scale(delay:  300.ms ),
                     const SizedBox(height: 16),
                     Text(
                       userName,
@@ -103,14 +103,14 @@ class CustomDrawer extends StatelessWidget {
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
-                    ).animate().fadeIn(delay: 300.ms).slideX(begin: -0.3),
+                    ).animate().fadeIn(delay:  300.ms ).slideX(begin: -0.3),
                     const SizedBox(height: 4),
                     Text(
                       userRole.toUpperCase(),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.white.withOpacity(0.8),
                       ),
-                    ).animate().fadeIn(delay: 400.ms).slideX(begin: -0.3),
+                    ).animate().fadeIn(delay:  300.ms ).slideX(begin: -0.3),
                   ],
                 ),
               ),
@@ -125,7 +125,7 @@ class CustomDrawer extends StatelessWidget {
                 final item = menuItems[index];
                 return DrawerMenuTile(item: item, index: index)
                     .animate()
-                    .fadeIn(delay: (500 + index * 100).ms)
+                    .fadeIn(delay: (500 +  100 ).ms)
                     .slideX(begin: -0.3);
               },
             ),
@@ -148,7 +148,7 @@ class CustomDrawer extends StatelessWidget {
                 Get.offAllNamed('/login');
               },
             ),
-          ).animate().fadeIn(delay: 800.ms).slideY(begin: 0.3),
+          ).animate().fadeIn(delay:  300.ms ).slideY(begin: 0.3),
         ],
       ),
     );
@@ -204,3 +204,7 @@ class DrawerMenuTile extends StatelessWidget {
     );
   }
 }
+
+
+
+

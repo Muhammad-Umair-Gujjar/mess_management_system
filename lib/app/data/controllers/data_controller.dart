@@ -123,7 +123,7 @@ class DataController extends GetxController {
           id: 'MENU_B_${date.day}_${date.month}',
           name: _getBreakfastItem(i % 5),
           description: _getBreakfastDescription(i % 5),
-          calories: 350 + (i * 25),
+          calories: 350 + ( 100 ),
           mealType: MealType.breakfast,
           date: date,
           imageUrl:
@@ -137,7 +137,7 @@ class DataController extends GetxController {
           id: 'MENU_D_${date.day}_${date.month}',
           name: _getDinnerItem(i % 5),
           description: _getDinnerDescription(i % 5),
-          calories: 500 + (i * 30),
+          calories: 500 + ( 100 ),
           mealType: MealType.dinner,
           date: date,
           imageUrl:
@@ -603,3 +603,7 @@ class DataController extends GetxController {
     }
   }
 }
+
+
+
+

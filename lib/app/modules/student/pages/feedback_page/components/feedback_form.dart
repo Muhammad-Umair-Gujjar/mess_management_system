@@ -88,7 +88,8 @@ class _FeedbackFormState extends State<FeedbackForm> {
                         overflow: TextOverflow.ellipsis,
                       ),
                       SizedBox(
-                        height: ResponsiveHelper.getSpacing(context, 'xs') * 0.5,
+                        height:
+                            ResponsiveHelper.getSpacing(context, 'xs') * 0.5,
                       ),
                       Text(
                         'Help us improve our services',
@@ -192,8 +193,8 @@ class _FeedbackFormState extends State<FeedbackForm> {
                                 ],
                               ),
                             )
-                            .animate(delay: Duration(milliseconds: index * 100))
-                            .fadeIn(duration: 600.ms)
+                            .animate(delay: Duration(milliseconds: 100))
+                            .fadeIn(duration: 300.ms)
                             .scale(begin: const Offset(0.8, 0.8)),
                   );
                 }),
@@ -388,7 +389,7 @@ class _FeedbackFormState extends State<FeedbackForm> {
           ],
         ),
       ),
-    ).animate().fadeIn(duration: 800.ms).slideY(begin: -0.3);
+    ).animate().fadeIn(duration: 300.ms).slideY(begin: -0.3);
   }
 
   Future<void> _submitFeedback() async {

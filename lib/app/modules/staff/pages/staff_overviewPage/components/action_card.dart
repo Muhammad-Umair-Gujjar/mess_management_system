@@ -74,6 +74,10 @@ class ActionCard extends StatelessWidget {
           ],
         ),
       ),
-    ).animate().fadeIn(duration: 700.ms).slideX(begin: 0.1);
+    ).animate().fadeIn(duration:  300.ms ).slideX(begin: 0.1);
   }
 }
+
+
+
+

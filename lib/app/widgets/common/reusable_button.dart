@@ -50,7 +50,7 @@ class _ReusableButtonState extends State<ReusableButton>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 150),
+      duration: const  Duration(milliseconds: 300) ,
       vsync: this,
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
@@ -79,7 +79,7 @@ class _ReusableButtonState extends State<ReusableButton>
             return Transform.scale(
               scale: _scaleAnimation.value,
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+                duration: const  Duration(milliseconds: 300) ,
                 width: widget.width,
                 padding: widget.padding ?? _getButtonPadding(),
                 decoration: _getButtonDecoration(),
@@ -458,3 +458,7 @@ class _ReusableButtonState extends State<ReusableButton>
     }
   }
 }
+
+
+
+

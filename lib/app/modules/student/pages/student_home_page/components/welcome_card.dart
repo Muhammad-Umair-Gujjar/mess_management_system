@@ -42,7 +42,7 @@ class WelcomeCard extends StatelessWidget {
           ],
         ),
       ),
-    ).animate().fadeIn(duration: 800.ms).slideY(begin: -0.3);
+    ).animate().fadeIn(duration: 300.ms).slideY(begin: -0.3);
   }
 
   Widget _buildWelcomeContent(BuildContext context, String greeting) {
@@ -105,7 +105,6 @@ class WelcomeCard extends StatelessWidget {
   }
 
   Widget _buildWelcomeAvatar(BuildContext context) {
-    
     return Container(
       padding: ResponsiveHelper.getPadding(context, 'padding'),
       decoration: BoxDecoration(
@@ -119,7 +118,7 @@ class WelcomeCard extends StatelessWidget {
         size: ResponsiveHelper.getIconSize(context, 'medium'),
         color: Colors.white,
       ),
-    ).animate().scale(delay: 500.ms);
+    ).animate().scale(delay: 300.ms);
   }
 
   String _getGreeting() {

@@ -79,8 +79,8 @@ class StudentListTile extends StatelessWidget {
             ],
           ),
         )
-        .animate(delay: Duration(milliseconds: 50 * index))
-        .fadeIn(duration: 600.ms)
+        .animate(delay: Duration(milliseconds: 50))
+        .fadeIn(duration: 300.ms)
         .slideX(begin: 0.3);
   }
 }

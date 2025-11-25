@@ -50,6 +50,6 @@ class RecentActivitySection extends StatelessWidget {
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 800.ms, delay: 200.ms);
+    ).animate().fadeIn(duration: 300.ms, delay: 300.ms);
   }
 }

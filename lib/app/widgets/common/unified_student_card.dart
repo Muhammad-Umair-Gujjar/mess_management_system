@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -61,8 +60,8 @@ class UnifiedStudentCard extends StatelessWidget {
           ),
           child: _buildCardContent(),
         )
-        .animate(delay: Duration(milliseconds: 100 * index))
-        .fadeIn(duration: 600.ms)
+         .animate(delay: Duration(milliseconds: 50)) 
+        .fadeIn(duration:  300.ms )
         .slideX(begin: type == StudentCardType.attendance ? 0.3 : 0.0)
         .scale(
           begin: type == StudentCardType.details
@@ -109,7 +108,7 @@ class UnifiedStudentCard extends StatelessWidget {
     return Row(
       children: [
         _buildStudentAvatar(),
-        SizedBox(width: 16.w),
+        SizedBox(width: 16.0),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,7 +138,7 @@ class UnifiedStudentCard extends StatelessWidget {
         Row(
           children: [
             _buildStudentAvatar(),
-            SizedBox(width: 12.w),
+            SizedBox(width: 12.0),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,7 +162,7 @@ class UnifiedStudentCard extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 16.h),
+        SizedBox(height: 16.0),
         _buildStudentDetails(),
         if (type == StudentCardType.details) ...[
           const Spacer(),
@@ -178,7 +177,7 @@ class UnifiedStudentCard extends StatelessWidget {
     final initial = name.isNotEmpty ? name.substring(0, 1).toUpperCase() : '?';
 
     return CircleAvatar(
-      radius: type == StudentCardType.details ? 24.r : 24.r,
+      radius: type == StudentCardType.details ? 24.0 : 24.0,
       backgroundColor: AppColors.staffRole.withOpacity(0.1),
       child: Text(
         initial,
@@ -202,10 +201,10 @@ class UnifiedStudentCard extends StatelessWidget {
             children: [
               Icon(
                 FontAwesomeIcons.doorOpen,
-                size: 14.sp,
+                size: 14.0,
                 color: AppColors.textLight,
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: 8.0),
               Text(
                 'Room: ${student['room']}',
                 style: AppTextStyles.body2.copyWith(
@@ -214,17 +213,17 @@ class UnifiedStudentCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 8.0),
         ],
         if (type == StudentCardType.details && student['email'] != null) ...[
           Row(
             children: [
               Icon(
                 FontAwesomeIcons.envelope,
-                size: 14.sp,
+                size: 14.0,
                 color: AppColors.textLight,
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: 8.0),
               Expanded(
                 child: Text(
                   student['email'] ?? '',
@@ -253,16 +252,16 @@ class UnifiedStudentCard extends StatelessWidget {
             onPressed: onViewDetails,
           ),
         ),
-        SizedBox(width: 8.w),
+        SizedBox(width: 8.0),
         Container(
-          padding: EdgeInsets.all(6.r),
+          padding: EdgeInsets.all(6.0),
           decoration: BoxDecoration(
             color: AppColors.success.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(6.r),
+            borderRadius: BorderRadius.circular(6.0),
           ),
           child: Icon(
             FontAwesomeIcons.check,
-            size: 12.sp,
+            size: 12.0,
             color: AppColors.success,
           ),
         ),
@@ -275,14 +274,14 @@ class UnifiedStudentCard extends StatelessWidget {
       children: [
         // Status Indicator
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+          padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
           decoration: BoxDecoration(
             color: isPresent == null
                 ? AppColors.textLight.withOpacity(0.1)
                 : isPresent!
                 ? AppColors.success.withOpacity(0.1)
                 : AppColors.error.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           child: Text(
             isPresent == null
@@ -301,7 +300,7 @@ class UnifiedStudentCard extends StatelessWidget {
           ),
         ),
 
-        SizedBox(width: 12.w),
+        SizedBox(width: 12.0),
 
         // Toggle Buttons
         Row(
@@ -309,38 +308,38 @@ class UnifiedStudentCard extends StatelessWidget {
             GestureDetector(
               onTap: () => onAttendanceChanged?.call(true),
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: EdgeInsets.all(8.r),
+                duration: const  Duration(milliseconds: 300) ,
+                padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                   color: isPresent == true
                       ? AppColors.success
                       : AppColors.success.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8.r),
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Icon(
                   FontAwesomeIcons.check,
-                  size: 16.sp,
+                  size: 16.0,
                   color: isPresent == true ? Colors.white : AppColors.success,
                 ),
               ),
             ),
 
-            SizedBox(width: 8.w),
+            SizedBox(width: 8.0),
 
             GestureDetector(
               onTap: () => onAttendanceChanged?.call(false),
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: EdgeInsets.all(8.r),
+                duration: const  Duration(milliseconds: 300) ,
+                padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                   color: isPresent == false
                       ? AppColors.error
                       : AppColors.error.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8.r),
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Icon(
                   FontAwesomeIcons.xmark,
-                  size: 16.sp,
+                  size: 16.0,
                   color: isPresent == false ? Colors.white : AppColors.error,
                 ),
               ),
@@ -351,3 +350,7 @@ class UnifiedStudentCard extends StatelessWidget {
     );
   }
 }
+
+
+
+

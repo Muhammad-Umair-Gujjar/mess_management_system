@@ -1,7 +1,7 @@
 // Responsive configuration constants for the entire application
 class ResponsiveConstants {
   // ==================== BREAKPOINTS ====================
-  static const double mobileBreakpoint = 768;
+  static const double mobileBreakpoint = 600;
   static const double tabletBreakpoint = 1024;
   static const double smallMobileBreakpoint = 400;
 
@@ -199,3 +199,7 @@ class ResponsiveConstants {
     return borderRadius[radiusType];
   }
 }
+
+
+
+

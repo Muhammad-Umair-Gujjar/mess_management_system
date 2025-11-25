@@ -45,8 +45,8 @@ class UserCard extends StatelessWidget {
               ? _buildMobileLayout(context, role, isActive)
               : _buildDesktopLayout(context, role, isActive),
         )
-        .animate(delay: Duration(milliseconds: 100 * index))
-        .fadeIn(duration: 600.ms)
+         .animate(delay: Duration(milliseconds: 50)) 
+        .fadeIn(duration:  300.ms )
         .slideX(begin: -0.3);
   }
 
@@ -319,3 +319,7 @@ class UserCard extends StatelessWidget {
     }
   }
 }
+
+
+
+

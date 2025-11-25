@@ -35,7 +35,7 @@ class EnhancedStudentDashboard extends StatelessWidget {
       child: Obx(() {
         final currentIndex = controller.currentPageIndex.value;
         return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
+          duration: const  Duration(milliseconds: 300) ,
           transitionBuilder: (child, animation) {
             return SlideTransition(
               position: Tween<Offset>(
@@ -107,7 +107,7 @@ class EnhancedStudentDashboard extends StatelessWidget {
                     ),
                   ],
                 ),
-              ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.3),
+              ).animate().fadeIn(delay:  300.ms ).slideX(begin: -0.3),
 
               const Spacer(),
             ],
@@ -172,7 +172,7 @@ class EnhancedStudentDashboard extends StatelessWidget {
                       size: ResponsiveHelper.getIconSize(context, 'xlarge'),
                       color: Colors.white,
                     ),
-                  ).animate().scale(duration: 600.ms),
+                  ).animate().scale(duration:  300.ms ),
 
                   SizedBox(
                     height: ResponsiveHelper.getSpacing(context, 'xlarge'),
@@ -187,7 +187,7 @@ class EnhancedStudentDashboard extends StatelessWidget {
                         'heading2',
                       ),
                     ),
-                  ).animate().fadeIn(delay: 300.ms),
+                  ).animate().fadeIn(delay:  300.ms ),
 
                   SizedBox(
                     height: ResponsiveHelper.getSpacing(context, 'medium'),
@@ -201,7 +201,7 @@ class EnhancedStudentDashboard extends StatelessWidget {
                         'subtitle1',
                       ),
                     ),
-                  ).animate().fadeIn(delay: 500.ms),
+                  ).animate().fadeIn(delay:  300.ms ),
 
                   SizedBox(
                     height: ResponsiveHelper.getSpacing(context, 'xlarge'),
@@ -239,7 +239,7 @@ class EnhancedStudentDashboard extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ).animate().fadeIn(delay: 700.ms).slideY(begin: 0.3),
+                  ).animate().fadeIn(delay:  300.ms ).slideY(begin: 0.3),
                 ],
               ),
             ),
@@ -249,3 +249,7 @@ class EnhancedStudentDashboard extends StatelessWidget {
     );
   }
 }
+
+
+
+

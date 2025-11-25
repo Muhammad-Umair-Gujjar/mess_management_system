@@ -26,11 +26,11 @@ class _StudentBillingPageState extends State<StudentBillingPage>
   void initState() {
     super.initState();
     _countAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
     _chartAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
 

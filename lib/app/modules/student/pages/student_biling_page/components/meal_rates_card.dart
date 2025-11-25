@@ -33,7 +33,7 @@ class MealRatesCard extends StatelessWidget {
           _buildRatesList(context),
         ],
       ),
-    ).animate(delay: 600.ms).fadeIn(duration: 800.ms).slideY(begin: 0.3);
+    ).animate(delay: 300.ms).fadeIn(duration: 300.ms).slideY(begin: 0.3);
   }
 
   Widget _buildHeader(BuildContext context) {
@@ -41,25 +41,26 @@ class MealRatesCard extends StatelessWidget {
       children: [
         Text('Current Meal Rates', style: AppTextStyles.heading5),
         const Spacer(),
-        if(!ResponsiveHelper.isMobile(context))Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: ResponsiveHelper.getSpacing(context, 'small'),
-            vertical: ResponsiveHelper.getSpacing(context, 'small') * 0.5,
-          ),
-          decoration: BoxDecoration(
-            color: AppColors.success.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(
-              ResponsiveHelper.getSpacing(context, 'medium'),
+        if (!ResponsiveHelper.isMobile(context))
+          Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+              vertical: ResponsiveHelper.getSpacing(context, 'small') * 0.5,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.success.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(
+                ResponsiveHelper.getSpacing(context, 'medium'),
+              ),
+            ),
+            child: Text(
+              'From Dec 2024',
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.success,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
-          child: Text(
-            'From Dec 2024',
-            style: AppTextStyles.caption.copyWith(
-              color: AppColors.success,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
       ],
     );
   }
@@ -125,8 +126,8 @@ class _MealRateItem extends StatelessWidget {
             ],
           ),
         )
-        .animate(delay: Duration(milliseconds: 200 * index))
-        .fadeIn(duration: 600.ms)
+        .animate(delay: Duration(milliseconds: 50))
+        .fadeIn(duration: 300.ms)
         .scale(begin: const Offset(0.9, 0.9));
   }
 
@@ -180,11 +181,7 @@ class _MealRateItem extends StatelessWidget {
             .animate(
               CurvedAnimation(
                 parent: countAnimationController,
-                curve: Interval(
-                  0.3 + (index * 0.1),
-                  1.0,
-                  curve: Curves.easeOut,
-                ),
+                curve: Interval(0.3, 1.0, curve: Curves.easeOut),
               ),
             )
             .value;

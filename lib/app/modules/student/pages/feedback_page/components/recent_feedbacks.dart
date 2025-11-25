@@ -41,11 +41,12 @@ class RecentFeedbacks extends StatelessWidget {
                   ),
                 ],
               ),
-              if(ResponsiveHelper.isDesktop(context)) Icon(
-                FontAwesomeIcons.history,
-                color: AppColors.primary,
-                size: ResponsiveHelper.getIconSize(context, 'medium'),
-              ),
+              if (ResponsiveHelper.isDesktop(context))
+                Icon(
+                  FontAwesomeIcons.history,
+                  color: AppColors.primary,
+                  size: ResponsiveHelper.getIconSize(context, 'medium'),
+                ),
             ],
           ),
 
@@ -91,7 +92,7 @@ class RecentFeedbacks extends StatelessWidget {
           ),
         ],
       ),
-    ).animate(delay: 400.ms).fadeIn(duration: 800.ms).slideX(begin: 0.3);
+    ).animate(delay: 300.ms).fadeIn(duration: 300.ms).slideX(begin: 0.3);
   }
 
   Widget _buildEmptyFeedbackState() {

@@ -56,7 +56,7 @@ class WelcomeSection extends StatelessWidget {
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.1);
+    ).animate().fadeIn(duration: 300.ms).slideY(begin: -0.1);
   }
 
   String _getGreeting() {

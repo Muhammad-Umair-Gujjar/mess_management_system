@@ -75,7 +75,7 @@ class GlassCard extends StatelessWidget {
           child: Padding(padding: responsivePadding, child: child),
         ),
       ),
-    ).animate().fadeIn(duration: 600.ms).scale(delay: 300.ms);
+    ).animate().fadeIn(duration:  300.ms ).scale(delay:  300.ms );
   }
 }
 
@@ -130,7 +130,7 @@ class _AnimatedCardState extends State<AnimatedCard>
         child: GestureDetector(
           onTap: widget.onTap,
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            duration: const  Duration(milliseconds: 300) ,
             transform: Matrix4.identity()..scale(_isHovered ? 1.05 : 1.0),
             decoration: BoxDecoration(
               color: widget.color ?? AppColors.cardBackground,
@@ -183,7 +183,7 @@ class _AnimatedCardState extends State<AnimatedCard>
           ),
         ),
       ),
-    ).animate().fadeIn(duration: 600.ms).slideY(begin: 0.3, delay: 200.ms);
+    ).animate().fadeIn(duration:  300.ms ).slideY(begin: 0.3, delay:  300.ms );
   }
 }
 
@@ -246,7 +246,7 @@ class StatCard extends StatelessWidget {
             styleType: 'heading3',
             color: color,
             fontWeight: FontWeight.bold,
-          ).animate().fadeIn(delay: 400.ms).slideX(begin: 0.3),
+          ).animate().fadeIn(delay:  300.ms ).slideX(begin: 0.3),
 
           ResponsiveSpacing(spacingType: 'itemSpacing'),
 
@@ -314,7 +314,7 @@ class _GradientButtonState extends State<GradientButton>
       child: GestureDetector(
         onTap: widget.isLoading ? null : widget.onPressed,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: const  Duration(milliseconds: 300) ,
           width: widget.width,
           height: responsiveHeight,
           transform: Matrix4.identity()..scale(_isHovered ? 1.05 : 1.0),
@@ -410,6 +410,10 @@ class _GradientButtonState extends State<GradientButton>
           ),
         ),
       ),
-    ).animate().fadeIn(duration: 600.ms).scale(delay: 300.ms);
+    ).animate().fadeIn(duration:  300.ms ).scale(delay:  300.ms );
   }
 }
+
+
+
+

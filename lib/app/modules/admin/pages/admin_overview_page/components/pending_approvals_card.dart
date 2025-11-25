@@ -206,7 +206,11 @@ class PendingApprovalsCard extends StatelessWidget {
                   .toList(),
           ],
         ),
-      ).animate().fadeIn(duration: 1000.ms).slideY(begin: 0.3);
+      ).animate().fadeIn(duration:  300.ms ).slideY(begin: 0.3);
     });
   }
 }
+
+
+
+

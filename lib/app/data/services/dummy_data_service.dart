@@ -135,7 +135,7 @@ class DummyDataService {
           id: 'breakfast_$day',
           name: breakfastItems[day],
           description: 'Fresh and nutritious breakfast meal',
-          calories: 350 + (day * 20),
+          calories: 350 + (100),
           mealType: MealType.breakfast,
           date: date,
         ),
@@ -147,7 +147,7 @@ class DummyDataService {
           id: 'dinner_$day',
           name: dinnerItems[day],
           description: 'Delicious and filling dinner meal',
-          calories: 500 + (day * 30),
+          calories: 500 + (100),
           mealType: MealType.dinner,
           date: date,
         ),
@@ -250,9 +250,7 @@ class DummyDataService {
     final monthlyRevenue = attendance.length * 32.5; // Average meal cost
     final attendanceRate = attendance.isEmpty
         ? 0.0
-        : (attendance.where((a) => a.isPresent).length /
-              attendance.length *
-              100);
+        : (attendance.where((a) => a.isPresent).length / attendance.length);
 
     return {
       'totalStudents': approvedStudents,

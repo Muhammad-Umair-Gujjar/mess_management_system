@@ -28,7 +28,7 @@ class PaymentHistoryCard extends StatelessWidget {
           _buildHistoryList(context),
         ],
       ),
-    ).animate(delay: 400.ms).fadeIn(duration: 800.ms).slideX(begin: 0.3);
+    ).animate(delay: 300.ms).fadeIn(duration: 300.ms).slideX(begin: 0.3);
   }
 
   Widget _buildHeader(BuildContext context) {
@@ -48,11 +48,12 @@ class PaymentHistoryCard extends StatelessWidget {
             ),
           ],
         ),
-        if(ResponsiveHelper.isDesktop(context))Icon(
-          FontAwesomeIcons.chartLine,
-          color: AppColors.primary,
-          size: ResponsiveHelper.getIconSize(context, 'medium'),
-        ),
+        if (ResponsiveHelper.isDesktop(context))
+          Icon(
+            FontAwesomeIcons.chartLine,
+            color: AppColors.primary,
+            size: ResponsiveHelper.getIconSize(context, 'medium'),
+          ),
       ],
     );
   }
@@ -66,8 +67,8 @@ class PaymentHistoryCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: List.generate(6, (index) {
-            final month = DateTime.now().subtract(Duration(days: index * 30));
-            final amount = (2500 + (index * 150)).toDouble();
+            final month = DateTime.now().subtract(Duration(days: 100));
+            final amount = (2500 + (100)).toDouble();
 
             return _PaymentHistoryItem(
               month: DateFormat('MMM yyyy').format(month),
@@ -135,8 +136,8 @@ class _PaymentHistoryItem extends StatelessWidget {
             ],
           ),
         )
-        .animate(delay: Duration(milliseconds: 100 * index))
-        .fadeIn(duration: 600.ms)
+        .animate(delay: Duration(milliseconds: 50))
+        .fadeIn(duration: 300.ms)
         .slideX(begin: 0.2);
   }
 

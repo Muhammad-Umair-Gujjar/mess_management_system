@@ -89,7 +89,7 @@ class AdminDashboard extends StatelessWidget {
                     isMobile: isMobile,
                   ),
                   SizedBox(
-                    width: ResponsiveHelper.getSpacing(Get.context!, 'medium'),
+                    width: ResponsiveHelper.getSpacing(Get.context!, 'small'),
                   ),
                   _buildQuickStat(
                     'Pending',
@@ -99,7 +99,7 @@ class AdminDashboard extends StatelessWidget {
                     isMobile: isMobile,
                   ),
                   SizedBox(
-                    width: ResponsiveHelper.getSpacing(Get.context!, 'medium'),
+                    width: ResponsiveHelper.getSpacing(Get.context!, 'small'),
                   ),
                   // Only show uptime on tablet and desktop
                   _buildQuickStat(
@@ -114,7 +114,7 @@ class AdminDashboard extends StatelessWidget {
             }),
         ],
       ),
-    ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2);
+    ).animate().fadeIn(duration: 300.ms).slideY(begin: -0.2);
   }
 
   Widget _buildQuickStat(

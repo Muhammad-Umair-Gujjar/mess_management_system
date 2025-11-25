@@ -31,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _fadeController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: const  Duration(milliseconds: 300) ,
       vsync: this,
     );
 
@@ -80,7 +80,7 @@ class _SplashScreenState extends State<SplashScreen>
         setState(() {
           _loadingText = loadingSteps[i];
         });
-        await Future.delayed(const Duration(milliseconds: 800));
+        await Future.delayed(const  Duration(milliseconds: 300) );
       }
     }
 
@@ -255,7 +255,7 @@ class _SplashScreenState extends State<SplashScreen>
 
         // Loading text
         AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
+          duration: const  Duration(milliseconds: 300) ,
           child: Text(
             _loadingText,
             key: ValueKey(_loadingText),
@@ -371,3 +371,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 }
+
+
+
+

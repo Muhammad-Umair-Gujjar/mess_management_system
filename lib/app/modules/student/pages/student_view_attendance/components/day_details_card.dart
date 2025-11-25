@@ -43,7 +43,7 @@ class DayDetailsCard extends StatelessWidget {
               _buildContent(context, dayAttendances),
             ],
           ),
-        ).animate().fadeIn(duration: 400.ms);
+        ).animate().fadeIn(duration:  300.ms );
       },
     );
   }
@@ -136,3 +136,7 @@ class DayDetailsCard extends StatelessWidget {
     );
   }
 }
+
+
+
+

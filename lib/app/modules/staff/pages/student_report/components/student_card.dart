@@ -187,8 +187,8 @@ class StudentCard extends StatelessWidget {
             ],
           ),
         )
-        .animate(delay: Duration(milliseconds: 100 * index))
-        .fadeIn(duration: 600.ms)
+        .animate(delay: Duration(milliseconds: 50))
+        .fadeIn(duration: 300.ms)
         .scale(begin: const Offset(0.8, 0.8));
   }
 }

@@ -288,14 +288,18 @@ class AppTextStyles {
   );
 
   static TextStyle get navMenuItem => GoogleFonts.poppins(
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: FontWeight.w500,
     color: AppColors.textSecondary,
   );
 
   static TextStyle get navMenuItemActive => GoogleFonts.poppins(
-    fontSize: 16,
-    fontWeight: FontWeight.w600,
+    fontSize: 15,
+    fontWeight: FontWeight.w500,
     color: AppColors.primary,
   );
 }
+
+
+
+

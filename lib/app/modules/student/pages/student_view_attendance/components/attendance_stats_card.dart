@@ -34,7 +34,7 @@ class AttendanceStatsCard extends StatelessWidget {
           _buildStats(context),
         ],
       ),
-    ).animate().fadeIn(delay: 800.ms).slideY(begin: 0.3);
+    ).animate().fadeIn(delay:  300.ms ).slideY(begin: 0.3);
   }
 
   Widget _buildHeader() {
@@ -91,7 +91,7 @@ class AttendanceStatsCard extends StatelessWidget {
           ),
         ),
       ),
-    ).animate().scaleX(duration: 1000.ms, delay: 500.ms);
+    ).animate().scaleX( duration: 300.ms , delay:  300.ms );
   }
 }
 
@@ -123,3 +123,7 @@ class _StatRow extends StatelessWidget {
     );
   }
 }
+
+
+
+
