@@ -127,7 +127,7 @@ class _PaymentHistoryItem extends StatelessWidget {
               SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
               _buildItemContent(isCurrent, isPaid),
               Text(
-                '₹${amount.toStringAsFixed(0)}',
+                '${amount.toStringAsFixed(0)} Rs',
                 style: AppTextStyles.subtitle1.copyWith(
                   fontWeight: FontWeight.w700,
                   color: isCurrent ? AppColors.primary : AppColors.textDark,

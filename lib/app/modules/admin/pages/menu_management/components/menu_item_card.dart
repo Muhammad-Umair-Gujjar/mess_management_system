@@ -87,7 +87,7 @@ class MenuItemCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '₹${(item['price'] ?? 0.0).toStringAsFixed(0)}',
+                        '${(item['price'] ?? 0.0).toStringAsFixed(0)} Rs',
                         style: AppTextStyles.heading5.copyWith(
                           color: AppColors.adminRole,
                           fontWeight: FontWeight.bold,
@@ -354,7 +354,7 @@ class MenuItemCard extends StatelessWidget {
       children: [
         // Price display
         Text(
-          '₹${(item['price'] ?? 0.0).toStringAsFixed(0)}',
+          '${(item['price'] ?? 0.0).toStringAsFixed(0)} Rs',
           style: AppTextStyles.heading4.copyWith(
             color: AppColors.adminRole,
             fontWeight: FontWeight.bold,

@@ -104,7 +104,7 @@ class AdminDashboard extends StatelessWidget {
                   // Only show uptime on tablet and desktop
                   _buildQuickStat(
                     'Revenue',
-                    '₹${(stats['monthlyRevenue'] / 1000).toStringAsFixed(0)}K',
+                    '${(stats['monthlyRevenue'] / 1000).toStringAsFixed(0)}K Rs',
                     FontAwesomeIcons.chartLine,
                     AppColors.success,
                     isMobile: isMobile,

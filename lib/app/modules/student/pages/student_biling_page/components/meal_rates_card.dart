@@ -187,7 +187,7 @@ class _MealRateItem extends StatelessWidget {
             .value;
 
         return Text(
-          '₹${animatedValue.toStringAsFixed(0)}',
+          '${animatedValue.toStringAsFixed(0)} Rs',
           style: AppTextStyles.heading4.copyWith(
             color: mealColor,
             fontWeight: FontWeight.w700,

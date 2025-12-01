@@ -99,7 +99,7 @@ class MenuItemDialog extends StatelessWidget {
         Expanded(
           child: ReusableTextField(
             controller: itemPriceController,
-            label: 'Price (₹) *',
+            label: 'Price (Rs) *',
             hintText: 'Enter price',
             prefixIcon: Icons.currency_rupee,
             type: TextFieldType.number,

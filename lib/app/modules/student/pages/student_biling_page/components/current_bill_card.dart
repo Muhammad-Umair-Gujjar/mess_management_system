@@ -101,7 +101,7 @@ class CurrentBillCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '₹${animatedValue.toStringAsFixed(0)}',
+              '${animatedValue.toStringAsFixed(0)} Rs',
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: ResponsiveHelper.getResponsiveFontSize(

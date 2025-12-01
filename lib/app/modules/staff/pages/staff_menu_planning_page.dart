@@ -673,7 +673,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
             ),
             SizedBox(width: 4.0),
             Text(
-              '₹${item['price']}',
+              '${item['price']} Rs',
               style: AppTextStyles.body2.copyWith(
                 fontWeight: FontWeight.w600,
                 color: AppColors.success,
@@ -765,7 +765,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
                   SizedBox(width: 16.0),
                   Expanded(
                     child: ReusableTextField(
-                      label: 'Price (₹)',
+                      label: 'Price (Rs)',
                       type: TextFieldType.number,
                       hintText: 'Price',
                     ),

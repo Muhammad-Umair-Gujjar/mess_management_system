@@ -32,7 +32,7 @@ class QuickStatsGrid extends StatelessWidget {
         ),
         GridCardData(
           title: 'Monthly Bill',
-          value: '₹${monthlyBill.toStringAsFixed(0)}',
+          value: '${monthlyBill.toStringAsFixed(0)} Rs',
           // subtitle: 'Current',
           icon: FontAwesomeIcons.receipt,
           color: AppColors.warning,

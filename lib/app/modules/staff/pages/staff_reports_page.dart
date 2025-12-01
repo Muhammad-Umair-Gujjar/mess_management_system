@@ -478,7 +478,7 @@ class _StaffReportsPageState extends State<StaffReportsPage> {
     final gridData = [
       GridCardData(
         title: 'Monthly Revenue',
-        value: '₹2,45,600',
+        value: 'Rs2,45,600',
         icon: FontAwesomeIcons.indianRupeeSign,
         color: AppColors.success,
         trend: '+12%',
@@ -487,7 +487,7 @@ class _StaffReportsPageState extends State<StaffReportsPage> {
       ),
       GridCardData(
         title: 'Pending Bills',
-        value: '₹45,200',
+        value: 'Rs45,200',
         icon: FontAwesomeIcons.clock,
         color: AppColors.warning,
         trend: '-5%',
@@ -496,7 +496,7 @@ class _StaffReportsPageState extends State<StaffReportsPage> {
       ),
       GridCardData(
         title: 'Overdue Amount',
-        value: '₹12,300',
+        value: 'Rs12,300',
         icon: FontAwesomeIcons.exclamation,
         color: AppColors.error,
         trend: '-8%',

@@ -54,7 +54,7 @@ class RecentActivityCard extends StatelessWidget {
               {
                 'icon': FontAwesomeIcons.indianRupee,
                 'title': 'Rate updated',
-                'subtitle': 'Breakfast rate changed to ₹45',
+                'subtitle': 'Breakfast rate changed to Rs45',
                 'time': '2 hours ago',
                 'color': AppColors.warning,
               },

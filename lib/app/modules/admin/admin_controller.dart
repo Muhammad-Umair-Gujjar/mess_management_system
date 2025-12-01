@@ -92,7 +92,7 @@ class AdminController extends GetxController {
       'id': '2',
       'type': 'Rate Change Request',
       'name': 'Kitchen Staff',
-      'description': 'Request to increase breakfast rate by ₹5',
+      'description': 'Request to increase breakfast rate by Rs5',
       'currentRate': 40,
       'requestedRate': 45,
       'submittedDate': '2024-01-13',

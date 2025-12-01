@@ -48,7 +48,7 @@ class SystemStatsGrid extends StatelessWidget {
         },
         {
           'title': 'Monthly Revenue',
-          'value': '₹${(stats['monthlyRevenue']! / 1000).toStringAsFixed(0)}K',
+          'value': '${(stats['monthlyRevenue']! / 1000).toStringAsFixed(0)}K Rs',
           'icon': FontAwesomeIcons.chartLine,
           'color': AppColors.warning,
           'trend': '+18%',
