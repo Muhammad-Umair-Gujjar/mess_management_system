@@ -1,0 +1,263 @@
+import 'package:get/get.dart';
+import '../../../../../data/models/auth_models.dart';
+import '../../../../../data/services/auth_service.dart';
+import '../../../../../../core/utils/toast_message.dart';
+
+/// Controller for Admin Overview Page
+/// Handles pending student requests, system stats, and approval/rejection actions
+class AdminOverviewController extends GetxController {
+  final AuthService _authService = AuthService();
+
+  // Observable variables
+  final isLoading = false.obs;
+  final isProcessingRequest = false.obs;
+  final pendingStudentRequests = <StudentRequest>[].obs;
+  final systemStats = <String, dynamic>{}.obs;
+  final recentActivities = <Map<String, dynamic>>[].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    print('🔵 DEBUG: AdminOverviewController onInit() called');
+    _initializeData();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+  }
+
+  /// Initialize all data for admin overview
+  Future<void> _initializeData() async {
+    isLoading.value = true;
+    try {
+      print('🔵 DEBUG: Loading admin overview data...');
+      await Future.wait([
+        _loadPendingStudentRequests(),
+        _loadSystemStats(),
+        _loadRecentActivities(),
+      ]);
+      print('✅ DEBUG: Admin overview data loaded successfully');
+    } catch (e) {
+      print('❌ DEBUG: Error loading admin overview data: $e');
+      ToastMessage.error('Failed to load admin data: ${e.toString()}');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Load pending student requests from Firestore
+  /// Updated to show real-time pending requests count
+  Future<void> _loadPendingStudentRequests() async {
+    try {
+      print('🔵 DEBUG: Setting up pending student requests listener...');
+
+      // Use simple method to avoid index issues
+      _authService.getPendingStudentRequestsSimple().listen(
+        (requests) {
+          print(
+            '🔵 DEBUG: AdminOverviewController received ${requests.length} pending requests',
+          );
+          pendingStudentRequests.value = requests;
+
+          // Update system stats with pending count
+          final currentCount = requests.length;
+          systemStats['pendingApprovals'] = currentCount;
+          print(
+            '🔵 DEBUG: Updated systemStats pendingApprovals to: $currentCount',
+          );
+          print('🔵 DEBUG: Current systemStats: $systemStats');
+
+          for (var request in requests) {
+            print(
+              '  - ${request.firstName} ${request.lastName} (${request.email}) - Status: ${request.status.name}',
+            );
+          }
+
+          // Force update the observable
+          systemStats.refresh();
+        },
+        onError: (error) {
+          print('❌ DEBUG: Error in AdminOverviewController stream: $error');
+        },
+      );
+    } catch (e) {
+      print('❌ DEBUG: Error setting up pending requests listener: $e');
+      throw e;
+    }
+  }
+
+  /// Load system statistics
+  Future<void> _loadSystemStats() async {
+    try {
+      print('🔵 DEBUG: Loading system stats...');
+
+      // Get total users count
+      final totalUsers = await _authService.getTotalUsersCount();
+      final totalStudents = await _authService.getTotalStudentsCount();
+      final totalStaff = await _authService.getTotalStaffCount();
+
+      systemStats.addAll({
+        'totalUsers': totalUsers,
+        'totalStudents': totalStudents,
+        'totalStaff': totalStaff,
+        'pendingApprovals': pendingStudentRequests.length,
+        'activeMenuItems': 45, // TODO: Get from menu service
+        'monthlyRevenue': 245600, // TODO: Get from billing service
+        'systemUptime': 99, // TODO: Get from system monitoring
+        'activeConnections': 156, // TODO: Get from active sessions
+      });
+
+      print('✅ DEBUG: System stats loaded: $systemStats');
+    } catch (e) {
+      print('❌ DEBUG: Error loading system stats: $e');
+      // Set default values on error
+      systemStats.addAll({
+        'totalUsers': 0,
+        'totalStudents': 0,
+        'totalStaff': 0,
+        'pendingApprovals': 0,
+        'activeMenuItems': 0,
+        'monthlyRevenue': 0,
+        'systemUptime': 0,
+        'activeConnections': 0,
+      });
+    }
+  }
+
+  /// Load recent activities (placeholder for now)
+  Future<void> _loadRecentActivities() async {
+    try {
+      print('🔵 DEBUG: Loading recent activities...');
+
+      // TODO: Implement real activity logging
+      recentActivities.value = [
+        {
+          'id': '1',
+          'action': 'Student Registration',
+          'description': 'New student signup request received',
+          'timestamp': DateTime.now().subtract(const Duration(minutes: 5)),
+          'type': 'signup',
+        },
+        {
+          'id': '2',
+          'action': 'Menu Updated',
+          'description': 'Dinner menu items updated',
+          'timestamp': DateTime.now().subtract(const Duration(hours: 2)),
+          'type': 'menu',
+        },
+        {
+          'id': '3',
+          'action': 'Staff Login',
+          'description': 'Kitchen staff logged in',
+          'timestamp': DateTime.now().subtract(const Duration(hours: 3)),
+          'type': 'auth',
+        },
+      ];
+
+      print('✅ DEBUG: Recent activities loaded');
+    } catch (e) {
+      print('❌ DEBUG: Error loading recent activities: $e');
+    }
+  }
+
+  /// Approve a student request
+  Future<void> approveStudentRequest(StudentRequest request) async {
+    print('🔵 DEBUG: Approving student request for ${request.email}');
+
+    if (isProcessingRequest.value) {
+      print('⚠️ DEBUG: Already processing a request, please wait');
+      return;
+    }
+
+    isProcessingRequest.value = true;
+
+    try {
+      final success = await _authService.approveStudentRequest(
+        request.requestId,
+        'current_admin_id', // TODO: Get current admin ID
+      );
+
+      if (success) {
+        print('✅ DEBUG: Student request approved successfully');
+
+        ToastMessage.success(
+          'Student ${request.firstName} ${request.lastName} has been approved',
+        );
+
+        // Refresh data
+        await _loadSystemStats();
+      } else {
+        print('❌ DEBUG: Failed to approve student request');
+        ToastMessage.error('Failed to approve request');
+      }
+    } catch (e) {
+      print('❌ DEBUG: Error approving student request: $e');
+      ToastMessage.error('Failed to approve request: ${e.toString()}');
+    } finally {
+      isProcessingRequest.value = false;
+    }
+  }
+
+  /// Reject a student request
+  Future<void> rejectStudentRequest(
+    StudentRequest request,
+    String reason,
+  ) async {
+    print('🔵 DEBUG: Rejecting student request for ${request.email}');
+
+    if (isProcessingRequest.value) {
+      print('⚠️ DEBUG: Already processing a request, please wait');
+      return;
+    }
+
+    isProcessingRequest.value = true;
+
+    try {
+      final success = await _authService.rejectStudentRequest(
+        request.requestId,
+        'current_admin_id', // TODO: Get current admin ID
+        reason,
+      );
+
+      if (success) {
+        print('✅ DEBUG: Student request rejected successfully');
+
+        ToastMessage.warning(
+          'Student ${request.firstName} ${request.lastName} request has been rejected',
+        );
+
+        // Refresh data
+        await _loadSystemStats();
+      } else {
+        print('❌ DEBUG: Failed to reject student request');
+        ToastMessage.error('Failed to reject request');
+      }
+    } catch (e) {
+      print('❌ DEBUG: Error rejecting student request: $e');
+      ToastMessage.error('Failed to reject request: ${e.toString()}');
+    } finally {
+      isProcessingRequest.value = false;
+    }
+  }
+
+  /// Refresh all data
+  Future<void> refreshData() async {
+    print('🔵 DEBUG: Refreshing admin overview data...');
+    await _initializeData();
+  }
+
+  /// Get formatted system stats for display
+  Map<String, dynamic> getFormattedStats() {
+    return {
+      'Total Users': systemStats['totalUsers'] ?? 0,
+      'Students': systemStats['totalStudents'] ?? 0,
+      'Staff': systemStats['totalStaff'] ?? 0,
+      'Pending Approvals': systemStats['pendingApprovals'] ?? 0,
+      'Active Menu Items': systemStats['activeMenuItems'] ?? 0,
+      'Monthly Revenue': '₹${systemStats['monthlyRevenue'] ?? 0}',
+      'System Uptime': '${systemStats['systemUptime'] ?? 0}%',
+      'Active Sessions': systemStats['activeConnections'] ?? 0,
+    };
+  }
+}

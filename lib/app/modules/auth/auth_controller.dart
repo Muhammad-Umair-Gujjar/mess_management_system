@@ -4,6 +4,8 @@ import '../../data/models/auth_models.dart';
 import '../../data/services/auth_service.dart';
 import '../../routes/app_routes.dart';
 import 'components/auth_helpers.dart';
+import '../../../core/utils/toast_message.dart';
+import '../user/user_controller.dart';
 
 class AuthController extends GetxController {
   static AuthController get instance => Get.find();
@@ -240,56 +242,28 @@ class AuthController extends GetxController {
       print('  Result user: ${result.user}');
 
       if (result.success) {
-        Get.snackbar(
-          'Success',
+        ToastMessage.success(
           'Signup request submitted successfully! Wait for admin approval.',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 4),
         );
         _clearForm();
         Get.offAllNamed(AppRoutes.LOGIN);
       } else if (result.type == AuthResultType.pending) {
         // Handle pending as success for user experience
-        Get.snackbar(
-          'Request Submitted',
+        ToastMessage.success(
           result.errorMessage ??
               'Your signup request has been submitted and is pending approval.',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.orange,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 4),
         );
         _clearForm();
         Get.offAllNamed(AppRoutes.LOGIN);
       } else {
-        Get.snackbar(
-          'Error',
-          result.errorMessage ?? 'Signup failed',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        ToastMessage.error(result.errorMessage ?? 'Signup failed');
       }
     } on Exception catch (e) {
       print('❌ DEBUG: Exception in studentSignup: ${e.toString()}');
-      Get.snackbar(
-        'Error',
-        e.toString().replaceAll('Exception: ', ''),
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      ToastMessage.error(e.toString().replaceAll('Exception: ', ''));
     } catch (e) {
       print('❌ DEBUG: General error in studentSignup: ${e.toString()}');
-      Get.snackbar(
-        'Error',
-        'Signup failed: ${e.toString()}',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      ToastMessage.error('Signup failed: ${e.toString()}');
     } finally {
       print(
         '🔵 DEBUG: studentSignup finally block - setting isLoading to false',
@@ -362,14 +336,11 @@ class AuthController extends GetxController {
         currentUser.value = result.user;
         isAuthenticated.value = true;
 
-        Get.snackbar(
-          'Success',
-          'Login successful! Welcome back.',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 3),
-        );
+        // Initialize UserController and set user data for global access
+        final userController = Get.put(UserController());
+        await userController.setUserData(result.user!);
+
+        ToastMessage.success('Login successful! Welcome back.');
 
         _clearForm();
         _navigateBasedOnRole(result.user!.role);
@@ -377,32 +348,15 @@ class AuthController extends GetxController {
         String errorMessage = result.errorMessage ?? 'Login failed';
 
         if (result.type == AuthResultType.pending) {
-          Get.snackbar(
-            'Account Pending',
+          ToastMessage.warning(
             'Your account is pending admin approval. Please wait.',
-            snackPosition: SnackPosition.TOP,
-            backgroundColor: Colors.orange,
-            colorText: Colors.white,
-            duration: const Duration(seconds: 5),
           );
         } else {
-          Get.snackbar(
-            'Login Failed',
-            errorMessage,
-            snackPosition: SnackPosition.TOP,
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
+          ToastMessage.error(errorMessage);
         }
       }
     } on Exception catch (e) {
-      Get.snackbar(
-        'Error',
-        e.toString().replaceAll('Exception: ', ''),
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      ToastMessage.error(e.toString().replaceAll('Exception: ', ''));
     } finally {
       isLoading.value = false;
     }
@@ -414,54 +368,42 @@ class AuthController extends GetxController {
       await _authService.signOut();
       currentUser.value = null;
       isAuthenticated.value = false;
+
+      // Clear UserController data
+      if (Get.isRegistered<UserController>()) {
+        Get.find<UserController>().clearUserData();
+      }
+
       _clearForm();
       Get.offAllNamed(AppRoutes.LOGIN);
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Logout failed: ${e.toString()}',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      ToastMessage.error('Logout failed: ${e.toString()}');
     }
   }
 
   /// Send password reset email
   Future<void> resetPassword({
-    required Null Function() onSuccess,
     required String email,
+    required VoidCallback onSuccess,
   }) async {
-    if (emailController.text.trim().isEmpty) {
-      emailError.value = 'Please enter your email';
+    if (email.trim().isEmpty) {
+      ToastMessage.error('Please enter your email');
       return;
     }
 
-    if (!AuthValidator.isValidEmail(emailController.text.trim())) {
-      emailError.value = 'Please enter a valid email';
+    if (!AuthValidator.isValidEmail(email.trim())) {
+      ToastMessage.error('Please enter a valid email');
       return;
     }
 
     isLoading.value = true;
 
     try {
-      await _authService.sendPasswordResetEmail(emailController.text.trim());
-      Get.snackbar(
-        'Success',
-        'Password reset email sent successfully!',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
-      Get.back();
+      await _authService.sendPasswordResetEmail(email.trim());
+      ToastMessage.success('Password reset email sent successfully!');
+      onSuccess(); // Call the success callback
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        e.toString(),
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      ToastMessage.error(e.toString());
     } finally {
       isLoading.value = false;
     }

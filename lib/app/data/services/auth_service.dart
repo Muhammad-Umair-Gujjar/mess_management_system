@@ -39,6 +39,24 @@ class AuthService {
   /// Get current Firebase user
   firebase_auth.User? get currentFirebaseUser => _auth.currentUser;
 
+  /// Get student data for a specific user ID
+  Future<StudentData?> getStudentData(String uid) async {
+    try {
+      final doc = await _firestore
+          .collection(_studentsCollection)
+          .doc(uid)
+          .get();
+
+      if (doc.exists && doc.data() != null) {
+        return StudentData.fromFirestore(doc.data()!);
+      }
+      return null;
+    } catch (e) {
+      print('Error fetching student data: $e');
+      return null;
+    }
+  }
+
   /// Get current app user with role and status information
   Future<AppUser?> get currentUser async {
     final firebaseUser = currentFirebaseUser;
@@ -400,8 +418,8 @@ class AuthService {
         },
       );
 
-      // Sign out the temp user (admin should be signed back in)
-      await _auth.signOut();
+      // Note: We don't sign out here to keep admin logged in
+      // The temporary user creation doesn't affect the current auth state
 
       return true;
     } catch (e) {
@@ -462,18 +480,101 @@ class AuthService {
     }
   }
 
+  /// Get pending student requests (Admin only) - Alternative simple method
+  Stream<List<StudentRequest>> getPendingStudentRequestsSimple() {
+    print('🔵 DEBUG: Using simple getPendingStudentRequestsSimple method...');
+    print('🔵 DEBUG: Collection: $_studentRequestsCollection');
+
+    return _firestore.collection(_studentRequestsCollection).snapshots().map((
+      snapshot,
+    ) {
+      print(
+        '🔵 DEBUG: Simple method - Firestore snapshot received - ${snapshot.docs.length} total documents',
+      );
+
+      final allRequests = snapshot.docs
+          .map((doc) {
+            try {
+              final data = doc.data();
+              print(
+                '🔵 DEBUG: Document ID: ${doc.id}, Status: ${data['status']}',
+              );
+              return StudentRequest.fromFirestore(data);
+            } catch (e) {
+              print('❌ DEBUG: Error parsing document ${doc.id}: $e');
+              return null;
+            }
+          })
+          .where((request) => request != null)
+          .cast<StudentRequest>()
+          .toList();
+
+      // Filter for pending requests in code
+      final pendingRequests = allRequests
+          .where((request) => request.status == RequestStatus.pending)
+          .toList();
+
+      // Sort by requestedAt in code
+      pendingRequests.sort((a, b) => b.requestedAt.compareTo(a.requestedAt));
+
+      print(
+        '🔵 DEBUG: Filtered to ${pendingRequests.length} pending requests out of ${allRequests.length} total',
+      );
+
+      for (var request in pendingRequests) {
+        print(
+          '  - PENDING: ${request.firstName} ${request.lastName} (${request.email})',
+        );
+      }
+
+      return pendingRequests;
+    });
+  }
+
   /// Get pending student requests (Admin only)
+  /// Fixed: Removed orderBy to avoid Firestore composite index requirement
   Stream<List<StudentRequest>> getPendingStudentRequests() {
+    print('🔵 DEBUG: Setting up getPendingStudentRequests stream...');
+    print('🔵 DEBUG: Collection: $_studentRequestsCollection');
+    print('🔵 DEBUG: Looking for status: ${RequestStatus.pending.name}');
+
     return _firestore
         .collection(_studentRequestsCollection)
         .where('status', isEqualTo: RequestStatus.pending.name)
-        .orderBy('requestedAt', descending: true)
         .snapshots()
-        .map(
-          (snapshot) => snapshot.docs
-              .map((doc) => StudentRequest.fromFirestore(doc.data()))
-              .toList(),
-        );
+        .map((snapshot) {
+          print(
+            '🔵 DEBUG: Firestore snapshot received - ${snapshot.docs.length} documents',
+          );
+
+          for (var doc in snapshot.docs) {
+            final data = doc.data();
+            print('🔵 DEBUG: Document ID: ${doc.id}');
+            print('🔵 DEBUG: Document data: $data');
+            print('🔵 DEBUG: Status field: ${data['status']}');
+          }
+
+          final requests = snapshot.docs
+              .map((doc) {
+                try {
+                  return StudentRequest.fromFirestore(doc.data());
+                } catch (e) {
+                  print('❌ DEBUG: Error parsing document ${doc.id}: $e');
+                  return null;
+                }
+              })
+              .where((request) => request != null)
+              .cast<StudentRequest>()
+              .toList();
+
+          // Sort by requestedAt in code instead of Firestore
+          requests.sort((a, b) => b.requestedAt.compareTo(a.requestedAt));
+
+          print(
+            '🔵 DEBUG: Successfully parsed ${requests.length} StudentRequest objects',
+          );
+          return requests;
+        });
   }
 
   /// Sign out current user
@@ -825,6 +926,51 @@ class AuthService {
     } catch (e) {
       print('❌ DEBUG: Failed to create default account $email: $e');
       return false;
+    }
+  }
+
+  /// Get total users count
+  Future<int> getTotalUsersCount() async {
+    try {
+      final snapshot = await _firestore.collection(_usersCollection).get();
+      return snapshot.docs.length;
+    } catch (e) {
+      print('❌ DEBUG: Error getting total users count: $e');
+      return 0;
+    }
+  }
+
+  /// Get total students count
+  Future<int> getTotalStudentsCount() async {
+    try {
+      final snapshot = await _firestore
+          .collection(_usersCollection)
+          .where('role', isEqualTo: 'student')
+          .get();
+      return snapshot.docs.length;
+    } catch (e) {
+      print('❌ DEBUG: Error getting total students count: $e');
+      return 0;
+    }
+  }
+
+  /// Get total staff count (including admins)
+  Future<int> getTotalStaffCount() async {
+    try {
+      final staffSnapshot = await _firestore
+          .collection(_usersCollection)
+          .where('role', isEqualTo: 'staff')
+          .get();
+
+      final adminSnapshot = await _firestore
+          .collection(_usersCollection)
+          .where('role', isEqualTo: 'admin')
+          .get();
+
+      return staffSnapshot.docs.length + adminSnapshot.docs.length;
+    } catch (e) {
+      print('❌ DEBUG: Error getting total staff count: $e');
+      return 0;
     }
   }
 }

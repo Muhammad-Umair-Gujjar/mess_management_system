@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../auth/auth_controller.dart';
+import '../../user/user_controller.dart';
 
 import '../../../../core/theme/app_decorations.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -19,18 +21,22 @@ class AdminDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(AdminController());
+    final authController = Get.find<AuthController>();
+    final userController = Get.find<UserController>();
 
-    return ResponsiveDashboardLayout(
-      title: 'Admin Dashboard',
-      userRole: 'Admin',
-      userName: 'Administrator',
-      userEmail: 'admin@messmaster.com',
-      currentIndex: controller.currentPageIndex,
-      onItemSelected: controller.changePage,
-      menuItems: controller.navigationItems,
-      header: _buildHeader(controller),
-      onLogoutPressed: () => Get.offAllNamed('/'),
-      child: Obx(() => _buildPageContent(controller.currentPageIndex.value)),
+    return Obx(
+      () => ResponsiveDashboardLayout(
+        title: 'Admin Dashboard',
+        userRole: 'Admin',
+        userName: userController.fullName,
+        userEmail: userController.email,
+        currentIndex: controller.currentPageIndex,
+        onItemSelected: controller.changePage,
+        menuItems: controller.navigationItems,
+        header: _buildHeader(controller),
+        onLogoutPressed: () async => await authController.logout(),
+        child: Obx(() => _buildPageContent(controller.currentPageIndex.value)),
+      ),
     );
   }
 

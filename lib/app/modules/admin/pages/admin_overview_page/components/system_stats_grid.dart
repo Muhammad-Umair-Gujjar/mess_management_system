@@ -5,22 +5,22 @@ import 'package:mess_management/core/utils/responsive_helper.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../widgets/custom_grid_view.dart';
-import '../../../admin_controller.dart';
+import '../controllers/admin_overview_controller.dart';
 
 class SystemStatsGrid extends StatelessWidget {
-  final AdminController controller;
+  final AdminOverviewController overviewController;
   final bool isMobile;
 
   const SystemStatsGrid({
     super.key,
-    required this.controller,
+    required this.overviewController,
     required this.isMobile,
   });
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final stats = controller.systemStats;
+      final stats = overviewController.systemStats;
       final overviewStats = [
         {
           'title': 'Total Users',

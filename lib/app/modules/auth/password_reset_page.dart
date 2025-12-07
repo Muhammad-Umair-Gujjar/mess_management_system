@@ -166,75 +166,81 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
   Widget _buildHeroSection() {
     return Container(
       padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'xlarge')),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(),
 
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
-          // Steps
-          ...[
-            '📧 Enter your email address',
-            '✉️ Check your inbox',
-            '🔗 Click the reset link',
-            '🔐 Create new password',
-            '✅ Sign in with new password',
-          ].asMap().entries.map((entry) {
-            final index = entry.key;
-            final step = entry.value;
-            return Padding(
-                  padding: EdgeInsets.only(
-                    bottom: ResponsiveHelper.getSpacing(context, 'medium'),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(
-                          ResponsiveHelper.getSpacing(context, 'small'),
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(
-                            ResponsiveHelper.getBorderRadius(context, 'small'),
+            // Steps
+            ...[
+              '📧 Enter your email address',
+              '✉️ Check your inbox',
+              '🔗 Click the reset link',
+              '🔐 Create new password',
+              '✅ Sign in with new password',
+            ].asMap().entries.map((entry) {
+              final index = entry.key;
+              final step = entry.value;
+              return Padding(
+                    padding: EdgeInsets.only(
+                      bottom: ResponsiveHelper.getSpacing(context, 'medium'),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(
+                            ResponsiveHelper.getSpacing(context, 'small'),
                           ),
-                        ),
-                        child: Text(
-                          '${index + 1}',
-                          style: AppTextStyles.body2.copyWith(
-                            fontSize: ResponsiveHelper.getFontSize(
-                              context,
-                              'body2',
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(
+                              ResponsiveHelper.getBorderRadius(
+                                context,
+                                'small',
+                              ),
                             ),
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.bold,
                           ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: ResponsiveHelper.getSpacing(context, 'medium'),
-                      ),
-                      Expanded(
-                        child: Text(
-                          step,
-                          style: AppTextStyles.body1.copyWith(
-                            fontSize: ResponsiveHelper.getFontSize(
-                              context,
-                              'body1',
+                          child: Text(
+                            '${index + 1}',
+                            style: AppTextStyles.body2.copyWith(
+                              fontSize: ResponsiveHelper.getFontSize(
+                                context,
+                                'body2',
+                              ),
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
                             ),
-                            color: Colors.black87,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-                .animate()
-                .fadeIn(delay: (800 + index * 100).ms)
-                .slideX(begin: -0.3);
-          }),
-        ],
+                        SizedBox(
+                          width: ResponsiveHelper.getSpacing(context, 'medium'),
+                        ),
+                        Expanded(
+                          child: Text(
+                            step,
+                            style: AppTextStyles.body1.copyWith(
+                              fontSize: ResponsiveHelper.getFontSize(
+                                context,
+                                'body1',
+                              ),
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                  .animate()
+                  .fadeIn(delay: (800 + index * 100).ms)
+                  .slideX(begin: -0.3);
+            }),
+          ],
+        ),
       ),
     );
   }

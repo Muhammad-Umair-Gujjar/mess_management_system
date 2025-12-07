@@ -8,6 +8,8 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../widgets/common/responsive_dashboard_layout.dart';
+import '../../auth/auth_controller.dart';
+import '../../user/user_controller.dart';
 import '../student_controller.dart';
 import 'student_home_page/student_home_page.dart';
 import 'student_view_attendance/student_attendance_page.dart';
@@ -21,33 +23,37 @@ class EnhancedStudentDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(StudentController(), permanent: true);
+    final authController = Get.find<AuthController>();
+    final userController = Get.find<UserController>();
 
-    return ResponsiveDashboardLayout(
-      title: 'Student Dashboard',
-      userRole: 'Student',
-      userName: 'Ali Ahmed',
-      userEmail: 'ali.ahmed@university.edu',
-      currentIndex: controller.currentPageIndex,
-      onItemSelected: controller.changePage,
-      menuItems: controller.navigationItems,
-      header: _buildTopAppBar(context, controller),
-      onLogoutPressed: () => Get.offAllNamed('/'),
-      child: Obx(() {
-        final currentIndex = controller.currentPageIndex.value;
-        return AnimatedSwitcher(
-          duration: const  Duration(milliseconds: 300) ,
-          transitionBuilder: (child, animation) {
-            return SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(1.0, 0.0),
-                end: Offset.zero,
-              ).animate(animation),
-              child: child,
-            );
-          },
-          child: _getCurrentPage(currentIndex),
-        );
-      }),
+    return Obx(
+      () => ResponsiveDashboardLayout(
+        title: 'Student Dashboard',
+        userRole: 'Student',
+        userName: userController.fullName,
+        userEmail: userController.email,
+        currentIndex: controller.currentPageIndex,
+        onItemSelected: controller.changePage,
+        menuItems: controller.navigationItems,
+        header: _buildTopAppBar(context, controller),
+        onLogoutPressed: () async => await authController.logout(),
+        child: Obx(() {
+          final currentIndex = controller.currentPageIndex.value;
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (child, animation) {
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(1.0, 0.0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              );
+            },
+            child: _getCurrentPage(currentIndex),
+          );
+        }),
+      ),
     );
   }
 
@@ -107,7 +113,7 @@ class EnhancedStudentDashboard extends StatelessWidget {
                     ),
                   ],
                 ),
-              ).animate().fadeIn(delay:  300.ms ).slideX(begin: -0.3),
+              ).animate().fadeIn(delay: 300.ms).slideX(begin: -0.3),
 
               const Spacer(),
             ],
@@ -172,7 +178,7 @@ class EnhancedStudentDashboard extends StatelessWidget {
                       size: ResponsiveHelper.getIconSize(context, 'xlarge'),
                       color: Colors.white,
                     ),
-                  ).animate().scale(duration:  300.ms ),
+                  ).animate().scale(duration: 300.ms),
 
                   SizedBox(
                     height: ResponsiveHelper.getSpacing(context, 'xlarge'),
@@ -187,7 +193,7 @@ class EnhancedStudentDashboard extends StatelessWidget {
                         'heading2',
                       ),
                     ),
-                  ).animate().fadeIn(delay:  300.ms ),
+                  ).animate().fadeIn(delay: 300.ms),
 
                   SizedBox(
                     height: ResponsiveHelper.getSpacing(context, 'medium'),
@@ -201,7 +207,7 @@ class EnhancedStudentDashboard extends StatelessWidget {
                         'subtitle1',
                       ),
                     ),
-                  ).animate().fadeIn(delay:  300.ms ),
+                  ).animate().fadeIn(delay: 300.ms),
 
                   SizedBox(
                     height: ResponsiveHelper.getSpacing(context, 'xlarge'),
@@ -239,7 +245,7 @@ class EnhancedStudentDashboard extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ).animate().fadeIn(delay:  300.ms ).slideY(begin: 0.3),
+                  ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.3),
                 ],
               ),
             ),
@@ -249,7 +255,3 @@ class EnhancedStudentDashboard extends StatelessWidget {
     );
   }
 }
-
-
-
-

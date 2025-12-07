@@ -8,6 +8,8 @@ import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../student_controller.dart';
+import '../../../../user/user_controller.dart';
+import '../../../../../data/models/auth_models.dart';
 
 class WelcomeCard extends StatelessWidget {
   final StudentController controller;
@@ -46,62 +48,76 @@ class WelcomeCard extends StatelessWidget {
   }
 
   Widget _buildWelcomeContent(BuildContext context, String greeting) {
-    return Obx(() {
-      final student = controller.currentStudent.value;
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '$greeting 👋',
-            style: AppTextStyles.heading5.copyWith(
-              color: Colors.white.withOpacity(0.9),
-              fontSize: ResponsiveHelper.getFontSize(context, 'body2'),
-            ),
-          ),
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
-          Text(
-            student?.name ?? 'Loading...',
-            style: AppTextStyles.heading2.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: ResponsiveHelper.getFontSize(context, 'heading3'),
-            ),
-          ),
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
-              vertical: ResponsiveHelper.getSpacing(context, 'small'),
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(
-                ResponsiveHelper.getBorderRadius(context, 'large'),
-              ),
-            ),
-            child: Text(
-              student?.hostelName != null && student?.roomNumber != null
-                  ? '${student!.hostelName} • Room ${student.roomNumber}'
-                  : 'Loading hostel info...',
-              style: AppTextStyles.body1.copyWith(
+    return GetX<UserController>(
+      builder: (userController) {
+        final user = userController.currentUser.value;
+        final studentData = userController.currentStudentData.value;
+        String name = user?.fullName ?? 'Loading...';
+        String hostelInfo = 'Loading hostel info...';
+
+        if (user != null &&
+            user.role == UserRole.student &&
+            studentData != null) {
+          final hostelName = studentData.hostel;
+          final roomNumber = studentData.roomNumber;
+          if (hostelName.isNotEmpty && roomNumber.isNotEmpty) {
+            hostelInfo = '$hostelName • Room $roomNumber';
+          }
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '$greeting 👋',
+              style: AppTextStyles.heading5.copyWith(
                 color: Colors.white.withOpacity(0.9),
                 fontSize: ResponsiveHelper.getFontSize(context, 'body2'),
               ),
             ),
-          ),
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
-          Text(
-            'Welcome back! Check your meal attendance, view today\'s menu, and manage your billing.',
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.body1.copyWith(
-              color: Colors.white.withOpacity(0.8),
-              fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
+            Text(
+              name,
+              style: AppTextStyles.heading2.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: ResponsiveHelper.getFontSize(context, 'heading3'),
+              ),
             ),
-          ),
-        ],
-      );
-    });
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+                vertical: ResponsiveHelper.getSpacing(context, 'small'),
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(
+                  ResponsiveHelper.getBorderRadius(context, 'large'),
+                ),
+              ),
+              child: Text(
+                hostelInfo,
+                style: AppTextStyles.body1.copyWith(
+                  color: Colors.white.withOpacity(0.9),
+                  fontSize: ResponsiveHelper.getFontSize(context, 'body2'),
+                ),
+              ),
+            ),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
+            Text(
+              'Welcome back! Check your meal attendance, view today\'s menu, and manage your billing.',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyles.body1.copyWith(
+                color: Colors.white.withOpacity(0.8),
+                fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildWelcomeAvatar(BuildContext context) {

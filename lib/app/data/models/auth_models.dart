@@ -9,6 +9,73 @@ enum UserRole { student, staff, admin }
 // Request Status for student applications
 enum RequestStatus { pending, approved, rejected }
 
+// Student Data Model for additional student information
+class StudentData {
+  final String uid;
+  final String hostel;
+  final String roomNumber;
+  final String department;
+  final String? parentContact;
+  final String? phoneNumber;
+  final String rollNumber;
+  final int batch;
+  final int semester;
+  final DateTime approvedAt;
+  final String approvedBy;
+  final String? address;
+
+  StudentData({
+    required this.uid,
+    required this.hostel,
+    required this.roomNumber,
+    required this.department,
+    this.parentContact,
+    this.phoneNumber,
+    required this.rollNumber,
+    required this.batch,
+    required this.semester,
+    required this.approvedAt,
+    required this.approvedBy,
+    this.address,
+  });
+
+  factory StudentData.fromFirestore(Map<String, dynamic> data) {
+    return StudentData(
+      uid: data['uid'] ?? '',
+      hostel: data['hostel'] ?? '',
+      roomNumber: data['roomNumber'] ?? '',
+      department: data['department'] ?? '',
+      parentContact: data['parentContact'],
+      phoneNumber: data['phoneNumber'],
+      rollNumber: data['rollNumber'] ?? '',
+      batch: data['batch'] ?? 0,
+      semester: data['semester'] ?? 1,
+      approvedAt: DateTime.parse(
+        data['approvedAt'] ?? DateTime.now().toIso8601String(),
+      ),
+      approvedBy: data['approvedBy'] ?? '',
+      address: data['address'],
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'uid': uid,
+      'hostel': hostel,
+      'roomNumber': roomNumber,
+      'department': department,
+      'parentContact': parentContact,
+      'phoneNumber': phoneNumber,
+      'rollNumber': rollNumber,
+      'batch': batch,
+      'semester': semester,
+      'approvedAt': approvedAt.toIso8601String(),
+      'approvedBy': approvedBy,
+      'address': address,
+    };
+  }
+}
+
 // Enhanced App User Model
 class AppUser {
   final String uid;

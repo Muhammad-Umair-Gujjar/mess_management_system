@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../auth/auth_controller.dart';
+import '../../user/user_controller.dart';
 
 import '../../../../core/theme/app_decorations.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -20,22 +22,26 @@ class StaffDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.put(StaffController());
+    final authController = Get.find<AuthController>();
+    final userController = Get.find<UserController>();
 
     return GetBuilder<StaffController>(
-      builder: (controller) => ResponsiveDashboardLayout(
-        title: 'Staff Dashboard',
-        userRole: 'Staff',
-        userName: 'Sarah Johnson',
-        userEmail: 'sarah.johnson@messmaster.com',
-        currentIndex: controller.currentPageIndex,
-        onItemSelected: controller.changePage,
-        menuItems: controller.navigationItems,
-        header: _buildHeader(controller),
-        onLogoutPressed: () => Get.offAllNamed('/'),
-        child: GetBuilder<StaffController>(
-          id: 'page_content',
-          builder: (controller) =>
-              _buildPageContent(controller.currentPageIndex.value),
+      builder: (controller) => Obx(
+        () => ResponsiveDashboardLayout(
+          title: 'Staff Dashboard',
+          userRole: 'Staff',
+          userName: userController.fullName,
+          userEmail: userController.email,
+          currentIndex: controller.currentPageIndex,
+          onItemSelected: controller.changePage,
+          menuItems: controller.navigationItems,
+          header: _buildHeader(controller),
+          onLogoutPressed: () async => await authController.logout(),
+          child: GetBuilder<StaffController>(
+            id: 'page_content',
+            builder: (controller) =>
+                _buildPageContent(controller.currentPageIndex.value),
+          ),
         ),
       ),
     );
@@ -108,7 +114,7 @@ class StaffDashboard extends StatelessWidget {
           ],
         ],
       ),
-    ).animate().fadeIn(duration:  300.ms ).slideY(begin: -0.2);
+    ).animate().fadeIn(duration: 300.ms).slideY(begin: -0.2);
   }
 
   Widget _buildQuickStat(
@@ -170,7 +176,3 @@ class StaffDashboard extends StatelessWidget {
     }
   }
 }
-
-
-
-

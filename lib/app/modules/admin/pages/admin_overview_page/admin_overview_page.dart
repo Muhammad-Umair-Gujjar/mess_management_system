@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../../../core/theme/app_decorations.dart';
 import '../../../../../core/utils/responsive_helper.dart';
 import '../../admin_controller.dart';
+import 'controllers/admin_overview_controller.dart';
 import 'components/system_stats_grid.dart';
 import 'components/recent_activity_card.dart';
 import 'components/quick_actions_card.dart';
@@ -15,59 +16,79 @@ class AdminOverviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<AdminController>();
+    final overviewController = Get.put(AdminOverviewController());
     final isMobile = ResponsiveHelper.isMobile(context);
 
     return Container(
       decoration: AppDecorations.backgroundGradient(),
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // System Stats Overview
-            SystemStatsGrid(controller: controller, isMobile: isMobile),
+      child: Obx(() {
+        if (overviewController.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
-
-            // Recent Activity and Quick Actions
-            Row(
+        return RefreshIndicator(
+          onRefresh: overviewController.refreshData,
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(
+              ResponsiveHelper.getSpacing(context, 'medium'),
+            ),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Recent Activity
-                Expanded(
-                  flex: 2,
-                  child: RecentActivityCard(controller: controller),
+                // System Stats Overview
+                SystemStatsGrid(
+                  overviewController: overviewController,
+                  isMobile: isMobile,
                 ),
 
-                if (!isMobile) ...[
+                SizedBox(
+                  height: ResponsiveHelper.getSpacing(context, 'xlarge'),
+                ),
+
+                // Recent Activity and Quick Actions
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Recent Activity
+                    Expanded(
+                      flex: 2,
+                      child: RecentActivityCard(controller: controller),
+                    ),
+
+                    if (!isMobile) ...[
+                      SizedBox(
+                        width: ResponsiveHelper.getSpacing(context, 'large'),
+                      ),
+                      // Quick Actions
+                      Expanded(
+                        flex: 1,
+                        child: QuickActionsCard(controller: controller),
+                      ),
+                    ],
+                  ],
+                ),
+
+                if (isMobile) ...[
                   SizedBox(
-                    width: ResponsiveHelper.getSpacing(context, 'large'),
+                    height: ResponsiveHelper.getSpacing(context, 'large'),
                   ),
-                  // Quick Actions
-                  Expanded(
-                    flex: 1,
-                    child: QuickActionsCard(controller: controller),
-                  ),
+                  QuickActionsCard(controller: controller),
                 ],
+
+                SizedBox(
+                  height: ResponsiveHelper.getSpacing(context, 'xlarge'),
+                ),
+
+                // Pending Approvals - Now uses real data
+                PendingApprovalsCard(
+                  overviewController: overviewController,
+                  isMobile: isMobile,
+                ),
               ],
             ),
-
-            if (isMobile) ...[
-              SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
-              QuickActionsCard(controller: controller),
-            ],
-
-            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
-
-            // Pending Approvals
-            PendingApprovalsCard(controller: controller, isMobile: isMobile),
-          ],
-        ),
-      ),
+          ),
+        );
+      }),
     );
   }
 }
-
-
-
-
