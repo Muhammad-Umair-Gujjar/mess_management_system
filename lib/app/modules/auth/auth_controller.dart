@@ -1,96 +1,615 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../data/models/feedback.dart';
+import '../../data/models/auth_models.dart';
+import '../../data/services/auth_service.dart';
+import '../../routes/app_routes.dart';
 import 'components/auth_helpers.dart';
 
 class AuthController extends GetxController {
+  static AuthController get instance => Get.find();
+
+  final AuthService _authService = AuthService();
+
+  // Form keys
+  final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>(
+    debugLabel: 'loginForm',
+  );
+  final GlobalKey<FormState> signupFormKey = GlobalKey<FormState>(
+    debugLabel: 'signupForm',
+  );
+
+  // Text controllers - Initialize in constructor to avoid null issues
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+  late final TextEditingController confirmPasswordController;
+  late final TextEditingController firstNameController;
+  late final TextEditingController lastNameController;
+  late final TextEditingController rollNumberController;
+  late final TextEditingController hostelController;
+  late final TextEditingController roomNumberController;
+
+  // Constructor to initialize controllers
+  AuthController() {
+    print('🔵 DEBUG: AuthController constructor called');
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    confirmPasswordController = TextEditingController();
+    firstNameController = TextEditingController();
+    lastNameController = TextEditingController();
+    rollNumberController = TextEditingController();
+    hostelController = TextEditingController();
+    roomNumberController = TextEditingController();
+    print('✅ DEBUG: AuthController - All controllers initialized');
+  }
+
   // Observable state variables
-  var isLoading = false.obs;
-  var currentUser = Rxn<User>();
-  var selectedRole = UserRole.student.obs;
-  var rememberMe = false.obs;
-  var acceptTerms = false.obs;
+  final isLoading = false.obs;
+  final isPasswordHidden = true.obs;
+  final isConfirmPasswordHidden = true.obs;
+  final currentUser = Rxn<AppUser>();
+  final isAuthenticated = false.obs;
+  final selectedUserRole = UserRole.student.obs;
+  final selectedRole = UserRole.student.obs; // For backward compatibility
+  final rememberMe = false.obs;
+  final selectedDepartment = 'Computer Science'.obs;
+  final selectedSemester = 1.obs;
+  final selectedHostel = 'Hostel 1'.obs;
 
-  // Form controllers
-  var emailError = RxnString();
-  var passwordError = RxnString();
-  var confirmPasswordError = RxnString();
-  var firstNameError = RxnString();
-  var lastNameError = RxnString();
-  var rollNoError = RxnString();
-  var roomNumberError = RxnString();
+  // Form validation errors
+  final emailError = RxnString();
+  final passwordError = RxnString();
+  final confirmPasswordError = RxnString();
+  final firstNameError = RxnString();
+  final lastNameError = RxnString();
+  final rollNumberError = RxnString();
+  final roomNumberError = RxnString();
 
-  void login(UserRole role, String name) {
-    isLoading.value = true;
-    _clearErrors();
+  @override
+  void onInit() {
+    super.onInit();
+    print('🔵 DEBUG: AuthController onInit() called');
+    _checkAuthState();
+    _setupDefaultAccounts();
+  }
 
-    // Simulate API call delay
-    Future.delayed(const Duration(seconds: 2), () {
-      currentUser.value = User(
-        id: '${role.name}_user',
-        name: name,
-        email: '${name.toLowerCase().replaceAll(' ', '.')}@university.edu',
-        role: role,
+  @override
+  void onClose() {
+    // Dispose controllers
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
+    rollNumberController.dispose();
+    hostelController.dispose();
+    roomNumberController.dispose();
+    super.onClose();
+  }
+
+  /// Setup default admin and staff accounts
+  Future<void> _setupDefaultAccounts() async {
+    try {
+      print('🔵 DEBUG: Setting up default accounts...');
+
+      // Setup default admin account
+      await _authService.createDefaultStaffAccount(
+        email: 'gujjar@gmail.com',
+        password: '12345678',
+        firstName: 'Admin',
+        lastName: 'User',
+        role: UserRole.admin,
+        department: 'Administration',
       );
 
-      isLoading.value = false;
-      _navigateBasedOnRole(role);
-      AuthErrorHandler.showSuccess('Welcome back, $name!');
+      // Setup default staff account
+      await _authService.createDefaultStaffAccount(
+        email: 'staff@gmail.com',
+        password: '12345678',
+        firstName: 'Staff',
+        lastName: 'User',
+        role: UserRole.staff,
+        department: 'Kitchen',
+      );
+
+      print('✅ DEBUG: Default accounts setup completed');
+    } catch (e) {
+      print('⚠️ DEBUG: Default accounts setup error (might already exist): $e');
+    }
+  }
+
+  /// Check authentication state on app start
+  void _checkAuthState() {
+    _authService.authStateChanges.listen((firebaseUser) async {
+      if (firebaseUser != null) {
+        final user = await _authService.currentUser;
+        if (user != null && user.isActive) {
+          currentUser.value = user;
+          isAuthenticated.value = true;
+          _navigateBasedOnRole(user.role);
+        } else {
+          await logout();
+        }
+      } else {
+        currentUser.value = null;
+        isAuthenticated.value = false;
+      }
     });
   }
 
-  void loginWithCredentials({
+  /// Student Signup
+  Future<void> studentSignup() async {
+    print('🔵 DEBUG: studentSignup() called');
+
+    // Skip form validation for now, do manual validation
+    print('🔵 DEBUG: Doing manual validation instead of form validation');
+
+    print('✅ DEBUG: Form validation passed');
+    _clearErrors();
+    isLoading.value = true;
+    print('🔵 DEBUG: isLoading set to true');
+
+    try {
+      // Null safety checks
+      final email = emailController.text.trim();
+      final firstName = firstNameController.text.trim();
+      final lastName = lastNameController.text.trim();
+      final rollNumber = rollNumberController.text.trim();
+      final roomNumber = roomNumberController.text.trim();
+
+      print('🔵 DEBUG: Form data collected:');
+      print('  Email: $email');
+      print('  First Name: $firstName');
+      print('  Last Name: $lastName');
+      print('  Roll Number: $rollNumber');
+      print('  Room Number: $roomNumber');
+      print('  Hostel: ${selectedHostel.value}');
+      print('  Department: ${selectedDepartment.value}');
+      print('  Semester: ${selectedSemester.value}');
+
+      if (email.isEmpty ||
+          firstName.isEmpty ||
+          lastName.isEmpty ||
+          rollNumber.isEmpty) {
+        print('❌ DEBUG: Required fields are empty');
+        throw Exception('All required fields must be filled');
+      }
+
+      // Validate email format
+      final emailValidation = AuthValidator.validateEmail(email);
+      if (emailValidation != null) {
+        print('❌ DEBUG: Email validation failed: $emailValidation');
+        throw Exception(emailValidation);
+      }
+
+      // Validate password
+      final password = passwordController.text.trim();
+      final passwordValidation = AuthValidator.validatePassword(password);
+      if (passwordValidation != null) {
+        print('❌ DEBUG: Password validation failed: $passwordValidation');
+        throw Exception(passwordValidation);
+      }
+
+      // Validate names
+      final firstNameValidation = AuthValidator.validateName(
+        firstName,
+        'First name',
+      );
+      if (firstNameValidation != null) {
+        print('❌ DEBUG: First name validation failed: $firstNameValidation');
+        throw Exception(firstNameValidation);
+      }
+
+      final lastNameValidation = AuthValidator.validateName(
+        lastName,
+        'Last name',
+      );
+      if (lastNameValidation != null) {
+        print('❌ DEBUG: Last name validation failed: $lastNameValidation');
+        throw Exception(lastNameValidation);
+      }
+
+      // Validate roll number
+      final rollNumberValidation = AuthValidator.validateRollNumber(rollNumber);
+      if (rollNumberValidation != null) {
+        print('❌ DEBUG: Roll number validation failed: $rollNumberValidation');
+        throw Exception(rollNumberValidation);
+      }
+
+      print('🔵 DEBUG: Creating StudentSignupRequest...');
+      final request = StudentSignupRequest(
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        rollNumber: rollNumber,
+        hostel: selectedHostel.value,
+        roomNumber: roomNumberController.text.trim(),
+        phoneNumber: '', // Not required anymore
+        department: selectedDepartment.value,
+        semester: selectedSemester.value,
+      );
+
+      print('✅ DEBUG: StudentSignupRequest created successfully');
+      print('🔵 DEBUG: Calling _authService.studentSignup...');
+
+      final result = await _authService.studentSignup(request);
+
+      print('🔵 DEBUG: _authService.studentSignup completed');
+      print('  Result success: ${result.success}');
+      print('  Result type: ${result.type}');
+      print('  Result message: ${result.errorMessage}');
+      print('  Result user: ${result.user}');
+
+      if (result.success) {
+        Get.snackbar(
+          'Success',
+          'Signup request submitted successfully! Wait for admin approval.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 4),
+        );
+        _clearForm();
+        Get.offAllNamed(AppRoutes.LOGIN);
+      } else if (result.type == AuthResultType.pending) {
+        // Handle pending as success for user experience
+        Get.snackbar(
+          'Request Submitted',
+          result.errorMessage ??
+              'Your signup request has been submitted and is pending approval.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 4),
+        );
+        _clearForm();
+        Get.offAllNamed(AppRoutes.LOGIN);
+      } else {
+        Get.snackbar(
+          'Error',
+          result.errorMessage ?? 'Signup failed',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } on Exception catch (e) {
+      print('❌ DEBUG: Exception in studentSignup: ${e.toString()}');
+      Get.snackbar(
+        'Error',
+        e.toString().replaceAll('Exception: ', ''),
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      print('❌ DEBUG: General error in studentSignup: ${e.toString()}');
+      Get.snackbar(
+        'Error',
+        'Signup failed: ${e.toString()}',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      print(
+        '🔵 DEBUG: studentSignup finally block - setting isLoading to false',
+      );
+      isLoading.value = false;
+    }
+  }
+
+  /// Login (handles all roles)
+  Future<void> login() async {
+    print('🔵 DEBUG: login() called');
+
+    // Skip form validation for now, do manual validation
+    print('🔵 DEBUG: Doing manual validation instead of form validation');
+
+    print('✅ DEBUG: Login form validation passed');
+    _clearErrors();
+    isLoading.value = true;
+    print('🔵 DEBUG: isLoading set to true');
+
+    try {
+      AuthResult result;
+      final email = emailController.text.trim();
+      final password = passwordController.text.trim();
+
+      print('🔵 DEBUG: Login data:');
+      print('  Email: $email');
+      print('  Password: ${password.isNotEmpty ? "[PROVIDED]" : "[EMPTY]"}');
+      print('  Selected Role: ${selectedUserRole.value}');
+
+      if (email.isEmpty || password.isEmpty) {
+        print('❌ DEBUG: Email or password is empty');
+        throw Exception('Email and password are required');
+      }
+
+      // Validate email format
+      final emailValidation = AuthValidator.validateEmail(email);
+      if (emailValidation != null) {
+        print('❌ DEBUG: Email validation failed: $emailValidation');
+        throw Exception(emailValidation);
+      }
+
+      // Validate password
+      final passwordValidation = AuthValidator.validatePassword(password);
+      if (passwordValidation != null) {
+        print('❌ DEBUG: Password validation failed: $passwordValidation');
+        throw Exception(passwordValidation);
+      }
+
+      print('🔵 DEBUG: Determining login type...');
+      if (selectedUserRole.value == UserRole.student) {
+        print('🔵 DEBUG: Calling studentLogin...');
+        result = await _authService.studentLogin(email, password);
+      } else {
+        print('🔵 DEBUG: Calling staffAdminLogin...');
+        result = await _authService.staffAdminLogin(
+          email,
+          password,
+          selectedUserRole.value,
+        );
+      }
+
+      print('🔵 DEBUG: Login service call completed');
+      print('  Result success: ${result.success}');
+      print('  Result type: ${result.type}');
+      print('  Result message: ${result.errorMessage}');
+      print('  Result user: ${result.user}');
+
+      if (result.success && result.user != null) {
+        currentUser.value = result.user;
+        isAuthenticated.value = true;
+
+        Get.snackbar(
+          'Success',
+          'Login successful! Welcome back.',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+
+        _clearForm();
+        _navigateBasedOnRole(result.user!.role);
+      } else {
+        String errorMessage = result.errorMessage ?? 'Login failed';
+
+        if (result.type == AuthResultType.pending) {
+          Get.snackbar(
+            'Account Pending',
+            'Your account is pending admin approval. Please wait.',
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.orange,
+            colorText: Colors.white,
+            duration: const Duration(seconds: 5),
+          );
+        } else {
+          Get.snackbar(
+            'Login Failed',
+            errorMessage,
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        }
+      }
+    } on Exception catch (e) {
+      Get.snackbar(
+        'Error',
+        e.toString().replaceAll('Exception: ', ''),
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Logout
+  Future<void> logout() async {
+    try {
+      await _authService.signOut();
+      currentUser.value = null;
+      isAuthenticated.value = false;
+      _clearForm();
+      Get.offAllNamed(AppRoutes.LOGIN);
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Logout failed: ${e.toString()}',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  /// Send password reset email
+  Future<void> resetPassword({
+    required Null Function() onSuccess,
+    required String email,
+  }) async {
+    if (emailController.text.trim().isEmpty) {
+      emailError.value = 'Please enter your email';
+      return;
+    }
+
+    if (!AuthValidator.isValidEmail(emailController.text.trim())) {
+      emailError.value = 'Please enter a valid email';
+      return;
+    }
+
+    isLoading.value = true;
+
+    try {
+      await _authService.sendPasswordResetEmail(emailController.text.trim());
+      Get.snackbar(
+        'Success',
+        'Password reset email sent successfully!',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+      Get.back();
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Navigate based on user role
+  void _navigateBasedOnRole(UserRole role) {
+    switch (role) {
+      case UserRole.student:
+        Get.offAllNamed(AppRoutes.STUDENT_DASHBOARD);
+        break;
+      case UserRole.staff:
+        Get.offAllNamed(AppRoutes.STAFF_DASHBOARD);
+        break;
+      case UserRole.admin:
+        Get.offAllNamed(AppRoutes.ADMIN_DASHBOARD);
+        break;
+    }
+  }
+
+  /// Clear form fields
+  void _clearForm() {
+    emailController.clear();
+    passwordController.clear();
+    confirmPasswordController.clear();
+    firstNameController.clear();
+    lastNameController.clear();
+    rollNumberController.clear();
+    hostelController.clear();
+    roomNumberController.clear();
+    _clearErrors();
+  }
+
+  /// Clear validation errors
+  void _clearErrors() {
+    emailError.value = null;
+    passwordError.value = null;
+    confirmPasswordError.value = null;
+    firstNameError.value = null;
+    lastNameError.value = null;
+    rollNumberError.value = null;
+    roomNumberError.value = null;
+  }
+
+  /// Toggle password visibility
+  void togglePasswordVisibility() {
+    isPasswordHidden.value = !isPasswordHidden.value;
+  }
+
+  void toggleConfirmPasswordVisibility() {
+    isConfirmPasswordHidden.value = !isConfirmPasswordHidden.value;
+  }
+
+  /// Validate individual fields
+  String? validateEmail(String? value) {
+    final error = AuthValidator.validateEmail(value);
+    emailError.value = error;
+    return error;
+  }
+
+  String? validatePassword(String? value) {
+    final error = AuthValidator.validatePassword(value);
+    passwordError.value = error;
+    return error;
+  }
+
+  String? validateConfirmPassword(String? value) {
+    final error = AuthValidator.validateConfirmPassword(
+      value,
+      passwordController.text,
+    );
+    confirmPasswordError.value = error;
+    return error;
+  }
+
+  String? validateFirstName(String? value) {
+    final error = AuthValidator.validateName(value, 'First name');
+    firstNameError.value = error;
+    return error;
+  }
+
+  String? validateLastName(String? value) {
+    final error = AuthValidator.validateName(value, 'Last name');
+    lastNameError.value = error;
+    return error;
+  }
+
+  String? validateRollNumber(String? value) {
+    final error = AuthValidator.validateRollNumber(value);
+    rollNumberError.value = error;
+    return error;
+  }
+
+  String? validateRoomNumber(String? value) {
+    final error = AuthValidator.validateRoomNumber(value);
+    roomNumberError.value = error;
+    return error;
+  }
+
+  // Update selection methods
+  void updateUserRole(UserRole role) {
+    selectedUserRole.value = role;
+  }
+
+  void updateDepartment(String department) {
+    selectedDepartment.value = department;
+  }
+
+  void updateSemester(int semester) {
+    selectedSemester.value = semester;
+  }
+
+  void updateHostel(String hostel) {
+    selectedHostel.value = hostel;
+  }
+
+  // Backward compatibility methods
+  void updateRole(UserRole role) {
+    selectedRole.value = role;
+    selectedUserRole.value = role;
+  }
+
+  void updateRememberMe(bool value) {
+    rememberMe.value = value;
+  }
+
+  // Login method with credentials for enhanced_login_page compatibility
+  Future<void> loginWithCredentials({
     required String email,
     required String password,
     required UserRole role,
-  }) {
-    isLoading.value = true;
-    _clearErrors();
+  }) async {
+    print('🔵 DEBUG: loginWithCredentials() called');
+    print('  Email: $email');
+    print('  Password: ${password.isNotEmpty ? "[PROVIDED]" : "[EMPTY]"}');
+    print('  Role: $role');
 
-    // Validate inputs
-    final emailValidation = AuthValidator.validateEmail(email);
-    final passwordValidation = AuthValidator.validatePassword(password);
+    emailController.text = email;
+    passwordController.text = password;
+    selectedUserRole.value = role;
+    selectedRole.value = role;
 
-    if (emailValidation != null) {
-      emailError.value = emailValidation;
-      isLoading.value = false;
-      return;
-    }
-
-    if (passwordValidation != null) {
-      passwordError.value = passwordValidation;
-      isLoading.value = false;
-      return;
-    }
-
-    // Simulate API call delay
-    Future.delayed(const Duration(seconds: 2), () {
-      // Extract name from email
-      String name = email
-          .split('@')[0]
-          .replaceAll('.', ' ')
-          .split(' ')
-          .map(
-            (word) => word.isNotEmpty
-                ? word[0].toUpperCase() + word.substring(1)
-                : '',
-          )
-          .join(' ');
-
-      currentUser.value = User(
-        id: '${role.name}_user',
-        name: name,
-        email: email,
-        role: role,
-      );
-
-      isLoading.value = false;
-      _navigateBasedOnRole(role);
-      AuthErrorHandler.showSuccess('Welcome back, $name!');
-    });
+    print('🔵 DEBUG: Controllers set, calling login()...');
+    await login();
   }
 
-  void signUp({
+  // SignUp method for signup_page compatibility
+  Future<void> signUp({
     required String firstName,
     required String lastName,
     required String rollNo,
@@ -99,198 +618,29 @@ class AuthController extends GetxController {
     required String confirmPassword,
     required String hostel,
     required String roomNumber,
-  }) {
-    isLoading.value = true;
-    _clearErrors();
-
-    // Validate all inputs
-    if (!_validateSignUpForm(
-      firstName,
-      lastName,
-      rollNo,
-      email,
-      password,
-      confirmPassword,
-      roomNumber,
-    )) {
-      isLoading.value = false;
-      return;
-    }
-
-    // Simulate API call delay
-    Future.delayed(const Duration(seconds: 2), () {
-      // Create user account (Student role by default for signup)
-      currentUser.value = User(
-        id: 'student_$rollNo',
-        name: '$firstName $lastName',
-        email: email,
-        role: UserRole.student,
-      );
-
-      isLoading.value = false;
-      _navigateBasedOnRole(UserRole.student);
-      AuthErrorHandler.showSuccess(
-        'Account created successfully! Welcome, $firstName!',
-      );
-    });
-  }
-
-  void resetPassword({required String email, required VoidCallback onSuccess}) {
-    isLoading.value = true;
-    _clearErrors();
-
-    // Validate email
-    final emailValidation = AuthValidator.validateEmail(email);
-    if (emailValidation != null) {
-      emailError.value = emailValidation;
-      isLoading.value = false;
-      return;
-    }
-
-    // Simulate API call delay
-    Future.delayed(const Duration(seconds: 2), () {
-      isLoading.value = false;
-      onSuccess();
-      AuthErrorHandler.showSuccess(
-        'Password reset instructions sent to $email',
-      );
-    });
-  }
-
-  void logout() {
-    currentUser.value = null;
-    _clearState();
-    Get.offAllNamed('/login');
-    AuthErrorHandler.showInfo('You have been logged out successfully');
-  }
-
-  // Update methods for reactive UI
-  void updateRole(UserRole role) {
-    selectedRole.value = role;
-  }
-
-  void updateRememberMe(bool value) {
-    rememberMe.value = value;
-  }
-
-  void updateAcceptTerms(bool value) {
-    acceptTerms.value = value;
-  }
-
-  // Convenience login method that uses current form state
-  void loginWithEmail(String email, String password) {
-    loginWithCredentials(
-      email: email,
-      password: password,
-      role: selectedRole.value,
+  }) async {
+    print('🔵 DEBUG: signUp() wrapper called');
+    print('  First Name: $firstName');
+    print('  Last Name: $lastName');
+    print('  Roll No: $rollNo');
+    print('  Email: $email');
+    print('  Password: ${password.isNotEmpty ? "[PROVIDED]" : "[EMPTY]"}');
+    print(
+      '  Confirm Password: ${confirmPassword.isNotEmpty ? "[PROVIDED]" : "[EMPTY]"}',
     );
-  }
+    print('  Hostel: $hostel');
+    print('  Room Number: $roomNumber');
 
-  // Helper methods
-  void _navigateBasedOnRole(UserRole role) {
-    switch (role) {
-      case UserRole.student:
-        Get.offAllNamed('/student');
-        break;
-      case UserRole.staff:
-        Get.offAllNamed('/staff');
-        break;
-      case UserRole.admin:
-        Get.offAllNamed('/admin');
-        break;
-    }
-  }
+    firstNameController.text = firstName;
+    lastNameController.text = lastName;
+    rollNumberController.text = rollNo;
+    emailController.text = email;
+    passwordController.text = password;
+    confirmPasswordController.text = confirmPassword;
+    selectedHostel.value = hostel;
+    roomNumberController.text = roomNumber;
 
-  void _clearErrors() {
-    emailError.value = null;
-    passwordError.value = null;
-    confirmPasswordError.value = null;
-    firstNameError.value = null;
-    lastNameError.value = null;
-    rollNoError.value = null;
-    roomNumberError.value = null;
-  }
-
-  void _clearState() {
-    selectedRole.value = UserRole.student;
-    rememberMe.value = false;
-    acceptTerms.value = false;
-    _clearErrors();
-  }
-
-  bool _validateSignUpForm(
-    String firstName,
-    String lastName,
-    String rollNo,
-    String email,
-    String password,
-    String confirmPassword,
-    String roomNumber,
-  ) {
-    bool isValid = true;
-
-    final firstNameValidation = AuthValidator.validateName(
-      firstName,
-      'first name',
-    );
-    if (firstNameValidation != null) {
-      firstNameError.value = firstNameValidation;
-      isValid = false;
-    }
-
-    final lastNameValidation = AuthValidator.validateName(
-      lastName,
-      'last name',
-    );
-    if (lastNameValidation != null) {
-      lastNameError.value = lastNameValidation;
-      isValid = false;
-    }
-
-    final rollNoValidation = AuthValidator.validateRollNo(rollNo);
-    if (rollNoValidation != null) {
-      rollNoError.value = rollNoValidation;
-      isValid = false;
-    }
-
-    final emailValidation = AuthValidator.validateEmail(email);
-    if (emailValidation != null) {
-      emailError.value = emailValidation;
-      isValid = false;
-    }
-
-    final passwordValidation = AuthValidator.validatePassword(password);
-    if (passwordValidation != null) {
-      passwordError.value = passwordValidation;
-      isValid = false;
-    }
-
-    final confirmPasswordValidation = AuthValidator.validateConfirmPassword(
-      confirmPassword,
-      password,
-    );
-    if (confirmPasswordValidation != null) {
-      confirmPasswordError.value = confirmPasswordValidation;
-      isValid = false;
-    }
-
-    final roomNumberValidation = AuthValidator.validateRoomNumber(roomNumber);
-    if (roomNumberValidation != null) {
-      roomNumberError.value = roomNumberValidation;
-      isValid = false;
-    }
-
-    return isValid;
-  }
-
-  String getGreeting() {
-    final hour = DateTime.now().hour;
-    if (hour < 12) {
-      return 'Good Morning';
-    } else if (hour < 17) {
-      return 'Good Afternoon';
-    } else {
-      return 'Good Evening';
-    }
+    print('🔵 DEBUG: Controllers set, calling studentSignup()...');
+    await studentSignup();
   }
 }

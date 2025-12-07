@@ -7,7 +7,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/responsive_helper.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../data/models/feedback.dart';
+import '../../data/models/auth_models.dart';
 import 'auth_controller.dart';
 import 'password_reset_page.dart';
 import 'signup_page.dart';
@@ -21,7 +21,7 @@ class EnhancedLoginPage extends StatefulWidget {
 }
 
 class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
-  final AuthController authController = Get.put(AuthController());
+  final AuthController authController = Get.find<AuthController>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -250,74 +250,77 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
               ]
             : [],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Title
-          Text(
-            'Welcome Back',
-            style: AppTextStyles.heading3.copyWith(
-              fontSize: ResponsiveHelper.getFontSize(context, 'heading3'),
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ).animate().fadeIn(delay: 600.ms).slideY(begin: -0.3),
+      child: Form(
+        key: authController.loginFormKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Title
+            Text(
+              'Welcome Back',
+              style: AppTextStyles.heading3.copyWith(
+                fontSize: ResponsiveHelper.getFontSize(context, 'heading3'),
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ).animate().fadeIn(delay: 600.ms).slideY(begin: -0.3),
 
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
 
-          Text(
-            'Sign in to your account',
-            style: AppTextStyles.body2.copyWith(
-              fontSize: ResponsiveHelper.getFontSize(context, 'body2'),
-              color: AppColors.textSecondary,
-            ),
-            textAlign: TextAlign.center,
-          ).animate().fadeIn(delay: 700.ms).slideY(begin: -0.3),
+            Text(
+              'Sign in to your account',
+              style: AppTextStyles.body2.copyWith(
+                fontSize: ResponsiveHelper.getFontSize(context, 'body2'),
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ).animate().fadeIn(delay: 700.ms).slideY(begin: -0.3),
 
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
-          // Role Selection
-          _buildRoleSelection(),
+            // Role Selection
+            _buildRoleSelection(),
 
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
 
-          // Email Field
-          ReusableTextField(
-            controller: emailController,
-            type: TextFieldType.email,
-            label: 'Email Address',
-            hintText: 'Enter your email',
-            prefixIcon: FontAwesomeIcons.envelope,
-          ).animate().fadeIn(delay: 800.ms).slideX(begin: -0.3),
+            // Email Field
+            ReusableTextField(
+              controller: emailController,
+              type: TextFieldType.email,
+              label: 'Email Address',
+              hintText: 'Enter your email',
+              prefixIcon: FontAwesomeIcons.envelope,
+            ).animate().fadeIn(delay: 800.ms).slideX(begin: -0.3),
 
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
-          // Password Field
-          ReusableTextField(
-            controller: passwordController,
-            type: TextFieldType.password,
-            label: 'Password',
-            hintText: 'Enter your password',
-            prefixIcon: FontAwesomeIcons.lock,
-          ).animate().fadeIn(delay: 900.ms).slideX(begin: -0.3),
+            // Password Field
+            ReusableTextField(
+              controller: passwordController,
+              type: TextFieldType.password,
+              label: 'Password',
+              hintText: 'Enter your password',
+              prefixIcon: FontAwesomeIcons.lock,
+            ).animate().fadeIn(delay: 900.ms).slideX(begin: -0.3),
 
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
-          // Remember Me & Forgot Password Row
-          _buildRememberForgotRow(),
+            // Remember Me & Forgot Password Row
+            _buildRememberForgotRow(),
 
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
-          // Login Button
-          Obx(() => _buildLoginButton()),
+            // Login Button
+            Obx(() => _buildLoginButton()),
 
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
 
-          // Sign Up Link
-          _buildSignUpLink(),
-        ],
+            // Sign Up Link
+            _buildSignUpLink(),
+          ],
+        ),
       ),
     );
   }
@@ -333,36 +336,8 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
 
   Widget _buildRememberForgotRow() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        // Remember Me
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: ResponsiveHelper.getSpacing(context, 'large'),
-              width: ResponsiveHelper.getSpacing(context, 'large'),
-              child: Obx(
-                () => Checkbox(
-                  value: authController.rememberMe.value,
-                  onChanged: (value) {
-                    authController.updateRememberMe(value ?? false);
-                  },
-                  activeColor: AppColors.primary,
-                ),
-              ),
-            ),
-            SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
-            Text(
-              'Remember me',
-              style: AppTextStyles.body2.copyWith(
-                fontSize: ResponsiveHelper.getFontSize(context, 'body2'),
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-
         // Forgot Password
         TextButton(
           onPressed: () {
@@ -390,7 +365,13 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
         desktop: 60,
       ),
       child: ElevatedButton(
-        onPressed: authController.isLoading.value ? null : () => _handleLogin(),
+        onPressed: authController.isLoading.value
+            ? null
+            : () {
+                print('🟢 DEBUG: Login button pressed!');
+                print('  isLoading: ${authController.isLoading.value}');
+                _handleLogin();
+              },
         style: ElevatedButton.styleFrom(
           backgroundColor: _getRoleColor(authController.selectedRole.value),
           foregroundColor: Colors.white,
@@ -498,16 +479,29 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
   }
 
   void _handleLogin() {
+    print('🔵 DEBUG: _handleLogin() called in enhanced_login_page.dart');
+
     // Basic validation
     if (emailController.text.trim().isEmpty) {
+      print('❌ DEBUG: Email is empty');
       Get.snackbar('Error', 'Please enter your email');
       return;
     }
 
     if (passwordController.text.trim().isEmpty) {
+      print('❌ DEBUG: Password is empty');
       Get.snackbar('Error', 'Please enter your password');
       return;
     }
+
+    print(
+      '✅ DEBUG: Basic validation passed, calling authController.loginWithCredentials...',
+    );
+    print('  Email: ${emailController.text.trim()}');
+    print(
+      '  Password: ${passwordController.text.trim().isNotEmpty ? "[PROVIDED]" : "[EMPTY]"}',
+    );
+    print('  Role: ${authController.selectedRole.value}');
 
     // Call auth controller with form data
     authController.loginWithCredentials(

@@ -21,7 +21,7 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  final AuthController authController = Get.put(AuthController());
+  final AuthController authController = Get.find<AuthController>();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController rollNoController = TextEditingController();
@@ -281,116 +281,119 @@ class _SignupPageState extends State<SignupPage> {
               ]
             : [],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Title (for mobile)
-          if (ResponsiveHelper.isMobile(context)) ...[
-            Text(
-              'Create Account',
-              style: AppTextStyles.heading3.copyWith(
-                fontSize: ResponsiveHelper.getFontSize(context, 'heading3'),
-                color: AppColors.textPrimary,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ).animate().fadeIn(delay: 600.ms).slideY(begin: -0.3),
+      child: Form(
+        key: authController.signupFormKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Title (for mobile)
+            if (ResponsiveHelper.isMobile(context)) ...[
+              Text(
+                'Create Account',
+                style: AppTextStyles.heading3.copyWith(
+                  fontSize: ResponsiveHelper.getFontSize(context, 'heading3'),
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ).animate().fadeIn(delay: 600.ms).slideY(begin: -0.3),
+
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
+            ],
+
+            // First Name & Last Name Row
+            Row(
+              children: [
+                Expanded(
+                  child: ReusableTextField(
+                    controller: firstNameController,
+                    label: 'First Name',
+                    hintText: 'Enter first name',
+                    prefixIcon: FontAwesomeIcons.user,
+                  ),
+                ),
+                SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+                Expanded(
+                  child: ReusableTextField(
+                    controller: lastNameController,
+                    label: 'Last Name',
+                    hintText: 'Enter last name',
+                    prefixIcon: FontAwesomeIcons.user,
+                  ),
+                ),
+              ],
+            ).animate().fadeIn(delay: 700.ms).slideX(begin: -0.3),
+
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+
+            // Roll No
+            ReusableTextField(
+              controller: rollNoController,
+              label: 'Roll Number',
+              hintText: 'Enter your roll number',
+              prefixIcon: FontAwesomeIcons.hashtag,
+            ).animate().fadeIn(delay: 800.ms).slideX(begin: -0.3),
+
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+
+            // Email
+            ReusableTextField(
+              controller: emailController,
+              type: TextFieldType.email,
+              label: 'Email Address',
+              hintText: 'Enter your email',
+              prefixIcon: FontAwesomeIcons.envelope,
+            ).animate().fadeIn(delay: 900.ms).slideX(begin: -0.3),
+
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+
+            // Password
+            ReusableTextField(
+              controller: passwordController,
+              type: TextFieldType.password,
+              label: 'Password',
+              hintText: 'Enter password',
+              prefixIcon: FontAwesomeIcons.lock,
+            ).animate().fadeIn(delay: 1000.ms).slideX(begin: -0.3),
+
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+
+            // Confirm Password
+            ReusableTextField(
+              controller: confirmPasswordController,
+              type: TextFieldType.password,
+              label: 'Confirm Password',
+              hintText: 'Confirm password',
+              prefixIcon: FontAwesomeIcons.lock,
+            ).animate().fadeIn(delay: 1100.ms).slideX(begin: -0.3),
+
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+
+            // Hostel Selection
+            _buildHostelSelection(context),
+
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+
+            // Room Number
+            ReusableTextField(
+              controller: roomNumberController,
+              label: 'Room Number',
+              hintText: 'Enter room number',
+              prefixIcon: FontAwesomeIcons.doorOpen,
+              type: TextFieldType.number,
+            ).animate().fadeIn(delay: 1300.ms).slideX(begin: -0.3),
 
             SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
+
+            // Register Button
+            Obx(() => _buildRegisterButton(context)),
+
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+
+            // Sign In Link
+            _buildSignInLink(context),
           ],
-
-          // First Name & Last Name Row
-          Row(
-            children: [
-              Expanded(
-                child: ReusableTextField(
-                  controller: firstNameController,
-                  label: 'First Name',
-                  hintText: 'Enter first name',
-                  prefixIcon: FontAwesomeIcons.user,
-                ),
-              ),
-              SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
-              Expanded(
-                child: ReusableTextField(
-                  controller: lastNameController,
-                  label: 'Last Name',
-                  hintText: 'Enter last name',
-                  prefixIcon: FontAwesomeIcons.user,
-                ),
-              ),
-            ],
-          ).animate().fadeIn(delay: 700.ms).slideX(begin: -0.3),
-
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
-
-          // Roll No
-          ReusableTextField(
-            controller: rollNoController,
-            label: 'Roll Number',
-            hintText: 'Enter your roll number',
-            prefixIcon: FontAwesomeIcons.hashtag,
-          ).animate().fadeIn(delay: 800.ms).slideX(begin: -0.3),
-
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
-
-          // Email
-          ReusableTextField(
-            controller: emailController,
-            type: TextFieldType.email,
-            label: 'Email Address',
-            hintText: 'Enter your email',
-            prefixIcon: FontAwesomeIcons.envelope,
-          ).animate().fadeIn(delay: 900.ms).slideX(begin: -0.3),
-
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
-
-          // Password
-          ReusableTextField(
-            controller: passwordController,
-            type: TextFieldType.password,
-            label: 'Password',
-            hintText: 'Enter password',
-            prefixIcon: FontAwesomeIcons.lock,
-          ).animate().fadeIn(delay: 1000.ms).slideX(begin: -0.3),
-
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
-
-          // Confirm Password
-          ReusableTextField(
-            controller: confirmPasswordController,
-            type: TextFieldType.password,
-            label: 'Confirm Password',
-            hintText: 'Confirm password',
-            prefixIcon: FontAwesomeIcons.lock,
-          ).animate().fadeIn(delay: 1100.ms).slideX(begin: -0.3),
-
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
-
-          // Hostel Selection
-          _buildHostelSelection(context),
-
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
-
-          // Room Number
-          ReusableTextField(
-            controller: roomNumberController,
-            label: 'Room Number',
-            hintText: 'Enter room number',
-            prefixIcon: FontAwesomeIcons.doorOpen,
-            type: TextFieldType.number,
-          ).animate().fadeIn(delay: 1300.ms).slideX(begin: -0.3),
-
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
-
-          // Register Button
-          Obx(() => _buildRegisterButton(context)),
-
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
-
-          // Sign In Link
-          _buildSignInLink(context),
-        ],
+        ),
       ),
     );
   }
@@ -471,7 +474,11 @@ class _SignupPageState extends State<SignupPage> {
       child: ElevatedButton(
         onPressed: authController.isLoading.value
             ? null
-            : () => _handleSignup(),
+            : () {
+                print('🟢 DEBUG: Signup button pressed!');
+                print('  isLoading: ${authController.isLoading.value}');
+                _handleSignup();
+              },
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.studentRole,
           foregroundColor: Colors.white,
@@ -544,8 +551,13 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   void _handleSignup() {
+    print('🔵 DEBUG: _handleSignup() called in signup_page.dart');
+
     // Validation
     if (_validateForm()) {
+      print(
+        '✅ DEBUG: Form validation passed, calling authController.signUp...',
+      );
       authController.signUp(
         firstName: firstNameController.text.trim(),
         lastName: lastNameController.text.trim(),
@@ -556,6 +568,8 @@ class _SignupPageState extends State<SignupPage> {
         roomNumber: roomNumberController.text.trim(),
         confirmPassword: confirmPasswordController.text.trim(),
       );
+    } else {
+      print('❌ DEBUG: Form validation failed');
     }
   }
 

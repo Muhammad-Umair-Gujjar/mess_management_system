@@ -93,6 +93,11 @@ class AuthValidator {
     return null;
   }
 
+  // Backward compatibility method
+  static bool isValidEmail(String value) {
+    return GetUtils.isEmail(value.trim());
+  }
+
   static String? validatePassword(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Please enter a password';
@@ -131,6 +136,16 @@ class AuthValidator {
       return 'Roll number must be at least 3 characters';
     }
     return null;
+  }
+
+  // Alias for backward compatibility
+  static String? validateRollNumber(String? value) {
+    return validateRollNo(value);
+  }
+
+  // Add phone number validation for backward compatibility (returns null since not required)
+  static String? validatePhoneNumber(String? value) {
+    return null; // Phone number is not required anymore
   }
 
   static String? validateRoomNumber(String? value) {

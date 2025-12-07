@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mess_management/firebase_options.dart';
 import 'app/routes/app_pages.dart';
 import 'core/theme/app_theme.dart';
+import 'app/bindings/initial_binding.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +27,7 @@ class MessManagementApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       getPages: AppPages.routes,
+      initialBinding: InitialBinding(),
       defaultTransition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 200),
       builder: (context, widget) {
