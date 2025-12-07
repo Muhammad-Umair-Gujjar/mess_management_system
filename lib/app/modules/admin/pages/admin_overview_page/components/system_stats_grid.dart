@@ -48,7 +48,8 @@ class SystemStatsGrid extends StatelessWidget {
         },
         {
           'title': 'Monthly Revenue',
-          'value': '${(stats['monthlyRevenue']! / 1000).toStringAsFixed(0)}K Rs',
+          'value':
+              '${(stats['monthlyRevenue']! / 1000).toStringAsFixed(0)}K Rs',
           'icon': FontAwesomeIcons.chartLine,
           'color': AppColors.warning,
           'trend': '+18%',
@@ -93,7 +94,7 @@ class SystemStatsGrid extends StatelessWidget {
 
       return CustomGridView(
         data: gridData,
-         crossAxisCount: ResponsiveHelper.getGridCrossAxisCount(
+        crossAxisCount: ResponsiveHelper.getGridCrossAxisCount(
           context,
           configType: 'statsCards',
         ),
@@ -109,7 +110,7 @@ class SystemStatsGrid extends StatelessWidget {
         ),
         crossAxisSpacing: ResponsiveHelper.getSpacing(context, 'itemSpacing'),
         mainAxisSpacing: ResponsiveHelper.getSpacing(context, 'itemSpacing'),
-         childAspectRatio: ResponsiveHelper.getAspectRatio(context, 'statsCard'),
+        childAspectRatio: ResponsiveHelper.getAspectRatio(context, 'statsCard'),
         mobileAspectRatio: ResponsiveHelper.getAspectRatio(
           context,
           'statsCard',
@@ -117,7 +118,7 @@ class SystemStatsGrid extends StatelessWidget {
         tabletAspectRatio: ResponsiveHelper.getAspectRatio(
           context,
           'statsCard',
-        ),// Tablet: wider cards
+        ), // Tablet: wider cards
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         cardStyle: CustomGridCardStyle.gradient,
@@ -126,7 +127,3 @@ class SystemStatsGrid extends StatelessWidget {
     });
   }
 }
-
-
-
-

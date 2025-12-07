@@ -140,7 +140,7 @@ class _StaffReportsPageState extends State<StaffReportsPage> {
           ),
         ],
       ),
-    ).animate().fadeIn(duration:  300.ms ).slideY(begin: -0.3);
+    ).animate().fadeIn(duration: 300.ms).slideY(begin: -0.3);
   }
 
   Widget _buildDatePicker(
@@ -213,7 +213,7 @@ class _StaffReportsPageState extends State<StaffReportsPage> {
           ),
         ],
       ),
-    ).animate().fadeIn(duration:  300.ms ).slideX(begin: -0.3);
+    ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.3);
   }
 
   Widget _buildAttendanceSummaryCards(bool isMobile) {
@@ -655,7 +655,7 @@ class _StaffReportsPageState extends State<StaffReportsPage> {
                         ),
                       ),
                       Text(
-                        '${((data['count'] as int) /  100 ).toInt()}%',
+                        '${((data['count'] as int) / 100).toInt()}%',
                         style: AppTextStyles.caption.copyWith(
                           color: data['color'] as Color,
                           fontWeight: FontWeight.w600,
@@ -767,7 +767,3 @@ class _StaffReportsPageState extends State<StaffReportsPage> {
     );
   }
 }
-
-
-
-

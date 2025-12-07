@@ -162,7 +162,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
           ),
         ],
       ),
-    ).animate().fadeIn(duration:  300.ms ).slideY(begin: -0.3);
+    ).animate().fadeIn(duration: 300.ms).slideY(begin: -0.3);
   }
 
   Widget _buildWeeklyPlannerTab(StaffController controller, bool isMobile) {
@@ -202,7 +202,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
           ),
         ],
       ),
-    ).animate().fadeIn(duration:  300.ms ).slideX(begin: -0.3);
+    ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.3);
   }
 
   Widget _buildDesktopMenuGrid() {
@@ -444,7 +444,7 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
           ),
         )
         .animate(delay: Duration(milliseconds: 100))
-        .fadeIn(duration:  300.ms )
+        .fadeIn(duration: 300.ms)
         .scale(begin: const Offset(0.8, 0.8));
   }
 
@@ -799,7 +799,3 @@ class _StaffMenuPlanningPageState extends State<StaffMenuPlanningPage>
     ToastMessage.success('Random menu generated for the week');
   }
 }
-
-
-
-
