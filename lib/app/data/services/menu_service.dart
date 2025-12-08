@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:collection/collection.dart';
 import '../models/menu.dart';
 import '../../../core/utils/toast_message.dart';
 
@@ -451,24 +452,13 @@ class MenuService extends GetxService {
     DateTime startDate,
   ) async {
     try {
-      final endDate = startDate.add(const Duration(days: 6));
+      print('🔵 DEBUG: MenuService - getWeeklyMenu called for $startDate');
 
-      // Get active schedule
-      final activeSchedule = await getCurrentActiveSchedule();
-      if (activeSchedule == null) {
-        return _generateEmptyWeeklyMenu();
-      }
-
-      // Get template
-      final template = await getMenuTemplateById(activeSchedule.templateId);
-      if (template == null) {
-        return _generateEmptyWeeklyMenu();
-      }
-
-      // Get all menu items
+      // Get all menu items from Firestore
       final allMenuItems = await getAllMenuItems();
+      print('   Found ${allMenuItems.length} total menu items');
 
-      // Build weekly menu
+      // Build weekly menu by grouping items by weekday and category
       final weeklyMenu = <String, Map<String, MenuItem?>>{};
       final weekdays = [
         'monday',
@@ -480,50 +470,39 @@ class MenuService extends GetxService {
         'sunday',
       ];
 
-      for (int i = 0; i < 7; i++) {
-        final currentDate = startDate.add(Duration(days: i));
-        final dayKey = weekdays[i];
-        final dayMenu = template.meals[dayKey];
+      for (final weekday in weekdays) {
+        final mealMap = <String, MenuItem?>{};
 
-        if (dayMenu != null) {
-          final mealMap = <String, MenuItem?>{};
-
-          // Check for breakfast
-          if (dayMenu.breakfast != null) {
-            mealMap['breakfast'] = _findMenuItem(
-              allMenuItems,
-              dayMenu.breakfast!.itemId,
-            );
-          }
-
-          // Check for dinner
-          if (dayMenu.dinner != null) {
-            mealMap['dinner'] = _findMenuItem(
-              allMenuItems,
-              dayMenu.dinner!.itemId,
-            );
-          }
-
-          // Apply overrides
-          final dateKey = _formatDateKey(currentDate);
-          final overrides = activeSchedule.overrides[dateKey];
-          if (overrides != null) {
-            for (final entry in overrides.entries) {
-              final mealType = entry.key;
-              final override = entry.value;
-              mealMap[mealType] = _findMenuItem(allMenuItems, override.itemId);
-            }
-          }
-
-          weeklyMenu[dayKey] = mealMap;
-        } else {
-          weeklyMenu[dayKey] = <String, MenuItem?>{};
+        // Find breakfast item for this weekday
+        final breakfastItem = allMenuItems.firstWhereOrNull(
+          (item) =>
+              item.weekday.toLowerCase() == weekday &&
+              item.category.toLowerCase() == 'breakfast',
+        );
+        if (breakfastItem != null) {
+          mealMap['breakfast'] = breakfastItem;
         }
+
+        // Find dinner item for this weekday
+        final dinnerItem = allMenuItems.firstWhereOrNull(
+          (item) =>
+              item.weekday.toLowerCase() == weekday &&
+              item.category.toLowerCase() == 'dinner',
+        );
+        if (dinnerItem != null) {
+          mealMap['dinner'] = dinnerItem;
+        }
+
+        weeklyMenu[weekday] = mealMap;
+        print(
+          '   $weekday: breakfast=${breakfastItem?.name ?? "none"}, dinner=${dinnerItem?.name ?? "none"}',
+        );
       }
 
+      print('✅ DEBUG: MenuService - Weekly menu built successfully');
       return weeklyMenu;
     } catch (e) {
-      print('Error getting weekly menu: $e');
+      print('❌ DEBUG: MenuService - Error in getWeeklyMenu: $e');
       return _generateEmptyWeeklyMenu();
     }
   }

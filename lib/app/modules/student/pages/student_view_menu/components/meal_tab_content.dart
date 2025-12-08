@@ -40,7 +40,7 @@ class MealTabContent extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            MealHeader(menuItem: menuItem),
+            MealHeader(menuItem: menuItem, selectedDate: selectedDate),
             SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
             MealDetails(menuItem: menuItem),
             SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
