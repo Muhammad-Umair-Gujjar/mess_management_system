@@ -1,12 +1,14 @@
 import 'package:get/get.dart';
-import '../../../../../data/models/auth_models.dart';
-import '../../../../../data/services/auth_service.dart';
-import '../../../../../../core/utils/toast_message.dart';
+import '../../../data/models/auth_models.dart';
+import '../../../data/services/auth_service.dart';
+import '../../../data/services/user_service.dart';
+import '../../../../core/utils/toast_message.dart';
 
 /// Controller for Admin Overview Page
 /// Handles pending student requests, system stats, and approval/rejection actions
 class AdminOverviewController extends GetxController {
   final AuthService _authService = AuthService();
+  final UserService _userService = Get.find<UserService>();
 
   // Observable variables
   final isLoading = false.obs;
@@ -92,10 +94,14 @@ class AdminOverviewController extends GetxController {
     try {
       print('🔵 DEBUG: Loading system stats...');
 
-      // Get total users count
-      final totalUsers = await _authService.getTotalUsersCount();
-      final totalStudents = await _authService.getTotalStudentsCount();
-      final totalStaff = await _authService.getTotalStaffCount();
+      // Get all users from UserService
+      final users = await _userService.getAllUsers();
+      
+      // Exclude admin users from total count to match user management display
+      final nonAdminUsers = users.where((user) => user.role != UserRole.admin).toList();
+      final totalUsers = nonAdminUsers.length;
+      final totalStudents = users.where((user) => user.role == UserRole.student).length;
+      final totalStaff = users.where((user) => user.role == UserRole.staff).length;
 
       systemStats.addAll({
         'totalUsers': totalUsers,
@@ -103,9 +109,9 @@ class AdminOverviewController extends GetxController {
         'totalStaff': totalStaff,
         'pendingApprovals': pendingStudentRequests.length,
         'activeMenuItems': 45, // TODO: Get from menu service
-        'monthlyRevenue': 245600, // TODO: Get from billing service
+        'monthlyRevenue': totalStudents * 2500, // Estimated: students * average monthly cost
         'systemUptime': 99, // TODO: Get from system monitoring
-        'activeConnections': 156, // TODO: Get from active sessions
+        'activeConnections': totalUsers, // Approximate active connections
       });
 
       print('✅ DEBUG: System stats loaded: $systemStats');
@@ -158,6 +164,25 @@ class AdminOverviewController extends GetxController {
       print('✅ DEBUG: Recent activities loaded');
     } catch (e) {
       print('❌ DEBUG: Error loading recent activities: $e');
+    }
+  }
+
+  /// Refresh all dashboard data manually
+  Future<void> refreshDashboard() async {
+    isLoading.value = true;
+    try {
+      await Future.wait([
+        _loadPendingStudentRequests(),
+        _loadSystemStats(),
+        _loadRecentActivities(),
+      ]);
+      ToastMessage.success('Dashboard refreshed with latest data');
+      print('✅ DEBUG: Dashboard data refreshed successfully');
+    } catch (e) {
+      print('❌ DEBUG: Error refreshing dashboard: $e');
+      ToastMessage.error('Failed to refresh dashboard: ${e.toString()}');
+    } finally {
+      isLoading.value = false;
     }
   }
 

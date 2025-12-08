@@ -5,7 +5,7 @@ import 'package:mess_management/core/utils/responsive_helper.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../widgets/custom_grid_view.dart';
-import '../controllers/admin_overview_controller.dart';
+import '../../../controllers/admin_overview_controller.dart';
 
 class SystemStatsGrid extends StatelessWidget {
   final AdminOverviewController overviewController;

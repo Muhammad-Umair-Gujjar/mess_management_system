@@ -3,10 +3,74 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/dashboard_navigation.dart';
 import '../../../core/utils/toast_message.dart';
+import '../../data/services/user_service.dart';
+import '../../data/models/auth_models.dart';
 
 class AdminController extends GetxController {
   // Current page index
   final RxInt currentPageIndex = 0.obs;
+
+  // User service for real data
+  final UserService _userService = Get.find<UserService>();
+
+  // Real-time user stats
+  final RxMap<String, int> realUserStats = <String, int>{}.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadRealUserStats();
+  }
+
+  /// Load real user statistics from UserService
+  Future<void> loadRealUserStats() async {
+    try {
+      final users = await _userService.getAllUsers();
+
+      // Exclude admin users from total count to match user management display
+      final nonAdminUsers = users
+          .where((user) => user.role != UserRole.admin)
+          .toList();
+      final totalUsers = nonAdminUsers.length;
+      final totalStudents = users
+          .where((user) => user.role == UserRole.student)
+          .length;
+      final totalStaff = users
+          .where((user) => user.role == UserRole.staff)
+          .length;
+      final pendingApprovals = users
+          .where((user) => user.status == UserStatus.pending)
+          .length;
+
+      realUserStats.value = {
+        'totalUsers': totalUsers,
+        'totalStudents': totalStudents,
+        'totalStaff': totalStaff,
+        'pendingApprovals': pendingApprovals,
+        'activeMenuItems':
+            45, // Keep static for now until menu service integration
+        'monthlyRevenue':
+            totalStudents * 2500, // Estimated: students * average monthly cost
+        'systemUptime': 99, // Keep static system metric
+        'activeConnections': totalUsers, // Approximate active connections
+      };
+
+      print('✅ AdminController: Loaded real user stats: $realUserStats');
+    } catch (e) {
+      print('❌ AdminController: Error loading real user stats: $e');
+      // Fall back to default values if error
+      realUserStats.value = {
+        'totalUsers': 0,
+        'totalStudents': 0,
+        'totalStaff': 0,
+        'pendingApprovals': 0,
+        'activeMenuItems': 45,
+        'monthlyRevenue': 0,
+        'systemUptime': 99,
+        'activeConnections': 0,
+      };
+    }
+  }
 
   // Navigation items for admin dashboard
   final List<NavigationItem> navigationItems = [
@@ -26,18 +90,6 @@ class AdminController extends GetxController {
       route: '/admin/menu',
     ),
   ];
-
-  // System stats
-  final RxMap<String, int> systemStats = <String, int>{
-    'totalUsers': 347,
-    'totalStudents': 234,
-    'totalStaff': 12,
-    'pendingApprovals': 23,
-    'activeMenuItems': 45,
-    'monthlyRevenue': 245600,
-    'systemUptime': 99,
-    'activeConnections': 156,
-  }.obs;
 
   // User management data
   final RxList<Map<String, dynamic>> users = <Map<String, dynamic>>[
@@ -195,21 +247,27 @@ class AdminController extends GetxController {
     }
   }
 
-  // Get system overview stats
-  Map<String, dynamic> getSystemOverview() {
+  // Get system overview stats (reactive)
+  Map<String, dynamic> get getSystemOverview {
     return {
-      'totalUsers': systemStats['totalUsers'] ?? 0,
-      'totalStudents': systemStats['totalStudents'] ?? 0,
-      'totalStaff': systemStats['totalStaff'] ?? 0,
-      'pendingApprovals': systemStats['pendingApprovals'] ?? 0,
-      'monthlyRevenue': systemStats['monthlyRevenue'] ?? 0,
-      'systemUptime': systemStats['systemUptime'] ?? 0,
+      'totalUsers': realUserStats['totalUsers'] ?? 0,
+      'totalStudents': realUserStats['totalStudents'] ?? 0,
+      'totalStaff': realUserStats['totalStaff'] ?? 0,
+      'pendingApprovals': realUserStats['pendingApprovals'] ?? 0,
+      'monthlyRevenue': realUserStats['monthlyRevenue'] ?? 0,
+      'systemUptime': realUserStats['systemUptime'] ?? 99,
       'recentActivity': [
-        {'action': 'New user registered', 'time': '5 minutes ago'},
-        {'action': 'Menu updated', 'time': '1 hour ago'},
-        {'action': 'Rate changed', 'time': '2 hours ago'},
+        {'action': 'User statistics updated', 'time': '5 minutes ago'},
+        {'action': 'System synchronized with Firebase', 'time': '1 hour ago'},
+        {'action': 'Dashboard refreshed', 'time': '2 hours ago'},
       ],
     };
+  }
+
+  /// Refresh dashboard statistics
+  Future<void> refreshDashboard() async {
+    await loadRealUserStats();
+    ToastMessage.success('Dashboard refreshed with latest data');
   }
 
   // User management functions
@@ -319,16 +377,5 @@ class AdminController extends GetxController {
 
       return matchesQuery && matchesRole && matchesStatus;
     }).toList();
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-    // Initialize any required data
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
   }
 }

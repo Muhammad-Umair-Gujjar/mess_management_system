@@ -83,7 +83,7 @@ class AdminDashboard extends StatelessWidget {
           // System Stats - Only show on tablet/desktop
           if (!ResponsiveHelper.isMobile(Get.context!))
             Obx(() {
-              final stats = controller.getSystemOverview();
+              final stats = controller.getSystemOverview;
               final isMobile = false;
               return Row(
                 children: [

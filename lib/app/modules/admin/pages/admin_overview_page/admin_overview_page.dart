@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../../../../core/theme/app_decorations.dart';
 import '../../../../../core/utils/responsive_helper.dart';
 import '../../admin_controller.dart';
-import 'controllers/admin_overview_controller.dart';
+import '../../controllers/admin_overview_controller.dart';
 import 'components/system_stats_grid.dart';
 import 'components/recent_activity_card.dart';
 import 'components/quick_actions_card.dart';

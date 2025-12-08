@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import '../modules/auth/auth_controller.dart';
 import '../modules/user/user_controller.dart';
 import 'package:mess_management/app/data/services/menu_service.dart';
+import '../data/services/user_service.dart';
 
 class InitialBinding extends Bindings {
   @override
@@ -13,7 +14,10 @@ class InitialBinding extends Bindings {
     print('🔵 DEBUG: InitialBinding - Creating UserController...');
     Get.put(UserController());
     print('✅ DEBUG: InitialBinding - UserController created successfully');
-    // Register MenuService for dependency injection
+
+    // Register services for dependency injection
     Get.put(MenuService());
+    Get.put(UserService());
+    print('✅ DEBUG: InitialBinding - Services registered successfully');
   }
 }

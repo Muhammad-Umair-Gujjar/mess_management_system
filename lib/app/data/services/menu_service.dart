@@ -766,11 +766,14 @@ class MenuService extends GetxService {
     return _firestore
         .collection(_mealRatesCollection)
         .where('isActive', isEqualTo: true)
-        .orderBy('category')
         .snapshots()
-        .map(
-          (snapshot) =>
-              snapshot.docs.map((doc) => MealRate.fromFirestore(doc)).toList(),
-        );
+        .map((snapshot) {
+          final rates = snapshot.docs
+              .map((doc) => MealRate.fromFirestore(doc))
+              .toList();
+          // Client-side sorting to avoid Firebase composite index requirement
+          rates.sort((a, b) => a.category.compareTo(b.category));
+          return rates;
+        });
   }
 }

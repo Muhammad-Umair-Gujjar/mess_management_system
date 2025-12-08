@@ -8,7 +8,7 @@ import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../widgets/common/reusable_button.dart';
-import '../controllers/admin_overview_controller.dart';
+import '../../../controllers/admin_overview_controller.dart';
 
 class PendingApprovalsCard extends StatelessWidget {
   final AdminOverviewController overviewController;
