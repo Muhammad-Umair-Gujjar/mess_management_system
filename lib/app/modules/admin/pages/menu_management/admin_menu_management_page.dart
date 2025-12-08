@@ -311,10 +311,21 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
     _itemNameController.text = item['name'] ?? '';
     _itemDescriptionController.text = item['description'] ?? '';
     _itemPriceController.text = item['price']?.toString() ?? '';
-    _caloriesController.text = item['calories']?.toString() ?? '';
-    _proteinController.text = item['protein']?.toString() ?? '';
-    _carbsController.text = item['carbs']?.toString() ?? '';
-    _fatController.text = item['fat']?.toString() ?? '';
+
+    // Handle nutritional information from nested object
+    final nutritionalInfo = item['nutritionalInfo'];
+    if (nutritionalInfo is Map<String, dynamic>) {
+      _caloriesController.text = nutritionalInfo['calories']?.toString() ?? '0';
+      _proteinController.text = nutritionalInfo['protein']?.toString() ?? '0';
+      _carbsController.text = nutritionalInfo['carbs']?.toString() ?? '0';
+      _fatController.text = nutritionalInfo['fat']?.toString() ?? '0';
+    } else {
+      // Fallback to direct fields if not nested
+      _caloriesController.text = item['calories']?.toString() ?? '0';
+      _proteinController.text = item['protein']?.toString() ?? '0';
+      _carbsController.text = item['carbs']?.toString() ?? '0';
+      _fatController.text = item['fat']?.toString() ?? '0';
+    }
   }
 
   void _saveMenuItem(

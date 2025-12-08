@@ -87,22 +87,33 @@ class AdminMenuController extends GetxController {
       'isActive': true,
     });
 
-    // Only process categories if mealCategories is not empty
-    if (mealCategories.isNotEmpty) {
-      // Count items per category
-      for (final category in mealCategories) {
-        final itemCount = menuItems
-            .where((item) => item.category == category.id && item.isActive)
-            .length;
+    // Count items for Breakfast and Dinner categories directly from menu items
+    final breakfastCount = menuItems
+        .where(
+          (item) => item.category.toLowerCase() == 'breakfast' && item.isActive,
+        )
+        .length;
 
-        categories.add({
-          'id': category.id,
-          'name': category.name,
-          'itemCount': itemCount,
-          'isActive': category.isActive,
-        });
-      }
-    }
+    final dinnerCount = menuItems
+        .where(
+          (item) => item.category.toLowerCase() == 'dinner' && item.isActive,
+        )
+        .length;
+
+    // Add hardcoded categories with actual counts
+    categories.add({
+      'id': 'breakfast',
+      'name': 'Breakfast',
+      'itemCount': breakfastCount,
+      'isActive': true,
+    });
+
+    categories.add({
+      'id': 'dinner',
+      'name': 'Dinner',
+      'itemCount': dinnerCount,
+      'isActive': true,
+    });
 
     return categories;
   }
