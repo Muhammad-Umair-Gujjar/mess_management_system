@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
@@ -6,12 +7,13 @@ import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../widgets/common/reusable_button.dart';
 import '../../../../../widgets/common/reusable_text_field.dart';
+import '../../../controllers/admin_menu_controller.dart';
 
 /// Dialog for adding or editing menu items
 ///
 /// This component provides a comprehensive form for creating or modifying menu items.
-/// It includes fields for basic item information and nutritional data.
-class MenuItemDialog extends StatelessWidget {
+/// It includes fields for basic item information, nutritional data, category selection, and weekday planning.
+class MenuItemDialog extends StatefulWidget {
   final String title;
   final bool isEdit;
   final TextEditingController itemNameController;
@@ -21,7 +23,9 @@ class MenuItemDialog extends StatelessWidget {
   final TextEditingController proteinController;
   final TextEditingController carbsController;
   final TextEditingController fatController;
-  final VoidCallback onSave;
+  final String? initialCategory;
+  final String? initialWeekday;
+  final Function(String category, String weekday) onSave;
   final VoidCallback onCancel;
 
   const MenuItemDialog({
@@ -37,7 +41,60 @@ class MenuItemDialog extends StatelessWidget {
     required this.fatController,
     required this.onSave,
     required this.onCancel,
+    this.initialCategory,
+    this.initialWeekday,
   });
+
+  @override
+  State<MenuItemDialog> createState() => _MenuItemDialogState();
+}
+
+class _MenuItemDialogState extends State<MenuItemDialog> {
+  late AdminMenuController controller;
+  String? selectedCategory;
+  String? selectedWeekday;
+
+  final List<String> weekdays = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.find<AdminMenuController>();
+    selectedCategory = widget.initialCategory;
+    selectedWeekday = _capitalizeWeekday(widget.initialWeekday) ?? 'Monday';
+  }
+
+  /// Helper method to capitalize weekday from database format
+  String? _capitalizeWeekday(String? weekday) {
+    if (weekday == null) return null;
+    final normalized = weekday.toLowerCase();
+    switch (normalized) {
+      case 'monday':
+        return 'Monday';
+      case 'tuesday':
+        return 'Tuesday';
+      case 'wednesday':
+        return 'Wednesday';
+      case 'thursday':
+        return 'Thursday';
+      case 'friday':
+        return 'Friday';
+      case 'saturday':
+        return 'Saturday';
+      case 'sunday':
+        return 'Sunday';
+      default:
+        return 'Monday';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +120,8 @@ class MenuItemDialog extends StatelessWidget {
               SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
               _buildBasicInfoSection(context),
               SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+              _buildCategoryAndWeekdaySection(context),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
               _buildDescriptionSection(context),
               SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
               _buildNutritionSection(context),
@@ -78,7 +137,7 @@ class MenuItemDialog extends StatelessWidget {
   /// Builds the dialog header with title
   Widget _buildDialogHeader(BuildContext context) {
     return Text(
-      title,
+      widget.title,
       style: AppTextStyles.heading3.copyWith(color: AppColors.adminRole),
     );
   }
@@ -89,7 +148,7 @@ class MenuItemDialog extends StatelessWidget {
       children: [
         Expanded(
           child: ReusableTextField(
-            controller: itemNameController,
+            controller: widget.itemNameController,
             label: 'Item Name *',
             hintText: 'Enter item name',
             prefixIcon: Icons.restaurant,
@@ -98,7 +157,7 @@ class MenuItemDialog extends StatelessWidget {
         SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
         Expanded(
           child: ReusableTextField(
-            controller: itemPriceController,
+            controller: widget.itemPriceController,
             label: 'Price (Rs) *',
             hintText: 'Enter price',
             prefixIcon: Icons.currency_rupee,
@@ -109,10 +168,91 @@ class MenuItemDialog extends StatelessWidget {
     );
   }
 
+  /// Builds the category and weekday selection section
+  Widget _buildCategoryAndWeekdaySection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Category & Scheduling',
+          style: AppTextStyles.heading4.copyWith(color: AppColors.textPrimary),
+        ),
+        SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+        Row(
+          children: [
+            Expanded(child: _buildCategoryDropdown(context)),
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
+            Expanded(child: _buildWeekdayDropdown(context)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// Builds the category dropdown
+  Widget _buildCategoryDropdown(BuildContext context) {
+    return Obx(() {
+      final categories = controller.mealCategories;
+      final categoryNames = categories.map((c) => c.name).toList();
+
+      // Ensure selected category is valid
+      if (selectedCategory == null ||
+          !categoryNames.contains(selectedCategory)) {
+        selectedCategory = categoryNames.isNotEmpty
+            ? categoryNames.first
+            : null;
+      }
+
+      return DropdownButtonFormField<String>(
+        value: selectedCategory,
+        decoration: InputDecoration(
+          labelText: 'Category *',
+          prefixIcon: Icon(Icons.category),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+        ),
+        items: categoryNames.map((category) {
+          return DropdownMenuItem<String>(
+            value: category,
+            child: Text(category),
+          );
+        }).toList(),
+        onChanged: (value) {
+          setState(() {
+            selectedCategory = value;
+          });
+        },
+        validator: (value) => value == null ? 'Please select a category' : null,
+      );
+    });
+  }
+
+  /// Builds the weekday dropdown
+  Widget _buildWeekdayDropdown(BuildContext context) {
+    return DropdownButtonFormField<String>(
+      value: selectedWeekday,
+      decoration: InputDecoration(
+        labelText: 'Weekday *',
+        prefixIcon: Icon(Icons.calendar_today),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+      ),
+      items: weekdays.map((weekday) {
+        return DropdownMenuItem<String>(value: weekday, child: Text(weekday));
+      }).toList(),
+      onChanged: (value) {
+        setState(() {
+          selectedWeekday = value;
+        });
+      },
+      validator: (value) => value == null ? 'Please select a weekday' : null,
+    );
+  }
+
   /// Builds the description section
   Widget _buildDescriptionSection(BuildContext context) {
     return ReusableTextField(
-      controller: itemDescriptionController,
+      controller: widget.itemDescriptionController,
       label: 'Description',
       hintText: 'Enter item description',
       prefixIcon: Icons.description,
@@ -134,7 +274,7 @@ class MenuItemDialog extends StatelessWidget {
           children: [
             Expanded(
               child: ReusableTextField(
-                controller: caloriesController,
+                controller: widget.caloriesController,
                 label: 'Calories',
                 hintText: '0',
                 prefixIcon: Icons.local_fire_department,
@@ -144,7 +284,7 @@ class MenuItemDialog extends StatelessWidget {
             SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
             Expanded(
               child: ReusableTextField(
-                controller: proteinController,
+                controller: widget.proteinController,
                 label: 'Protein (g)',
                 hintText: '0.0',
                 type: TextFieldType.number,
@@ -153,7 +293,7 @@ class MenuItemDialog extends StatelessWidget {
             SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
             Expanded(
               child: ReusableTextField(
-                controller: carbsController,
+                controller: widget.carbsController,
                 label: 'Carbs (g)',
                 hintText: '0.0',
                 type: TextFieldType.number,
@@ -162,7 +302,7 @@ class MenuItemDialog extends StatelessWidget {
             SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
             Expanded(
               child: ReusableTextField(
-                controller: fatController,
+                controller: widget.fatController,
                 label: 'Fat (g)',
                 hintText: '0.0',
                 type: TextFieldType.number,
@@ -180,7 +320,7 @@ class MenuItemDialog extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton(
-          onPressed: onCancel,
+          onPressed: widget.onCancel,
           child: Text(
             'Cancel',
             style: TextStyle(color: AppColors.textSecondary),
@@ -188,8 +328,20 @@ class MenuItemDialog extends StatelessWidget {
         ),
         SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
         ReusableButton(
-          text: isEdit ? 'Update Item' : 'Add Item',
-          onPressed: onSave,
+          text: widget.isEdit ? 'Update Item' : 'Add Item',
+          onPressed: () {
+            if (selectedCategory != null && selectedWeekday != null) {
+              widget.onSave(selectedCategory!, selectedWeekday!);
+            } else {
+              // Show error message
+              Get.snackbar(
+                'Error',
+                'Please select both category and weekday',
+                backgroundColor: AppColors.error,
+                colorText: Colors.white,
+              );
+            }
+          },
           type: ButtonType.primary,
           size: ButtonSize.medium,
           width: ResponsiveHelper.getResponsiveSpacing(

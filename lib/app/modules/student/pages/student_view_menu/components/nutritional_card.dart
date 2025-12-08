@@ -55,21 +55,21 @@ class NutritionalCard extends StatelessWidget {
               _buildNutritionalItem(
                 context,
                 'Calories',
-                '${menuItem.calories.toInt()}',
+                '${menuItem.nutritionalInfo.calories.toInt()}',
                 'kcal',
               ),
               SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
               _buildNutritionalItem(
                 context,
                 'Protein',
-                '${(menuItem.calories * 0.15 / 4).toInt()}',
+                '${menuItem.nutritionalInfo.protein.toInt()}',
                 'g',
               ),
               SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
               _buildNutritionalItem(
                 context,
                 'Carbs',
-                '${(menuItem.calories * 0.55 / 4).toInt()}',
+                '${menuItem.nutritionalInfo.carbs.toInt()}',
                 'g',
               ),
             ],
@@ -112,7 +112,3 @@ class NutritionalCard extends StatelessWidget {
     );
   }
 }
-
-
-
-

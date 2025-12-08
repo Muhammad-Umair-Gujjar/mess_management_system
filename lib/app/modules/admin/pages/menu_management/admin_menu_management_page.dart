@@ -8,6 +8,11 @@ import '../../../../../core/utils/toast_message.dart';
 import '../../../../../core/utils/responsive_helper.dart';
 import '../../../../widgets/common/reusable_text_field.dart';
 import '../../../../widgets/custom_tab_bar.dart';
+import '../../../../data/models/menu.dart';
+import '../../../../data/models/attendance.dart';
+
+// Import Firebase admin controller
+import '../../controllers/admin_menu_controller.dart';
 
 // Import all menu management components
 import 'components/menu_header.dart';
@@ -17,10 +22,10 @@ import 'components/menu_item_dialog.dart';
 import 'components/category_card.dart';
 import 'components/nutrition_analytics.dart';
 
-/// Main admin menu management page
+/// Main admin menu management page with Firebase integration
 ///
-/// This is the refactored version that uses separate component files
-/// for better code organization and maintainability.
+/// This page now uses Firebase backend through AdminMenuController
+/// instead of dummy data for complete CRUD operations.
 class AdminMenuManagementPage extends StatefulWidget {
   const AdminMenuManagementPage({super.key});
 
@@ -30,8 +35,10 @@ class AdminMenuManagementPage extends StatefulWidget {
 }
 
 class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
-  // Controllers
-  int selectedTabIndex = 0;
+  // Firebase controller
+  late AdminMenuController controller;
+
+  // Form controllers
   final _searchController = TextEditingController();
   final _categoryController = TextEditingController();
   final _itemNameController = TextEditingController();
@@ -42,101 +49,16 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
   final _carbsController = TextEditingController();
   final _fatController = TextEditingController();
 
-  // Filter states
-  String _selectedCategory = 'All Categories';
-  String _sortBy = 'Name';
-  bool _showAvailableOnly = false;
-
-  // Sample data - In real app, this would come from a database
-  final List<Map<String, dynamic>> _categories = [
-    {'id': 1, 'name': 'Breakfast', 'itemCount': 15, 'isActive': true},
-    {'id': 2, 'name': 'Lunch', 'itemCount': 25, 'isActive': true},
-    {'id': 3, 'name': 'Dinner', 'itemCount': 20, 'isActive': true},
-    {'id': 4, 'name': 'Snacks', 'itemCount': 12, 'isActive': true},
-    {'id': 5, 'name': 'Beverages', 'itemCount': 8, 'isActive': false},
-  ];
-
-  final List<Map<String, dynamic>> _menuItems = [
-    {
-      'id': 1,
-      'name': 'Chicken Biryani',
-      'description': 'Aromatic basmati rice with tender chicken pieces',
-      'category': 'Lunch',
-      'price': 180.0,
-      'isAvailable': true,
-      'calories': 450,
-      'protein': 25.0,
-      'carbs': 55.0,
-      'fat': 12.0,
-      'image': 'assets/images/biryani.jpg',
-      'preparationTime': '25 mins',
-      'spiceLevel': 'Medium',
-    },
-    {
-      'id': 2,
-      'name': 'Masala Dosa',
-      'description': 'Crispy rice crepe with spiced potato filling',
-      'category': 'Breakfast',
-      'price': 80.0,
-      'isAvailable': true,
-      'calories': 320,
-      'protein': 8.0,
-      'carbs': 62.0,
-      'fat': 5.0,
-      'image': 'assets/images/dosa.jpg',
-      'preparationTime': '15 mins',
-      'spiceLevel': 'Mild',
-    },
-    {
-      'id': 3,
-      'name': 'Paneer Butter Masala',
-      'description': 'Rich and creamy cottage cheese curry',
-      'category': 'Dinner',
-      'price': 160.0,
-      'isAvailable': false,
-      'calories': 380,
-      'protein': 18.0,
-      'carbs': 15.0,
-      'fat': 28.0,
-      'image': 'assets/images/paneer.jpg',
-      'preparationTime': '20 mins',
-      'spiceLevel': 'Medium',
-    },
-    {
-      'id': 4,
-      'name': 'Samosa',
-      'description': 'Crispy triangular pastry with spiced filling',
-      'category': 'Snacks',
-      'price': 25.0,
-      'isAvailable': true,
-      'calories': 180,
-      'protein': 4.0,
-      'carbs': 20.0,
-      'fat': 8.0,
-      'image': 'assets/images/samosa.jpg',
-      'preparationTime': '5 mins',
-      'spiceLevel': 'Medium',
-    },
-    {
-      'id': 5,
-      'name': 'Masala Chai',
-      'description': 'Traditional spiced tea with milk',
-      'category': 'Beverages',
-      'price': 15.0,
-      'isAvailable': true,
-      'calories': 80,
-      'protein': 2.0,
-      'carbs': 12.0,
-      'fat': 3.0,
-      'image': 'assets/images/chai.jpg',
-      'preparationTime': '5 mins',
-      'spiceLevel': 'Mild',
-    },
-  ];
-
   @override
   void initState() {
     super.initState();
+    // Initialize Firebase controller
+    controller = Get.put(AdminMenuController());
+
+    // Setup search controller listener
+    _searchController.addListener(() {
+      controller.updateSearchQuery(_searchController.text);
+    });
   }
 
   @override
@@ -160,58 +82,62 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
       child: Column(
         children: [
           MenuHeader(onAddItem: () => _showAddItemDialog()),
-          Container(
-            margin: EdgeInsets.symmetric(
-              // horizontal: ResponsiveHelper.getSpacing(context, 'small'),
-              vertical: ResponsiveHelper.getSpacing(context, 'medium'),
-            ),
-            decoration: AppDecorations.floatingCard(),
-            child: CustomTabBar(
-              selectedIndex: selectedTabIndex,
-              padding: EdgeInsets.all(
-                ResponsiveHelper.getSpacing(context, 'medium'),
+
+          // Tab bar
+          Obx(
+            () => Container(
+              margin: EdgeInsets.symmetric(
+                vertical: ResponsiveHelper.getSpacing(context, 'medium'),
               ),
-              tabHeight: 45,
-              onTap: (index) {
-                setState(() {
-                  selectedTabIndex = index;
-                });
-              },
-              tabs: [
-                CustomTabBarItem(
-                  label: 'Menu Items',
-                  icon: FontAwesomeIcons.plateWheat,
+              decoration: AppDecorations.floatingCard(),
+              child: CustomTabBar(
+                selectedIndex: controller.selectedTabIndex.value,
+                padding: EdgeInsets.all(
+                  ResponsiveHelper.getSpacing(context, 'medium'),
                 ),
-                CustomTabBarItem(
-                  label: 'Categories',
-                  icon: FontAwesomeIcons.layerGroup,
-                ),
-                CustomTabBarItem(
-                  label: 'Nutrition',
-                  icon: FontAwesomeIcons.heartPulse,
-                ),
-              ],
-              selectedColor: AppColors.adminRole,
-              unselectedColor: AppColors.textSecondary,
-              selectedBackgroundColor: AppColors.adminRole,
-              unselectedBackgroundColor: Colors.transparent,
-              showIndicator: true,
-              indicatorColor: AppColors.adminRole,
-              indicatorHeight: 3,
+                tabHeight: 45,
+                onTap: (index) => controller.updateSelectedTab(index),
+                tabs: [
+                  CustomTabBarItem(
+                    label: 'Menu Items',
+                    icon: FontAwesomeIcons.plateWheat,
+                  ),
+                  CustomTabBarItem(
+                    label: 'Categories',
+                    icon: FontAwesomeIcons.layerGroup,
+                  ),
+                  CustomTabBarItem(
+                    label: 'Nutrition',
+                    icon: FontAwesomeIcons.heartPulse,
+                  ),
+                ],
+                selectedColor: AppColors.adminRole,
+                unselectedColor: AppColors.textSecondary,
+                selectedBackgroundColor: AppColors.adminRole,
+                unselectedBackgroundColor: Colors.transparent,
+                showIndicator: true,
+                indicatorColor: AppColors.adminRole,
+                indicatorHeight: 3,
+              ),
             ),
           ),
+
+          // Content
           Expanded(
-            child: IndexedStack(
-              index: selectedTabIndex,
-              children: [
-                _buildMenuItemsTab(),
-                _buildCategoriesTab(),
-                NutritionAnalytics(
-                  menuItems: _menuItems,
-                  categories: _categories,
-                ),
-              ],
-            ),
+            child: Obx(() {
+              if (controller.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              return IndexedStack(
+                index: controller.selectedTabIndex.value,
+                children: [
+                  _buildMenuItemsTab(),
+                  _buildCategoriesTab(),
+                  _buildNutritionTab(),
+                ],
+              );
+            }),
           ),
         ],
       ),
@@ -223,18 +149,18 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        MenuFilters(
-          searchController: _searchController,
-          selectedCategory: _selectedCategory,
-          sortBy: _sortBy,
-          showAvailableOnly: _showAvailableOnly,
-          categories: _categories,
-          onCategoryChanged: (value) =>
-              setState(() => _selectedCategory = value),
-          onSortChanged: (value) => setState(() => _sortBy = value),
-          onAvailabilityChanged: (value) =>
-              setState(() => _showAvailableOnly = value),
-          onSearchChanged: () => setState(() {}),
+        Obx(
+          () => MenuFilters(
+            searchController: _searchController,
+            selectedCategory: controller.selectedCategory.value,
+            sortBy: controller.sortBy.value,
+            categories: controller.categoriesWithCounts,
+            onCategoryChanged: (value) =>
+                controller.updateSelectedCategory(value),
+            onSortChanged: (value) => controller.updateSortBy(value),
+            onSearchChanged: () =>
+                controller.updateSearchQuery(_searchController.text),
+          ),
         ),
         Expanded(child: _buildMenuItemsList()),
       ],
@@ -243,57 +169,25 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
 
   /// Builds the filtered and sorted menu items list
   Widget _buildMenuItemsList() {
-    var filteredItems = _menuItems.where((item) {
-      final matchesSearch =
-          _searchController.text.isEmpty ||
-          item['name'].toLowerCase().contains(
-            _searchController.text.toLowerCase(),
-          ) ||
-          item['description'].toLowerCase().contains(
-            _searchController.text.toLowerCase(),
-          );
-
-      final matchesCategory =
-          _selectedCategory == 'All Categories' ||
-          item['category'] == _selectedCategory;
-
-      final matchesAvailability = !_showAvailableOnly || item['isAvailable'];
-
-      return matchesSearch && matchesCategory && matchesAvailability;
-    }).toList();
-
-    // Sort items
-    filteredItems.sort((a, b) {
-      switch (_sortBy) {
-        case 'Price':
-          return a['price'].compareTo(b['price']);
-        case 'Category':
-          return a['category'].compareTo(b['category']);
-        case 'Availability':
-          return b['isAvailable'].toString().compareTo(
-            a['isAvailable'].toString(),
-          );
-        default:
-          return a['name'].compareTo(b['name']);
-      }
-    });
-
     return Container(
       margin: EdgeInsets.symmetric(
         horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
       ),
-      child: ListView.builder(
-        itemCount: filteredItems.length,
-        itemBuilder: (context, index) {
-          final item = filteredItems[index];
-          return MenuItemCard(
-            item: item,
-            onEdit: () => _showEditItemDialog(item),
-            onToggleAvailability: () => _toggleItemAvailability(item),
-            onDelete: () => _deleteItem(item),
-          );
-        },
-      ),
+      child: Obx(() {
+        final filteredItems = controller.filteredMenuItems;
+
+        return ListView.builder(
+          itemCount: filteredItems.length,
+          itemBuilder: (context, index) {
+            final item = filteredItems[index];
+            return MenuItemCard(
+              item: item.toJson(), // Convert MenuItem to Map for compatibility
+              onEdit: () => _showEditItemDialog(item.toJson()),
+              onDelete: () => _deleteItem(item.toJson()),
+            );
+          },
+        );
+      }),
     );
   }
 
@@ -302,7 +196,6 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
     return Container(
       margin: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
       child: Column(
-        // mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
@@ -329,24 +222,40 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
           ),
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
           Expanded(
-            child: ListView.builder(
-              itemCount: _categories.length,
-              itemBuilder: (context, index) {
-                final category = _categories[index];
-                return CategoryCard(
-                  category: category,
-                  onToggleActive: (value) {
-                    setState(() {
-                      category['isActive'] = value;
-                    });
-                  },
-                  onEdit: () => _editCategory(category),
-                  onDelete: () => _deleteCategory(category),
-                );
-              },
+            child: Obx(
+              () => ListView.builder(
+                itemCount: controller.categoriesWithCounts.length > 1
+                    ? controller.categoriesWithCounts.length - 1
+                    : 0, // Exclude 'All Categories'
+                itemBuilder: (context, index) {
+                  final category = controller
+                      .categoriesWithCounts[index + 1]; // Skip 'All Categories'
+                  return CategoryCard(
+                    category: category,
+                    onToggleActive: (value) => _toggleCategoryActive(category),
+                    onEdit: () => _editCategory(category),
+                    onDelete: () => _deleteCategory(category),
+                  );
+                },
+              ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  /// Builds the nutrition analytics tab
+  Widget _buildNutritionTab() {
+    return Container(
+      margin: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
+      child: Obx(
+        () => NutritionAnalytics(
+          menuItems: controller.filteredMenuItems
+              .map((item) => item.toJson())
+              .toList(),
+          categories: controller.categoriesWithCounts,
+        ),
       ),
     );
   }
@@ -379,7 +288,10 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
         proteinController: _proteinController,
         carbsController: _carbsController,
         fatController: _fatController,
-        onSave: () => _saveMenuItem(isEdit, item),
+        initialCategory: isEdit && item != null ? item['category'] : null,
+        initialWeekday: isEdit && item != null ? item['weekday'] : null,
+        onSave: (category, weekday) =>
+            _saveMenuItem(isEdit, item, category, weekday),
         onCancel: () => Navigator.of(context).pop(),
       ),
     );
@@ -396,63 +308,91 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
   }
 
   void _populateItemForm(Map<String, dynamic> item) {
-    _itemNameController.text = item['name'];
-    _itemDescriptionController.text = item['description'];
-    _itemPriceController.text = item['price'].toString();
-    _caloriesController.text = item['calories'].toString();
-    _proteinController.text = item['protein'].toString();
-    _carbsController.text = item['carbs'].toString();
-    _fatController.text = item['fat'].toString();
+    _itemNameController.text = item['name'] ?? '';
+    _itemDescriptionController.text = item['description'] ?? '';
+    _itemPriceController.text = item['price']?.toString() ?? '';
+    _caloriesController.text = item['calories']?.toString() ?? '';
+    _proteinController.text = item['protein']?.toString() ?? '';
+    _carbsController.text = item['carbs']?.toString() ?? '';
+    _fatController.text = item['fat']?.toString() ?? '';
   }
 
-  void _saveMenuItem(bool isEdit, [Map<String, dynamic>? existingItem]) {
+  void _saveMenuItem(
+    bool isEdit,
+    Map<String, dynamic>? existingItem,
+    String category,
+    String weekday,
+  ) async {
     if (_itemNameController.text.isEmpty || _itemPriceController.text.isEmpty) {
       ToastMessage.error('Please fill in required fields');
       return;
     }
 
-    final newItem = {
-      'id': isEdit ? existingItem!['id'] : _menuItems.length + 1,
-      'name': _itemNameController.text,
-      'description': _itemDescriptionController.text,
-      'category': 'Lunch', // Default category, should be dropdown
-      'price': double.tryParse(_itemPriceController.text) ?? 0.0,
-      'isAvailable': true,
-      'calories': int.tryParse(_caloriesController.text) ?? 0,
-      'protein': double.tryParse(_proteinController.text) ?? 0.0,
-      'carbs': double.tryParse(_carbsController.text) ?? 0.0,
-      'fat': double.tryParse(_fatController.text) ?? 0.0,
-      'image': 'assets/images/default.jpg',
-      'preparationTime': '15 mins',
-      'spiceLevel': 'Medium',
-    };
-
-    setState(() {
+    try {
       if (isEdit) {
-        final index = _menuItems.indexWhere(
-          (item) => item['id'] == existingItem!['id'],
+        // Implement edit functionality
+        if (existingItem == null || existingItem['id'] == null) {
+          ToastMessage.error('Invalid item data for editing');
+          return;
+        }
+
+        final updatedItem = MenuItem(
+          id: existingItem['id'],
+          name: _itemNameController.text,
+          description: _itemDescriptionController.text,
+          price: double.tryParse(_itemPriceController.text) ?? 0.0,
+          category: category,
+          weekday: weekday.toLowerCase(),
+          nutritionalInfo: NutritionalInfo(
+            calories: double.tryParse(_caloriesController.text) ?? 0.0,
+            protein: double.tryParse(_proteinController.text) ?? 0.0,
+            carbs: double.tryParse(_carbsController.text) ?? 0.0,
+            fat: double.tryParse(_fatController.text) ?? 0.0,
+            fiber: 0.0,
+            sodium: 0.0,
+          ),
+          preparationTime: existingItem['preparationTime'] ?? '15 mins',
+          spiceLevel: SpiceLevel.mild, // Default
+          allergens: [],
+          isVegetarian: existingItem['isVegetarian'] ?? false,
+          isVegan: existingItem['isVegan'] ?? false,
+          isGlutenFree: existingItem['isGlutenFree'] ?? false,
+          isActive: existingItem['isActive'] ?? true,
+          createdAt:
+              DateTime.tryParse(existingItem['createdAt'] ?? '') ??
+              DateTime.now(),
+          createdBy: existingItem['createdBy'] ?? 'admin',
+          updatedAt: DateTime.now(),
+          updatedBy: 'admin',
+          mealType: category.toLowerCase() == 'breakfast'
+              ? MealType.breakfast
+              : MealType.dinner,
         );
-        if (index != -1) _menuItems[index] = newItem;
+
+        await controller.updateMenuItem(updatedItem);
       } else {
-        _menuItems.add(newItem);
+        await controller.createMenuItem(
+          name: _itemNameController.text,
+          description: _itemDescriptionController.text,
+          price: double.tryParse(_itemPriceController.text) ?? 0.0,
+          category: category,
+          weekday: weekday,
+          calories: double.tryParse(_caloriesController.text) ?? 0.0,
+          protein: double.tryParse(_proteinController.text) ?? 0.0,
+          carbs: double.tryParse(_carbsController.text) ?? 0.0,
+          fat: double.tryParse(_fatController.text) ?? 0.0,
+          fiber: 0.0,
+          sodium: 0.0,
+        );
       }
-    });
 
-    Navigator.of(context).pop();
-    ToastMessage.success(
-      isEdit
-          ? 'Menu item updated successfully'
-          : 'Menu item added successfully',
-    );
-  }
-
-  void _toggleItemAvailability(Map<String, dynamic> item) {
-    setState(() {
-      item['isAvailable'] = !item['isAvailable'];
-    });
-    ToastMessage.success(
-      'Item ${item['isAvailable'] ? 'enabled' : 'disabled'} successfully',
-    );
+      ToastMessage.success(
+        'Menu item ${isEdit ? 'updated' : 'added'} successfully',
+      );
+      Navigator.of(context).pop();
+    } catch (e) {
+      ToastMessage.error('Error saving menu item: $e');
+    }
   }
 
   void _deleteItem(Map<String, dynamic> item) {
@@ -467,12 +407,13 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
             child: Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
-              setState(() {
-                _menuItems.removeWhere((i) => i['id'] == item['id']);
-              });
-              Navigator.of(context).pop();
-              ToastMessage.success('Menu item deleted successfully');
+            onPressed: () async {
+              try {
+                await controller.deleteMenuItem(item['id'], item['name']);
+                Navigator.of(context).pop();
+              } catch (e) {
+                ToastMessage.error('Error deleting item: $e');
+              }
             },
             child: Text('Delete', style: TextStyle(color: Colors.red)),
           ),
@@ -481,23 +422,20 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
     );
   }
 
-  void _addCategory() {
+  void _addCategory() async {
     if (_categoryController.text.isEmpty) {
       ToastMessage.error('Please enter category name');
       return;
     }
 
-    setState(() {
-      _categories.add({
-        'id': _categories.length + 1,
-        'name': _categoryController.text,
-        'itemCount': 0,
-        'isActive': true,
-      });
-      _categoryController.clear();
-    });
+    // TODO: Implement category creation in controller
+    ToastMessage.success('Category management needs to be implemented');
+    _categoryController.clear();
+  }
 
-    ToastMessage.success('Category added successfully');
+  void _toggleCategoryActive(Map<String, dynamic> category) {
+    // TODO: Implement toggle category active in controller
+    ToastMessage.success('Category toggle needs to be implemented');
   }
 
   void _editCategory(Map<String, dynamic> category) {
@@ -552,11 +490,9 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
           ),
           TextButton(
             onPressed: () {
-              setState(() {
-                _categories.removeWhere((c) => c['id'] == category['id']);
-              });
+              // TODO: Implement category deletion in controller
               Navigator.of(context).pop();
-              ToastMessage.success('Category deleted successfully');
+              ToastMessage.success('Category deletion needs to be implemented');
             },
             child: Text('Delete', style: TextStyle(color: Colors.red)),
           ),
@@ -565,7 +501,3 @@ class _AdminMenuManagementPageState extends State<AdminMenuManagementPage> {
     );
   }
 }
-
-
-
-

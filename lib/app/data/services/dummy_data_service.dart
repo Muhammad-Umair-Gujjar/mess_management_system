@@ -135,9 +135,22 @@ class DummyDataService {
           id: 'breakfast_$day',
           name: breakfastItems[day],
           description: 'Fresh and nutritious breakfast meal',
-          calories: 350 + (100),
+          price: 25.0 + (day * 2.0),
+          category: 'breakfast',
+          weekday: _getWeekdayName(day),
+          nutritionalInfo: NutritionalInfo(
+            calories: 350 + (day * 10).toDouble(),
+            protein: 15.0,
+            carbs: 45.0,
+            fat: 8.0,
+            fiber: 3.0,
+            sodium: 300.0,
+          ),
           mealType: MealType.breakfast,
-          date: date,
+          createdAt: date,
+          createdBy: 'system',
+          updatedAt: date,
+          updatedBy: 'system',
         ),
       );
 
@@ -147,9 +160,22 @@ class DummyDataService {
           id: 'dinner_$day',
           name: dinnerItems[day],
           description: 'Delicious and filling dinner meal',
-          calories: 500 + (100),
+          price: 45.0 + (day * 3.0),
+          category: 'dinner',
+          weekday: _getWeekdayName(day),
+          nutritionalInfo: NutritionalInfo(
+            calories: 500 + (day * 15).toDouble(),
+            protein: 25.0,
+            carbs: 60.0,
+            fat: 12.0,
+            fiber: 5.0,
+            sodium: 450.0,
+          ),
           mealType: MealType.dinner,
-          date: date,
+          createdAt: date,
+          createdBy: 'system',
+          updatedAt: date,
+          updatedBy: 'system',
         ),
       );
     }
@@ -161,17 +187,29 @@ class DummyDataService {
     return [
       MealRate(
         id: 'breakfast_rate',
-        mealType: MealType.breakfast,
+        category: 'breakfast',
         rate: 25.0,
-        updatedAt: DateTime.now().subtract(const Duration(days: 30)),
+        effectiveFrom: DateTime.now().subtract(const Duration(days: 30)),
+        isActive: true,
+        createdAt: DateTime.now().subtract(const Duration(days: 30)),
+        createdBy: 'admin1',
+        updatedAt: DateTime.now(),
         updatedBy: 'admin1',
+        notes: 'Standard breakfast rate',
+        mealType: MealType.breakfast,
       ),
       MealRate(
         id: 'dinner_rate',
-        mealType: MealType.dinner,
+        category: 'dinner',
         rate: 40.0,
-        updatedAt: DateTime.now().subtract(const Duration(days: 30)),
+        effectiveFrom: DateTime.now().subtract(const Duration(days: 30)),
+        isActive: true,
+        createdAt: DateTime.now().subtract(const Duration(days: 30)),
+        createdBy: 'admin1',
+        updatedAt: DateTime.now(),
         updatedBy: 'admin1',
+        notes: 'Standard dinner rate',
+        mealType: MealType.dinner,
       ),
     ];
   }
@@ -259,5 +297,19 @@ class DummyDataService {
       'monthlyRevenue': monthlyRevenue,
       'attendanceRate': attendanceRate,
     };
+  }
+
+  /// Helper method to get weekday name from day index
+  static String _getWeekdayName(int day) {
+    const weekdays = [
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday',
+      'sunday',
+    ];
+    return weekdays[day % 7];
   }
 }

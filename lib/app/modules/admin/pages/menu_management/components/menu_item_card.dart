@@ -7,24 +7,16 @@ import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/utils/responsive_helper.dart';
 
 /// Individual menu item card component
-///
-/// This widget displays a single menu item with:
-/// - Item image placeholder
-/// - Item name, description, and details
-/// - Availability status badge
-/// - Price display
-/// - Action buttons (Edit, Toggle availability, Delete)
+//
 class MenuItemCard extends StatelessWidget {
   final Map<String, dynamic> item;
   final VoidCallback onEdit;
-  final VoidCallback onToggleAvailability;
   final VoidCallback onDelete;
 
   const MenuItemCard({
     super.key,
     required this.item,
     required this.onEdit,
-    required this.onToggleAvailability,
     required this.onDelete,
   });
 
@@ -70,7 +62,6 @@ class MenuItemCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      _buildAvailabilityBadge(context),
                     ],
                   ),
                   SizedBox(height: ResponsiveHelper.getSpacing(context, 'xs')),
@@ -144,17 +135,6 @@ class MenuItemCard extends StatelessWidget {
         ),
         _buildActionButton(
           context,
-          icon: (item['isAvailable'] ?? false)
-              ? FontAwesomeIcons.eyeSlash
-              : FontAwesomeIcons.eye,
-          color: (item['isAvailable'] ?? false) ? Colors.orange : Colors.green,
-          onPressed: onToggleAvailability,
-          tooltip: (item['isAvailable'] ?? false)
-              ? 'Make unavailable'
-              : 'Make available',
-        ),
-        _buildActionButton(
-          context,
           icon: FontAwesomeIcons.trash,
           color: Colors.red,
           onPressed: onDelete,
@@ -219,7 +199,6 @@ class MenuItemCard extends StatelessWidget {
                 ),
               ),
             ),
-            _buildAvailabilityBadge(context),
           ],
         ),
 
@@ -241,40 +220,12 @@ class MenuItemCard extends StatelessWidget {
     );
   }
 
-  /// Builds the availability status badge
-  Widget _buildAvailabilityBadge(BuildContext context) {
-    final bool isAvailable = item['isAvailable'] ?? false;
-
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: ResponsiveHelper.getSpacing(context, 'small'),
-        vertical: ResponsiveHelper.getSpacing(context, 'xsmall'),
-      ),
-      decoration: BoxDecoration(
-        color: isAvailable
-            ? Colors.green.withOpacity(0.1)
-            : Colors.red.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(
-          ResponsiveHelper.getResponsiveSpacing(
-            context,
-            mobile: 6.0,
-            tablet: 7.0,
-            desktop: 8.0,
-          ),
-        ),
-      ),
-      child: Text(
-        isAvailable ? 'Available' : 'Unavailable',
-        style: AppTextStyles.caption.copyWith(
-          color: isAvailable ? Colors.green : Colors.red,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  /// Builds the item metadata row (category, time, calories)
+  /// Builds the item metadata row (category, weekday, calories)
   Widget _buildItemMetadata(BuildContext context) {
+    String weekday = item['weekday'] ?? 'monday';
+    String capitalizedWeekday =
+        weekday.substring(0, 1).toUpperCase() + weekday.substring(1);
+
     return ResponsiveHelper.isMobile(context)
         ? Wrap(
             spacing: ResponsiveHelper.getSpacing(context, 'small'),
@@ -287,13 +238,13 @@ class MenuItemCard extends StatelessWidget {
               ),
               _buildMetadataItem(
                 context,
-                icon: FontAwesomeIcons.clock,
-                text: item['preparationTime'] ?? 'N/A',
+                icon: FontAwesomeIcons.calendar,
+                text: capitalizedWeekday,
               ),
               _buildMetadataItem(
                 context,
                 icon: FontAwesomeIcons.fire,
-                text: '${item['calories'] ?? 0} cal',
+                text: '${_getCalories(item)} cal',
               ),
             ],
           )
@@ -307,17 +258,27 @@ class MenuItemCard extends StatelessWidget {
               SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
               _buildMetadataItem(
                 context,
-                icon: FontAwesomeIcons.clock,
-                text: item['preparationTime'] ?? 'N/A',
+                icon: FontAwesomeIcons.calendar,
+                text: capitalizedWeekday,
               ),
               SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
               _buildMetadataItem(
                 context,
                 icon: FontAwesomeIcons.fire,
-                text: '${item['calories'] ?? 0} cal',
+                text: '${_getCalories(item)} cal',
               ),
             ],
           );
+  }
+
+  /// Helper method to get calories from nutritionalInfo
+  int _getCalories(Map<String, dynamic> item) {
+    final nutritionalInfo = item['nutritionalInfo'];
+    if (nutritionalInfo is Map<String, dynamic>) {
+      return (nutritionalInfo['calories'] ?? 0).round();
+    }
+    // Fallback to direct calories field
+    return (item['calories'] ?? 0).round();
   }
 
   /// Builds a single metadata item with icon and text
@@ -372,19 +333,6 @@ class MenuItemCard extends StatelessWidget {
               color: AppColors.adminRole,
               onPressed: onEdit,
               tooltip: 'Edit item',
-            ),
-            _buildActionButton(
-              context,
-              icon: (item['isAvailable'] ?? false)
-                  ? FontAwesomeIcons.eyeSlash
-                  : FontAwesomeIcons.eye,
-              color: (item['isAvailable'] ?? false)
-                  ? Colors.orange
-                  : Colors.green,
-              onPressed: onToggleAvailability,
-              tooltip: (item['isAvailable'] ?? false)
-                  ? 'Make unavailable'
-                  : 'Make available',
             ),
             _buildActionButton(
               context,

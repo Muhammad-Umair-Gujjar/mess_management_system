@@ -28,15 +28,7 @@ class MealTabContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       final selectedDate = _getSelectedDate();
-      final menuItem = controller.menuItems
-          .where(
-            (item) =>
-                item.mealType == mealType &&
-                item.date.day == selectedDate.day &&
-                item.date.month == selectedDate.month &&
-                item.date.year == selectedDate.year,
-          )
-          .firstOrNull;
+      final menuItem = controller.getMenuForDate(selectedDate, mealType);
 
       if (menuItem == null) {
         return _buildEmptyMealState(context);
@@ -105,7 +97,3 @@ class MealTabContent extends StatelessWidget {
     return startOfWeek.add(Duration(days: selectedDay));
   }
 }
-
-
-
-

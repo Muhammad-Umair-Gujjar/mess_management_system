@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:mess_management/app/data/models/attendance.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
@@ -56,7 +55,7 @@ class MealHeader extends StatelessWidget {
               ),
               SizedBox(height: ResponsiveHelper.getSpacing(context, 'xs')),
               Text(
-                DateFormat('EEEE, MMM dd').format(menuItem.date),
+                'Fresh ${menuItem.category.toUpperCase()} menu',
                 style: AppTextStyles.body2.copyWith(
                   color: AppColors.textLight,
                   fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
@@ -69,7 +68,3 @@ class MealHeader extends StatelessWidget {
     );
   }
 }
-
-
-
-

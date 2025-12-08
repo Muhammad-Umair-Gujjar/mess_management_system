@@ -17,11 +17,9 @@ class MenuFilters extends StatelessWidget {
   final TextEditingController searchController;
   final String selectedCategory;
   final String sortBy;
-  final bool showAvailableOnly;
   final List<Map<String, dynamic>> categories;
   final Function(String) onCategoryChanged;
   final Function(String) onSortChanged;
-  final Function(bool) onAvailabilityChanged;
   final VoidCallback onSearchChanged;
 
   const MenuFilters({
@@ -29,11 +27,9 @@ class MenuFilters extends StatelessWidget {
     required this.searchController,
     required this.selectedCategory,
     required this.sortBy,
-    required this.showAvailableOnly,
     required this.categories,
     required this.onCategoryChanged,
     required this.onSortChanged,
-    required this.onAvailabilityChanged,
     required this.onSearchChanged,
   });
 
@@ -76,12 +72,8 @@ class MenuFilters extends StatelessWidget {
             Expanded(child: _buildCategoryDropdown(context)),
             SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
             Expanded(child: _buildSortByDropdown(context)),
-            //  SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
-            // Expanded(child: _buildAvailabilityFilter(context)),
-            
           ],
         ),
-        
       ],
     );
   }
@@ -98,7 +90,7 @@ class MenuFilters extends StatelessWidget {
               child: ReusableTextField(
                 controller: searchController,
                 hintText: 'Search menu items...',
-  
+
                 type: TextFieldType.search,
                 onChanged: (_) => onSearchChanged(),
               ),
@@ -109,14 +101,8 @@ class MenuFilters extends StatelessWidget {
         ),
         SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
-        // Bottom row - sort and availability
-        Row(
-          children: [
-            Expanded(child: _buildSortByDropdown(context)),
-            SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
-            _buildAvailabilityFilter(context),
-          ],
-        ),
+        // Bottom row - sort only
+        Row(children: [Expanded(child: _buildSortByDropdown(context))]),
       ],
     );
   }
@@ -139,14 +125,10 @@ class MenuFilters extends StatelessWidget {
         SizedBox(width: ResponsiveHelper.getSpacing(context, 'xs')),
 
         // Category filter dropdown
-        Expanded( flex: 3, child: _buildCategoryDropdown(context)),
+        Expanded(flex: 3, child: _buildCategoryDropdown(context)),
         SizedBox(width: ResponsiveHelper.getSpacing(context, 'xs')),
         // Sort by dropdown
         Expanded(flex: 3, child: _buildSortByDropdown(context)),
-        SizedBox(width: ResponsiveHelper.getSpacing(context, 'xs')),
-
-        // Available only checkbox
-        _buildAvailabilityFilter(context),
       ],
     );
   }
@@ -155,8 +137,41 @@ class MenuFilters extends StatelessWidget {
   Widget _buildCategoryDropdown([BuildContext? ctx]) {
     final context = ctx ?? Get.context!;
 
+    // Build dropdown items ensuring no duplicates
+    final List<String> dropdownItems = ['All Categories'];
+
+    // Add unique category names
+    final Set<String> uniqueCategories = <String>{};
+    for (final category in categories) {
+      try {
+        final categoryName = category['name'] as String? ?? '';
+        if (categoryName.isNotEmpty && categoryName != 'All Categories') {
+          uniqueCategories.add(categoryName);
+        }
+      } catch (e) {
+        print('🔴 DEBUG: Error processing category: $category, Error: $e');
+      }
+    }
+    dropdownItems.addAll(uniqueCategories.toList()..sort());
+
+    // Ensure selected value exists in the list
+    String validatedSelectedCategory = selectedCategory;
+    if (!dropdownItems.contains(selectedCategory)) {
+      print(
+        '🟡 DEBUG: Selected category "$selectedCategory" not found in items: $dropdownItems',
+      );
+      validatedSelectedCategory = 'All Categories';
+    }
+
+    print(
+      '🔵 DEBUG: Category dropdown - Selected: "$validatedSelectedCategory", Items: $dropdownItems',
+    );
+
     return DropdownButtonFormField<String>(
-      value: selectedCategory,
+      key: ValueKey(
+        'category_dropdown_${dropdownItems.length}_$validatedSelectedCategory',
+      ),
+      value: validatedSelectedCategory,
       decoration: InputDecoration(
         labelText: 'Category',
         border: OutlineInputBorder(
@@ -200,7 +215,7 @@ class MenuFilters extends StatelessWidget {
           desktop: 14.0,
         ),
       ),
-      items: ['All Categories', ...categories.map((c) => c['name'] as String)]
+      items: dropdownItems
           .map(
             (category) => DropdownMenuItem<String>(
               value: category,
@@ -221,6 +236,7 @@ class MenuFilters extends StatelessWidget {
           .toList(),
       onChanged: (value) {
         if (value != null) {
+          print('🔵 DEBUG: Category changed to: $value');
           onCategoryChanged(value);
         }
       },
@@ -231,8 +247,23 @@ class MenuFilters extends StatelessWidget {
   Widget _buildSortByDropdown([BuildContext? ctx]) {
     final context = ctx ?? Get.context!;
 
+    final List<String> sortOptions = [
+      'Name',
+      'Category',
+      'Calories',
+      'Created Date',
+    ];
+
+    // Ensure selected value exists in the list
+    String validatedSortBy = sortBy;
+    if (!sortOptions.contains(sortBy)) {
+      print('🟡 DEBUG: Sort option "$sortBy" not found, defaulting to "Name"');
+      validatedSortBy = 'Name';
+    }
+
     return DropdownButtonFormField<String>(
-      value: sortBy,
+      key: ValueKey('sort_dropdown_$validatedSortBy'),
+      value: validatedSortBy,
       decoration: InputDecoration(
         labelText: 'Sort By',
         border: OutlineInputBorder(
@@ -276,7 +307,7 @@ class MenuFilters extends StatelessWidget {
           desktop: 14.0,
         ),
       ),
-      items: ['Name', 'Price', 'Category', 'Availability']
+      items: sortOptions
           .map(
             (sort) => DropdownMenuItem<String>(
               value: sort,
@@ -296,41 +327,10 @@ class MenuFilters extends StatelessWidget {
           .toList(),
       onChanged: (value) {
         if (value != null) {
+          print('🔵 DEBUG: Sort changed to: $value');
           onSortChanged(value);
         }
       },
     );
   }
-
-  /// Builds the availability filter checkbox
-  Widget _buildAvailabilityFilter([BuildContext? ctx]) {
-    final context = ctx ?? Get.context!;
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Checkbox(
-          value: showAvailableOnly,
-          onChanged: (value) => onAvailabilityChanged(value ?? false),
-          activeColor: AppColors.adminRole,
-        ),
-        Text(
-          'Available Only',
-          style: TextStyle(
-            fontSize: ResponsiveHelper.getResponsiveFontSize(
-              context,
-              mobile: 12.0,
-              tablet: 13.0,
-              desktop: 14.0,
-            ),
-            color: AppColors.textPrimary,
-          ),
-        ),
-      ],
-    );
-  }
 }
-
-
-
-
