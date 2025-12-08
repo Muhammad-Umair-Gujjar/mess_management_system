@@ -9,6 +9,7 @@ import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../widgets/common/reusable_text_field.dart';
 import '../../../staff_controller.dart';
+import '../../../controllers/staff_student_controller.dart';
 import 'students_grid_view.dart';
 import 'students_list_view.dart';
 
@@ -24,6 +25,8 @@ class ActiveStudentsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final studentController = Get.find<StaffStudentController>();
+
     return Container(
       padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
       decoration: AppDecorations.floatingCard(),
@@ -41,7 +44,7 @@ class ActiveStudentsTab extends StatelessWidget {
                     Text('Active Students', style: AppTextStyles.heading5),
                     Obx(
                       () => Text(
-                        '${controller.filteredStudents.length} students enrolled',
+                        '${studentController.filteredStudents.length} students enrolled',
                         style: AppTextStyles.body2.copyWith(
                           color: AppColors.textLight,
                         ),
@@ -54,7 +57,7 @@ class ActiveStudentsTab extends StatelessWidget {
                 child: ReusableTextField(
                   hintText: 'Search students...',
                   type: TextFieldType.search,
-                  onChanged: controller.filterStudents,
+                  onChanged: studentController.filterStudents,
                 ),
               ),
             ],
@@ -65,9 +68,12 @@ class ActiveStudentsTab extends StatelessWidget {
           // Students Grid/List
           Expanded(
             child: Obx(() {
-              final students = controller.filteredStudents;
+              final students = studentController.studentsAsMap;
 
               if (students.isEmpty) {
+                if (studentController.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
                 return _buildEmptyState('No active students found');
               }
 

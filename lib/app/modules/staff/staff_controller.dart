@@ -6,7 +6,10 @@ import '../../../core/utils/toast_message.dart';
 import '../../data/models/attendance.dart';
 import '../../data/models/menu.dart';
 import '../../data/services/dummy_data_service.dart';
+import '../../data/services/user_service.dart';
+import '../../data/models/auth_models.dart';
 import '../../widgets/dashboard_navigation.dart';
+import 'controllers/staff_student_controller.dart';
 
 class StaffController extends GetxController {
   // Observable properties
@@ -48,89 +51,36 @@ class StaffController extends GetxController {
     // ),
   ];
 
+  // User service for real data
+  final UserService _userService = Get.find<UserService>();
+
+  // Student controller for managing student data
+  late StaffStudentController _studentController;
+
   @override
   void onInit() {
     super.onInit();
+    // Initialize student controller
+    _studentController = Get.put(StaffStudentController());
     loadStaffData();
   }
 
-  void loadStaffData() {
+  void loadStaffData() async {
     isLoading.value = true;
 
-    // Load all students - using dummy data as maps
-    allStudents.value = [
-      {
-        'id': 'S001',
-        'name': 'Ali Ahmed',
-        'room': 'B-101',
-        'email': 'ali@university.edu',
-        'isApproved': true,
-      },
-      {
-        'id': 'S002',
-        'name': 'Sara Khan',
-        'room': 'A-205',
-        'email': 'sara@university.edu',
-        'isApproved': true,
-      },
-      {
-        'id': 'S003',
-        'name': 'Ahmed Hassan',
-        'room': 'C-304',
-        'email': 'ahmed@university.edu',
-        'isApproved': true,
-      },
-      {
-        'id': 'S004',
-        'name': 'Fatima Ali',
-        'room': 'B-203',
-        'email': 'fatima@university.edu',
-        'isApproved': false,
-      },
-      {
-        'id': 'S005',
-        'name': 'Omar Abdullah',
-        'room': 'A-156',
-        'email': 'omar@university.edu',
-        'isApproved': true,
-      },
-      {
-        'id': 'S006',
-        'name': 'Maryam Saleh',
-        'room': 'C-409',
-        'email': 'maryam@university.edu',
-        'isApproved': true,
-      },
-      {
-        'id': 'S007',
-        'name': 'Hassan Mohammad',
-        'room': 'B-302',
-        'email': 'hassan@university.edu',
-        'isApproved': true,
-      },
-      {
-        'id': 'S008',
-        'name': 'Noor Fatima',
-        'room': 'A-178',
-        'email': 'noor@university.edu',
-        'isApproved': false,
-      },
-      {
-        'id': 'S009',
-        'name': 'Yusuf Ibrahim',
-        'room': 'C-255',
-        'email': 'yusuf@university.edu',
-        'isApproved': true,
-      },
-      {
-        'id': 'S010',
-        'name': 'Aisha Mahmood',
-        'room': 'B-447',
-        'email': 'aisha@university.edu',
-        'isApproved': false,
-      },
-    ];
-    filteredStudents.value = allStudents.toList();
+    // Load real student data from Firebase via student controller
+    await _studentController.loadStudents();
+
+    // Update filtered students to use real data
+    ever(_studentController.filteredStudents, (students) {
+      // Convert AppUser objects to Map format for UI compatibility
+      filteredStudents.value = _studentController.studentsAsMap;
+      allStudents.value = _studentController.studentsAsMap;
+    });
+
+    // Initial load
+    filteredStudents.value = _studentController.studentsAsMap;
+    allStudents.value = _studentController.studentsAsMap;
 
     // Load attendance records
     attendanceList.value = DummyDataService.getAttendance();
@@ -153,31 +103,21 @@ class StaffController extends GetxController {
   // Search and filter methods
   void filterStudents(String query) {
     searchQuery.value = query;
-    _applyFilters();
+    _studentController.filterStudents(query);
+    filteredStudents.value = _studentController.studentsAsMap;
   }
 
   void filterByStatus(String status) {
     statusFilter.value = status;
-    _applyFilters();
+    _studentController.filterByStatus(status);
+    filteredStudents.value = _studentController.studentsAsMap;
   }
 
   void _applyFilters() {
-    var filtered = allStudents.toList();
-
-    // Apply search filter
-    if (searchQuery.value.isNotEmpty) {
-      filtered = filtered.where((student) {
-        final name = student['name'].toString().toLowerCase();
-        final id = student['id'].toString().toLowerCase();
-        final query = searchQuery.value.toLowerCase();
-        return name.contains(query) || id.contains(query);
-      }).toList();
-    }
-
-    // Apply status filter (if needed for attendance status)
-    // This can be expanded based on attendance marking requirements
-
-    filteredStudents.value = filtered;
+    // Delegate to student controller
+    _studentController.filterStudents(searchQuery.value);
+    _studentController.filterByStatus(statusFilter.value);
+    filteredStudents.value = _studentController.studentsAsMap;
   }
 
   // Attendance management methods
@@ -281,9 +221,8 @@ class StaffController extends GetxController {
         )
         .toList();
 
-    final totalStudents = allStudents
-        .where((s) => s['isApproved'] == true)
-        .length;
+    // Use real student data from student controller
+    final totalStudents = _studentController.activeStudentCount;
     final breakfastPresent = todayAttendance
         .where((a) => a.mealType == MealType.breakfast && a.isPresent)
         .length;
@@ -298,11 +237,9 @@ class StaffController extends GetxController {
       'breakfastAbsent': totalStudents - breakfastPresent,
       'dinnerAbsent': totalStudents - dinnerPresent,
       'breakfastAttendanceRate': totalStudents > 0
-          ? (breakfastPresent /  100 )
+          ? (breakfastPresent / 100)
           : 0.0,
-      'dinnerAttendanceRate': totalStudents > 0
-          ? (dinnerPresent /  100 )
-          : 0.0,
+      'dinnerAttendanceRate': totalStudents > 0 ? (dinnerPresent / 100) : 0.0,
     };
   }
 
@@ -317,9 +254,7 @@ class StaffController extends GetxController {
         )
         .toList();
 
-    final totalStudents = allStudents
-        .where((s) => s['isApproved'] == true)
-        .length;
+    final totalStudents = _studentController.activeStudentCount;
     final totalPossibleMeals = totalStudents * 7 * 2; // 7 days, 2 meals per day
     final totalPresent = weeklyAttendance.where((a) => a.isPresent).length;
 
@@ -328,7 +263,7 @@ class StaffController extends GetxController {
       'totalPresent': totalPresent,
       'totalAbsent': totalPossibleMeals - totalPresent,
       'weeklyAttendanceRate': totalPossibleMeals > 0
-          ? (totalPresent /  100 )
+          ? (totalPresent / 100)
           : 0.0,
     };
   }
@@ -351,22 +286,29 @@ class StaffController extends GetxController {
           .toList();
 
       final present = dayAttendance.where((a) => a.isPresent).length;
-      final totalPossible =
-          allStudents.where((s) => s['isApproved'] == true).length * 2;
+      final totalPossible = _studentController.activeStudentCount * 2;
 
       return {
         'date': day,
         'present': present,
         'total': totalPossible,
-        'percentage': totalPossible > 0 ? (present /  100 ) : 0.0,
+        'percentage': totalPossible > 0 ? (present / 100) : 0.0,
       };
     }).toList();
   }
 
   // Student management methods
   List<dynamic> getPendingApprovals() {
-    return allStudents
-        .where((student) => student['isApproved'] != true)
+    return _studentController.allStudents
+        .where((student) => student.status == UserStatus.pending)
+        .map(
+          (student) => {
+            'id': student.uid,
+            'name': student.fullName,
+            'email': student.email,
+            'isApproved': false,
+          },
+        )
         .toList();
   }
 
@@ -438,7 +380,3 @@ class StaffController extends GetxController {
     }
   }
 }
-
-
-
-

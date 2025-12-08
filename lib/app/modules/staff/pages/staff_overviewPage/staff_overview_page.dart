@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../../core/utils/responsive_helper.dart';
 import '../../staff_controller.dart';
+import '../../controllers/staff_student_controller.dart';
 import 'components/welcome_section.dart';
 import 'components/today_stats_section.dart';
 import 'components/quick_actions_section.dart';
@@ -15,40 +16,58 @@ class StaffOverviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<StaffController>(
       builder: (controller) {
-        final todayStats = controller.getTodayStats();
+        return Obx(() {
+          final studentController = Get.find<StaffStudentController>();
 
-        return SingleChildScrollView(
-          padding: EdgeInsets.all(
-            ResponsiveHelper.getSpacing(context, 'medium'),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Welcome Section
-              const WelcomeSection(),
+          // Show loading indicator if data is still loading
+          if (studentController.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-              SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+          final todayStats = controller.getTodayStats();
 
-              // Today's Statistics Cards
-              TodayStatsSection(todayStats: todayStats),
+          return RefreshIndicator(
+            onRefresh: () async {
+              await studentController.refreshStudents();
+              controller.loadStaffData();
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.all(
+                ResponsiveHelper.getSpacing(context, 'medium'),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Welcome Section
+                  const WelcomeSection(),
 
-              SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
+                  SizedBox(
+                    height: ResponsiveHelper.getSpacing(context, 'large'),
+                  ),
 
-              // Quick Actions
-              QuickActionsSection(controller: controller),
+                  // Today's Statistics Cards
+                  TodayStatsSection(todayStats: todayStats),
 
-              SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
+                  SizedBox(
+                    height: ResponsiveHelper.getSpacing(context, 'xlarge'),
+                  ),
 
-              // Recent Activity
-              RecentActivitySection(todayStats: todayStats),
-            ],
-          ),
-        );
+                  // Quick Actions
+                  QuickActionsSection(controller: controller),
+
+                  SizedBox(
+                    height: ResponsiveHelper.getSpacing(context, 'xlarge'),
+                  ),
+
+                  // Recent Activity
+                  RecentActivitySection(todayStats: todayStats),
+                ],
+              ),
+            ),
+          );
+        });
       },
     );
   }
 }
-
-
-
-
