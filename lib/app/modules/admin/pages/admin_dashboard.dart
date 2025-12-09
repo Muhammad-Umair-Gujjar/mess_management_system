@@ -20,7 +20,7 @@ class AdminDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AdminController());
+    final controller = Get.put(AdminController(), permanent: true);
     final authController = Get.find<AuthController>();
     final userController = Get.find<UserController>();
 

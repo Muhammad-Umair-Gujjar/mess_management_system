@@ -58,8 +58,8 @@ class _SplashScreenState extends State<SplashScreen>
       _showContent = true;
     });
 
-    // Wait a bit more then navigate
-    await Future.delayed(const Duration(seconds: 2));
+    // Wait a bit more then navigate directly to login
+    await Future.delayed(const Duration(seconds: 1));
 
     if (mounted) {
       Get.offAllNamed('/login');

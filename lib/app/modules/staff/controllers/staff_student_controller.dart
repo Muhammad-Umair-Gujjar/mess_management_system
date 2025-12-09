@@ -29,7 +29,6 @@ class StaffStudentController extends GetxController {
   Future<void> loadStudents() async {
     try {
       isLoading.value = true;
-      print('🔍 StaffStudentController: Loading students from Firebase...');
 
       // Get all users and filter students
       final users = await _userService.getAllUsers();
@@ -42,10 +41,7 @@ class StaffStudentController extends GetxController {
 
       // Load student details from students collection
       await _loadStudentDetails(students);
-
-      print('✅ StaffStudentController: Loaded ${students.length} students');
     } catch (e) {
-      print('❌ StaffStudentController: Error loading students: $e');
       ToastMessage.error('Failed to load students: $e');
     } finally {
       isLoading.value = false;

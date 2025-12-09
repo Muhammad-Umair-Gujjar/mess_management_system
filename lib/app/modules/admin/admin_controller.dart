@@ -54,10 +54,7 @@ class AdminController extends GetxController {
         'systemUptime': 99, // Keep static system metric
         'activeConnections': totalUsers, // Approximate active connections
       };
-
-      print('✅ AdminController: Loaded real user stats: $realUserStats');
     } catch (e) {
-      print('❌ AdminController: Error loading real user stats: $e');
       // Fall back to default values if error
       realUserStats.value = {
         'totalUsers': 0,

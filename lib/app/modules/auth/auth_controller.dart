@@ -32,7 +32,6 @@ class AuthController extends GetxController {
 
   // Constructor to initialize controllers
   AuthController() {
-    print('🔵 DEBUG: AuthController constructor called');
     emailController = TextEditingController();
     passwordController = TextEditingController();
     confirmPasswordController = TextEditingController();
@@ -41,7 +40,6 @@ class AuthController extends GetxController {
     rollNumberController = TextEditingController();
     hostelController = TextEditingController();
     roomNumberController = TextEditingController();
-    print('✅ DEBUG: AuthController - All controllers initialized');
   }
 
   // Observable state variables
@@ -56,6 +54,8 @@ class AuthController extends GetxController {
   final selectedDepartment = 'Computer Science'.obs;
   final selectedSemester = 1.obs;
   final selectedHostel = 'Hostel 1'.obs;
+  final isLoggingOut =
+      false.obs; // Flag to prevent auth state navigation during logout
 
   // Form validation errors
   final emailError = RxnString();
@@ -69,7 +69,6 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    print('🔵 DEBUG: AuthController onInit() called');
     _checkAuthState();
     _setupDefaultAccounts();
   }
@@ -122,16 +121,24 @@ class AuthController extends GetxController {
   /// Check authentication state on app start
   void _checkAuthState() {
     _authService.authStateChanges.listen((firebaseUser) async {
-      if (firebaseUser != null) {
+      // Ignore auth state changes during logout
+      if (isLoggingOut.value) {
+        return;
+      }
+
+      // Only handle auth state changes if we're not already authenticated
+      // This prevents double navigation on login
+      if (firebaseUser != null && !isAuthenticated.value) {
         final user = await _authService.currentUser;
         if (user != null && user.isActive) {
           currentUser.value = user;
           isAuthenticated.value = true;
-          _navigateBasedOnRole(user.role);
+          // Don't navigate here as _navigateBasedOnRole will handle it
         } else {
-          await logout();
+          currentUser.value = null;
+          isAuthenticated.value = false;
         }
-      } else {
+      } else if (firebaseUser == null) {
         currentUser.value = null;
         isAuthenticated.value = false;
       }
@@ -274,15 +281,9 @@ class AuthController extends GetxController {
 
   /// Login (handles all roles)
   Future<void> login() async {
-    print('🔵 DEBUG: login() called');
-
     // Skip form validation for now, do manual validation
-    print('🔵 DEBUG: Doing manual validation instead of form validation');
-
-    print('✅ DEBUG: Login form validation passed');
     _clearErrors();
     isLoading.value = true;
-    print('🔵 DEBUG: isLoading set to true');
 
     try {
       AuthResult result;
@@ -365,6 +366,8 @@ class AuthController extends GetxController {
   /// Logout
   Future<void> logout() async {
     try {
+      isLoggingOut.value = true; // Set flag to prevent auth state navigation
+
       await _authService.signOut();
       currentUser.value = null;
       isAuthenticated.value = false;
@@ -375,8 +378,15 @@ class AuthController extends GetxController {
       }
 
       _clearForm();
-      Get.offAllNamed(AppRoutes.LOGIN);
+
+      // Reset the flag after a short delay and then navigate
+      Future.delayed(const Duration(milliseconds: 100), () {
+        isLoggingOut.value = false;
+        // Navigate directly to login page, skipping splash screen
+        Get.offAllNamed('/login');
+      });
     } catch (e) {
+      isLoggingOut.value = false;
       ToastMessage.error('Logout failed: ${e.toString()}');
     }
   }
@@ -536,17 +546,11 @@ class AuthController extends GetxController {
     required String password,
     required UserRole role,
   }) async {
-    print('🔵 DEBUG: loginWithCredentials() called');
-    print('  Email: $email');
-    print('  Password: ${password.isNotEmpty ? "[PROVIDED]" : "[EMPTY]"}');
-    print('  Role: $role');
-
     emailController.text = email;
     passwordController.text = password;
     selectedUserRole.value = role;
     selectedRole.value = role;
 
-    print('🔵 DEBUG: Controllers set, calling login()...');
     await login();
   }
 

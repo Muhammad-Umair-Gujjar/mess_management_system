@@ -21,7 +21,7 @@ class StaffDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(StaffController());
+    Get.put(StaffController(), permanent: true);
     final authController = Get.find<AuthController>();
     final userController = Get.find<UserController>();
 

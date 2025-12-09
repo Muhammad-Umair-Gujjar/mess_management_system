@@ -372,7 +372,7 @@ class DashboardNavigation extends StatelessWidget {
           TextButton(
             onPressed: () {
               Get.back();
-              Get.offAllNamed('/');
+              Get.offAllNamed('/login');
             },
             child: Text('Logout', style: TextStyle(color: Colors.red)),
           ),

@@ -20,7 +20,6 @@ class AdminOverviewController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    print('🔵 DEBUG: AdminOverviewController onInit() called');
     _initializeData();
   }
 
@@ -33,15 +32,12 @@ class AdminOverviewController extends GetxController {
   Future<void> _initializeData() async {
     isLoading.value = true;
     try {
-      print('🔵 DEBUG: Loading admin overview data...');
       await Future.wait([
         _loadPendingStudentRequests(),
         _loadSystemStats(),
         _loadRecentActivities(),
       ]);
-      print('✅ DEBUG: Admin overview data loaded successfully');
     } catch (e) {
-      print('❌ DEBUG: Error loading admin overview data: $e');
       ToastMessage.error('Failed to load admin data: ${e.toString()}');
     } finally {
       isLoading.value = false;
@@ -96,12 +92,18 @@ class AdminOverviewController extends GetxController {
 
       // Get all users from UserService
       final users = await _userService.getAllUsers();
-      
+
       // Exclude admin users from total count to match user management display
-      final nonAdminUsers = users.where((user) => user.role != UserRole.admin).toList();
+      final nonAdminUsers = users
+          .where((user) => user.role != UserRole.admin)
+          .toList();
       final totalUsers = nonAdminUsers.length;
-      final totalStudents = users.where((user) => user.role == UserRole.student).length;
-      final totalStaff = users.where((user) => user.role == UserRole.staff).length;
+      final totalStudents = users
+          .where((user) => user.role == UserRole.student)
+          .length;
+      final totalStaff = users
+          .where((user) => user.role == UserRole.staff)
+          .length;
 
       systemStats.addAll({
         'totalUsers': totalUsers,
@@ -109,7 +111,8 @@ class AdminOverviewController extends GetxController {
         'totalStaff': totalStaff,
         'pendingApprovals': pendingStudentRequests.length,
         'activeMenuItems': 45, // TODO: Get from menu service
-        'monthlyRevenue': totalStudents * 2500, // Estimated: students * average monthly cost
+        'monthlyRevenue':
+            totalStudents * 2500, // Estimated: students * average monthly cost
         'systemUptime': 99, // TODO: Get from system monitoring
         'activeConnections': totalUsers, // Approximate active connections
       });
@@ -204,13 +207,11 @@ class AdminOverviewController extends GetxController {
       );
 
       if (success) {
-        print('✅ DEBUG: Student request approved successfully');
-
         ToastMessage.success(
           'Student ${request.firstName} ${request.lastName} has been approved',
         );
 
-        // Refresh data
+        // Refresh data to update the dashboard
         await _loadSystemStats();
       } else {
         print('❌ DEBUG: Failed to approve student request');
