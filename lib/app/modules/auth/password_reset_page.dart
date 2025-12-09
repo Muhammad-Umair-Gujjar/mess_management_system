@@ -489,6 +489,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     FontAwesomeIcons.paperPlane,
@@ -497,11 +498,19 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
                   SizedBox(
                     width: ResponsiveHelper.getSpacing(context, 'small'),
                   ),
-                  Text(
-                    'Send Reset Instructions',
-                    style: AppTextStyles.button.copyWith(
-                      fontSize: ResponsiveHelper.getFontSize(context, 'button'),
-                      fontWeight: FontWeight.w600,
+                  Flexible(
+                    child: Text(
+                      'Send Reset Instructions',
+                      style: AppTextStyles.button.copyWith(
+                        fontSize: ResponsiveHelper.getFontSize(
+                          context,
+                          'button',
+                        ),
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                   ),
                 ],

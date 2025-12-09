@@ -427,6 +427,7 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     _getRoleIcon(authController.selectedRole.value),
@@ -435,11 +436,19 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
                   SizedBox(
                     width: ResponsiveHelper.getSpacing(context, 'small'),
                   ),
-                  Text(
-                    'Sign In as ${_getRoleTitle(authController.selectedRole.value)}',
-                    style: AppTextStyles.button.copyWith(
-                      fontSize: ResponsiveHelper.getFontSize(context, 'button'),
-                      fontWeight: FontWeight.w600,
+                  Flexible(
+                    child: Text(
+                      'Sign In as ${_getRoleTitle(authController.selectedRole.value)}',
+                      style: AppTextStyles.button.copyWith(
+                        fontSize: ResponsiveHelper.getFontSize(
+                          context,
+                          'button',
+                        ),
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                   ),
                 ],

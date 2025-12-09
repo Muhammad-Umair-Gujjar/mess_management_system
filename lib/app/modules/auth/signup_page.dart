@@ -525,6 +525,7 @@ class _SignupPageState extends State<SignupPage> {
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     FontAwesomeIcons.userPlus,
@@ -533,11 +534,19 @@ class _SignupPageState extends State<SignupPage> {
                   SizedBox(
                     width: ResponsiveHelper.getSpacing(context, 'small'),
                   ),
-                  Text(
-                    'Create Account',
-                    style: AppTextStyles.button.copyWith(
-                      fontSize: ResponsiveHelper.getFontSize(context, 'button'),
-                      fontWeight: FontWeight.w600,
+                  Flexible(
+                    child: Text(
+                      'Create Account',
+                      style: AppTextStyles.button.copyWith(
+                        fontSize: ResponsiveHelper.getFontSize(
+                          context,
+                          'button',
+                        ),
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                   ),
                 ],

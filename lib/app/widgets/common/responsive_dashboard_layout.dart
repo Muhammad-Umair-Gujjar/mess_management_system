@@ -81,7 +81,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
               SizedBox(
                 width: ResponsiveHelper.getValue<double>(
                   context,
-                  mobile: 200,
+                  mobile: 250,
                   tablet: 250,
                   desktop: 250,
                 ),

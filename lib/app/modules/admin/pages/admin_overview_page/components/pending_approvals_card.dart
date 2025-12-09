@@ -197,26 +197,27 @@ class PendingApprovalsCard extends StatelessWidget {
                                 'xs',
                               ),
                             ),
-                            Row(
-                              children: [
-                                _buildInfoChip(
-                                  context,
-                                  'Department',
-                                  request.department,
-                                ),
-                                SizedBox(
-                                  width: ResponsiveHelper.getSpacing(
+                            if (!ResponsiveHelper.isMobile(context))
+                              Row(
+                                children: [
+                                  _buildInfoChip(
                                     context,
-                                    'small',
+                                    'Department',
+                                    request.department,
                                   ),
-                                ),
-                                _buildInfoChip(
-                                  context,
-                                  'Semester',
-                                  '${request.semester}',
-                                ),
-                              ],
-                            ),
+                                  SizedBox(
+                                    width: ResponsiveHelper.getSpacing(
+                                      context,
+                                      'small',
+                                    ),
+                                  ),
+                                  _buildInfoChip(
+                                    context,
+                                    'Semester',
+                                    '${request.semester}',
+                                  ),
+                                ],
+                              ),
                           ],
                           SizedBox(
                             height: ResponsiveHelper.getSpacing(
