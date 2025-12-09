@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   bool _isDataLoaded = false;
   bool _showContent = false;
-  String _loadingText = 'Initializing MessMaster...';
+  String _loadingText = 'Initializing Hostel Mess Management...';
 
   @override
   void initState() {
@@ -172,23 +172,15 @@ class _SplashScreenState extends State<SplashScreen>
               ],
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   Icons.restaurant_menu,
-                  size: ResponsiveHelper.getIconSize(context, 'largeIcon'),
+                  size: ResponsiveHelper.getIconSize(context, 'large'),
                   color: AppColors.primary,
                 ),
-                SizedBox(height: ResponsiveHelper.getSpacing(context, 'xs')),
-                Text(
-                  'MessMaster',
-                  style: TextStyle(
-                    fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ],
+               ],
             ),
           ),
 
@@ -196,7 +188,8 @@ class _SplashScreenState extends State<SplashScreen>
 
           // App Title and Subtitle
           Text(
-            'MessMaster',
+            'Hostel Mess Management',
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: ResponsiveHelper.getFontSize(context, 'heading1'),
               fontWeight: FontWeight.bold,

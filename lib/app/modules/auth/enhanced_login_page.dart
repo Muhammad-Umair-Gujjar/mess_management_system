@@ -25,7 +25,7 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  Widget? _loginForm; // Cache the form widget to avoid duplicate keys
+  Widget? _cachedLoginForm; // Cache the form widget to avoid duplicate keys
 
   @override
   void dispose() {
@@ -35,8 +35,10 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
   }
 
   Widget _getLoginForm() {
-    _loginForm ??= _buildLoginForm();
-    return _loginForm!;
+    if (_cachedLoginForm == null) {
+      _cachedLoginForm = _buildLoginForm();
+    }
+    return _cachedLoginForm!;
   }
 
   @override
@@ -135,6 +137,7 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
         // App Name
         Text(
           AppStrings.appName,
+          textAlign: TextAlign.center,
           style: AppTextStyles.heading1.copyWith(
             fontSize: ResponsiveHelper.getFontSize(context, 'heading1'),
             color: ResponsiveHelper.isMobile(context)
@@ -427,7 +430,6 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     _getRoleIcon(authController.selectedRole.value),
@@ -436,7 +438,7 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
                   SizedBox(
                     width: ResponsiveHelper.getSpacing(context, 'small'),
                   ),
-                  Flexible(
+                  Expanded(
                     child: Text(
                       'Sign In as ${_getRoleTitle(authController.selectedRole.value)}',
                       style: AppTextStyles.button.copyWith(

@@ -21,7 +21,7 @@ class MessManagementApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'MessMaster - Smart Meal Attendance & Billing System',
+      title: 'Hostel Mess Management - Smart Meal Attendance & Billing System',
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
       initialRoute: '/',

@@ -53,14 +53,14 @@ class LandingAppBar extends StatelessWidget {
           child: Row(
             children: [
               // Logo and Brand
-              _buildLogo().animate().fadeIn(delay:  300.ms ).slideX(begin: -0.3),
+              _buildLogo().animate().fadeIn(delay: 300.ms).slideX(begin: -0.3),
 
               const Spacer(),
 
               // Navigation Menu
               _buildNavigationMenu()
                   .animate()
-                  .fadeIn(delay:  300.ms )
+                  .fadeIn(delay: 300.ms)
                   .slideY(begin: -0.3),
 
               SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
@@ -68,7 +68,7 @@ class LandingAppBar extends StatelessWidget {
               // Action Buttons
               _buildActionButtons()
                   .animate()
-                  .fadeIn(delay:  300.ms )
+                  .fadeIn(delay: 300.ms)
                   .slideX(begin: 0.3),
             ],
           ),
@@ -101,7 +101,7 @@ class LandingAppBar extends StatelessWidget {
               children: [
                 Flexible(
                   child: Text(
-                    'MessMaster',
+                    'Hostel Mess Management',
                     style: AppTextStyles.heading5.copyWith(
                       fontWeight: FontWeight.bold,
                       color: AppColors.primary,
@@ -275,7 +275,7 @@ class LandingAppBar extends StatelessWidget {
             ],
           ),
         ),
-      ).animate().fadeIn(duration:  300.ms ).scale(begin: const Offset(0.8, 0.8)),
+      ).animate().fadeIn(duration: 300.ms).scale(begin: const Offset(0.8, 0.8)),
     );
   }
 
@@ -328,7 +328,3 @@ class LandingAppBar extends StatelessWidget {
     );
   }
 }
-
-
-
-

@@ -418,8 +418,6 @@ class AuthService {
         },
       );
 
-      // Note: We don't sign out here to keep admin logged in
-      // The temporary user creation doesn't affect the current auth state
 
       return true;
     } catch (e) {

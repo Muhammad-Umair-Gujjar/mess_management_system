@@ -376,7 +376,7 @@ class StaffController extends GetxController {
       // case 3:
       //   return 'View detailed analytics'; // Commented out - can be enabled later
       default:
-        return 'Welcome to MessMaster Staff Panel';
+        return 'Welcome to Hostel Mess Management Staff Panel';
     }
   }
 }

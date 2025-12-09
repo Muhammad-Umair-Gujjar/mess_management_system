@@ -354,7 +354,7 @@ class DashboardNavigation extends StatelessWidget {
 
           // Version Info
           Text(
-            'MessMaster v1.0.0',
+            'Hostel Mess Management v1.0.0',
             style: AppTextStyles.caption.copyWith(color: AppColors.textLight),
           ),
         ],

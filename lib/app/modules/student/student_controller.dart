@@ -485,7 +485,7 @@ class StudentController extends GetxController {
       case 4:
         return 'Share your feedback';
       default:
-        return 'Welcome to MessMaster';
+        return 'Welcome to Hostel Mess Management';
     }
   }
 }

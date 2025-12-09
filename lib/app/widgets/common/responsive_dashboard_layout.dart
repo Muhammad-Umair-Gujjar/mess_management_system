@@ -47,7 +47,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
   void initState() {
     super.initState();
     _drawerAnimationController = AnimationController(
-      duration: const  Duration(milliseconds: 300) ,
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
   }
@@ -81,17 +81,17 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
               SizedBox(
                 width: ResponsiveHelper.getValue<double>(
                   context,
-                  mobile: 250,
+                  mobile: 320,
                   tablet: 250,
                   desktop: 250,
                 ),
                 child: _buildDesktopSidebar(),
-              ).animate().slideX(begin: -1.0, duration:  300.ms ),
+              ).animate().slideX(begin: -1.0, duration: 300.ms),
 
             // Main Content Area
             Expanded(
               child: AnimatedContainer(
-                duration: const  Duration(milliseconds: 300) ,
+                duration: const Duration(milliseconds: 300),
                 margin: ResponsiveHelper.getMargin(context, 'contentMargin'),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +108,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
                     Expanded(
                       child: AnimatedScale(
                         scale: ResponsiveHelper.isMobile(context) ? 1.0 : 1.0,
-                        duration: const  Duration(milliseconds: 300) ,
+                        duration: const Duration(milliseconds: 300),
                         child: SizedBox(
                           width: double.infinity,
                           child: widget.child,
@@ -171,11 +171,19 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
   }
 
   Widget _buildResponsiveDrawer() {
+    // Calculate responsive drawer width with better mobile optimization
+    final screenWidth = MediaQuery.of(context).size.width;
     final drawerWidth = ResponsiveHelper.getValue<double>(
       context,
-      mobile: MediaQuery.of(context).size.width * 0.56,
-      tablet: MediaQuery.of(context).size.width * 0.45,
-      desktop: 250,
+      mobile: (screenWidth * 0.55).clamp(
+        240.0,
+        300.0,
+      ), // 75% of screen width, but max 300px, min 240px
+      tablet: (screenWidth * 0.40).clamp(
+        280.0,
+        350.0,
+      ), // 40% of screen width, but max 350px, min 280px
+      desktop: 320.0, // Fixed width for desktop - slightly larger for comfort
     );
 
     return SizedBox(
@@ -225,7 +233,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
                           final isSelected = widget.currentIndex.value == index;
                           return _buildDrawerMenuItem(item, index, isSelected);
                         })
-                         .animate(delay: Duration(milliseconds: 50)) 
+                        .animate(delay: Duration(milliseconds: 50))
                         .slideX(begin: -0.5)
                         .fadeIn();
                   },
@@ -303,7 +311,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
           ),
         ],
       ),
-    ).animate().fadeIn(delay:  300.ms ).scale(begin: const Offset(0.8, 0.8));
+    ).animate().fadeIn(delay: 300.ms).scale(begin: const Offset(0.8, 0.8));
   }
 
   Widget _buildDrawerMenuItem(NavigationItem item, int index, bool isActive) {
@@ -322,7 +330,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
             Navigator.pop(context);
           },
           child: AnimatedContainer(
-            duration: const  Duration(milliseconds: 300) ,
+            duration: const Duration(milliseconds: 300),
             padding: ResponsiveHelper.getPadding(context, 'cardPadding'),
             decoration: BoxDecoration(
               gradient: isActive ? _getRoleGradient(widget.userRole) : null,
@@ -349,7 +357,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
             child: Row(
               children: [
                 AnimatedContainer(
-                  duration: const  Duration(milliseconds: 300) ,
+                  duration: const Duration(milliseconds: 300),
                   padding: EdgeInsets.all(
                     ResponsiveHelper.getSpacing(context, 'xs'),
                   ),
@@ -492,7 +500,7 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
           Text(
-            'MessMaster v1.0.0',
+            'Hostel Mess Management v1.0.0',
             style: TextStyle(
               fontSize: ResponsiveHelper.getFontSize(context, 'body3'),
               color: AppColors.textLight,
@@ -538,7 +546,3 @@ class _ResponsiveDashboardLayoutState extends State<ResponsiveDashboardLayout>
     }
   }
 }
-
-
-
-

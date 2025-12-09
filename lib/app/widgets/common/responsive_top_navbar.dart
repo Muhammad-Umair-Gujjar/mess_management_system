@@ -168,7 +168,7 @@ class _ResponsiveTopNavbarState extends State<ResponsiveTopNavbar>
         if (!isMobile) ...[
           SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
           Text(
-            'MessMaster',
+            'Hostel Mess Management',
             style: AppTextStyles.heading5.copyWith(
               fontSize: ResponsiveHelper.getFontSize(context, 'heading5'),
               fontWeight: FontWeight.w700,

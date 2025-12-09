@@ -123,64 +123,70 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Column(
-      children: [
-        // App Logo
-        Container(
-          padding: EdgeInsets.all(
-            ResponsiveHelper.getSpacing(context, 'large'),
-          ),
-          decoration: BoxDecoration(
-            gradient: AppColors.primaryGradient,
-            borderRadius: BorderRadius.circular(
-              ResponsiveHelper.getBorderRadius(context, 'large'),
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // App Logo
+          Container(
+            padding: EdgeInsets.all(
+              ResponsiveHelper.getSpacing(context, 'large'),
             ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withOpacity(0.3),
-                blurRadius: ResponsiveHelper.getSpacing(context, 'medium'),
-                offset: Offset(
-                  0,
-                  ResponsiveHelper.getSpacing(context, 'small'),
-                ),
+            decoration: BoxDecoration(
+              gradient: AppColors.primaryGradient,
+              borderRadius: BorderRadius.circular(
+                ResponsiveHelper.getBorderRadius(context, 'large'),
               ),
-            ],
-          ),
-          child: Icon(
-            FontAwesomeIcons.userPlus,
-            color: Colors.white,
-            size: ResponsiveHelper.getIconSize(context, 'xlarge'),
-          ),
-        ).animate().scale(delay: 300.ms),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.3),
+                  blurRadius: ResponsiveHelper.getSpacing(context, 'medium'),
+                  offset: Offset(
+                    0,
+                    ResponsiveHelper.getSpacing(context, 'small'),
+                  ),
+                ),
+              ],
+            ),
+            child: Icon(
+              FontAwesomeIcons.userPlus,
+              color: Colors.white,
+              size: ResponsiveHelper.getIconSize(context, 'xlarge'),
+            ),
+          ).animate().scale(delay: 300.ms),
 
-        SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
 
-        // Title
-        Text(
-          'Join ${AppStrings.appName}',
-          style: AppTextStyles.heading2.copyWith(
-            fontSize: ResponsiveHelper.getFontSize(context, 'heading2'),
-            color: ResponsiveHelper.isMobile(context)
-                ? Colors.black87
-                : AppColors.textPrimary,
-            fontWeight: FontWeight.bold,
+          // Title
+          Center(
+            child: Text(
+              'Join ${AppStrings.appName}',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.heading2.copyWith(
+                fontSize: ResponsiveHelper.getFontSize(context, 'heading2'),
+                color: ResponsiveHelper.isMobile(context)
+                    ? Colors.black87
+                    : AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.3),
           ),
-        ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.3),
 
-        SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
 
-        // Subtitle
-        Text(
-          'Create your account to get started',
-          style: AppTextStyles.body1.copyWith(
-            fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
-            color: ResponsiveHelper.isMobile(context)
-                ? Colors.black87.withOpacity(0.9)
-                : AppColors.textSecondary,
-          ),
-          textAlign: TextAlign.center,
-        ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.3),
-      ],
+          // Subtitle
+          Text(
+            'Create your account to get started',
+            style: AppTextStyles.body1.copyWith(
+              fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
+              color: ResponsiveHelper.isMobile(context)
+                  ? Colors.black87.withOpacity(0.9)
+                  : AppColors.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.3),
+        ],
+      ),
     );
   }
 
@@ -525,7 +531,7 @@ class _SignupPageState extends State<SignupPage> {
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
+                
                 children: [
                   Icon(
                     FontAwesomeIcons.userPlus,
@@ -534,20 +540,18 @@ class _SignupPageState extends State<SignupPage> {
                   SizedBox(
                     width: ResponsiveHelper.getSpacing(context, 'small'),
                   ),
-                  Flexible(
-                    child: Text(
-                      'Create Account',
-                      style: AppTextStyles.button.copyWith(
-                        fontSize: ResponsiveHelper.getFontSize(
-                          context,
-                          'button',
-                        ),
-                        fontWeight: FontWeight.w600,
+                  Text(
+                    'Create Account',
+                    style: AppTextStyles.button.copyWith(
+                      fontSize: ResponsiveHelper.getFontSize(
+                        context,
+                        'button',
                       ),
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
+                      fontWeight: FontWeight.w600,
                     ),
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ],
               ),

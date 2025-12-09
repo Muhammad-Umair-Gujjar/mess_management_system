@@ -19,7 +19,7 @@ class PasswordResetPage extends StatefulWidget {
 }
 
 class _PasswordResetPageState extends State<PasswordResetPage> {
-  final AuthController authController = Get.put(AuthController());
+  final AuthController authController = Get.find<AuthController>();
   final TextEditingController emailController = TextEditingController();
 
   bool isEmailSent = false;
@@ -489,7 +489,6 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     FontAwesomeIcons.paperPlane,
@@ -498,7 +497,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
                   SizedBox(
                     width: ResponsiveHelper.getSpacing(context, 'small'),
                   ),
-                  Flexible(
+                  Expanded(
                     child: Text(
                       'Send Reset Instructions',
                       style: AppTextStyles.button.copyWith(
