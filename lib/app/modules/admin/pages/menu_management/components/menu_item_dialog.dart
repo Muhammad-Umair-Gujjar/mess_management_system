@@ -98,15 +98,57 @@ class _MenuItemDialogState extends State<MenuItemDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = ResponsiveHelper.isMobile(context);
+
+    // For mobile, use full screen width dialog
+    if (isMobile) {
+      return Dialog(
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+          vertical: ResponsiveHelper.getSpacing(context, 'large'),
+        ),
+        child: Container(
+          width: double.infinity,
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.9,
+          ),
+          padding: EdgeInsets.symmetric(
+            vertical: ResponsiveHelper.getSpacing(context, 'large'),
+            horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+          ),
+          decoration: AppDecorations.floatingCard(),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDialogHeader(context),
+                SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+                _buildBasicInfoSection(context),
+                SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+                _buildCategoryAndWeekdaySection(context),
+                SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+                _buildDescriptionSection(context),
+                SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+                _buildNutritionSection(context),
+                SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+                _buildActionButtons(context),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    // For tablet and desktop, use fixed width dialog
     return Dialog(
       child: Container(
-        width: 
-            ResponsiveHelper.getResponsiveSpacing(
-                context,
-                mobile: double.infinity,
-                tablet: 550.0,
-                desktop: 600.0,
-              ),
+        width: ResponsiveHelper.getResponsiveSpacing(
+          context,
+          mobile: double.infinity,
+          tablet: 550.0,
+          desktop: 600.0,
+        ),
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height * 0.9,
         ),
@@ -185,7 +227,7 @@ class _MenuItemDialogState extends State<MenuItemDialog> {
         Row(
           children: [
             Expanded(child: _buildCategoryDropdown(context)),
-            SizedBox(width: ResponsiveHelper.getSpacing(context, 'large')),
+            SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
             Expanded(child: _buildWeekdayDropdown(context)),
           ],
         ),
@@ -197,6 +239,7 @@ class _MenuItemDialogState extends State<MenuItemDialog> {
   Widget _buildCategoryDropdown(BuildContext context) {
     return Obx(() {
       final categories = controller.mealCategories;
+      
       final categoryNames = categories.map((c) => c.name).toList();
 
       // Ensure selected category is valid
@@ -209,16 +252,21 @@ class _MenuItemDialogState extends State<MenuItemDialog> {
 
       return DropdownButtonFormField<String>(
         value: selectedCategory,
+        style: const TextStyle(       
+        // fontWeight: FontWeight.w600,
+        fontSize: 16,
+        color: Colors.black87,
+      ),
         decoration: InputDecoration(
           labelText: 'Category *',
-          prefixIcon: Icon(Icons.category),
+
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 13),
         ),
         items: categoryNames.map((category) {
           return DropdownMenuItem<String>(
             value: category,
-            child: Text(category),
+            child: Text(category,style: TextStyle(fontWeight: FontWeight.w400),),
           );
         }).toList(),
         onChanged: (value) {
@@ -235,11 +283,16 @@ class _MenuItemDialogState extends State<MenuItemDialog> {
   Widget _buildWeekdayDropdown(BuildContext context) {
     return DropdownButtonFormField<String>(
       value: selectedWeekday,
+       style: const TextStyle(        // 👈 This controls SELECTED item text
+        // fontWeight: FontWeight.w600,
+        fontSize: 16,
+        color: Colors.black87,
+      ),
       decoration: InputDecoration(
         labelText: 'Weekday *',
-        prefixIcon: Icon(Icons.calendar_today),
+
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+        contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 13),
       ),
       items: weekdays.map((weekday) {
         return DropdownMenuItem<String>(value: weekday, child: Text(weekday));
@@ -292,8 +345,8 @@ class _MenuItemDialogState extends State<MenuItemDialog> {
             Expanded(
               child: ReusableTextField(
                 controller: widget.proteinController,
-                label: 'Protein (g)',
-                hintText: '0.0',
+                label: 'Protein',
+                hintText: '0.0g',
                 type: TextFieldType.number,
               ),
             ),
@@ -301,8 +354,8 @@ class _MenuItemDialogState extends State<MenuItemDialog> {
             Expanded(
               child: ReusableTextField(
                 controller: widget.carbsController,
-                label: 'Carbs (g)',
-                hintText: '0.0',
+                label: 'Carbs',
+                hintText: '0.0g',
                 type: TextFieldType.number,
               ),
             ),
@@ -310,8 +363,8 @@ class _MenuItemDialogState extends State<MenuItemDialog> {
             Expanded(
               child: ReusableTextField(
                 controller: widget.fatController,
-                label: 'Fat (g)',
-                hintText: '0.0',
+                label: 'Fat',
+                hintText: '0.0g',
                 type: TextFieldType.number,
               ),
             ),

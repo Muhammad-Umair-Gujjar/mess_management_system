@@ -394,7 +394,7 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
     return SizedBox(
       height: ResponsiveHelper.getValue<double>(
         context,
-        mobile: 50,
+        mobile: 60,
         tablet: 55,
         desktop: 55,
       ),
@@ -433,23 +433,24 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
                 children: [
                   Icon(
                     _getRoleIcon(authController.selectedRole.value),
-                    size: ResponsiveHelper.getIconSize(context, 'medium'),
+                    size: ResponsiveHelper.isMobile(context)
+                        ? ResponsiveHelper.getIconSize(context, 'medium')
+                        : ResponsiveHelper.getIconSize(context, 'medium'),
                   ),
                   SizedBox(
                     width: ResponsiveHelper.getSpacing(context, 'small'),
                   ),
-                  Expanded(
+                  Flexible(
                     child: Text(
                       'Sign In as ${_getRoleTitle(authController.selectedRole.value)}',
                       style: AppTextStyles.button.copyWith(
-                        fontSize: ResponsiveHelper.getFontSize(
-                          context,
-                          'button',
-                        ),
+                        fontSize: ResponsiveHelper.isMobile(context)
+                            ? ResponsiveHelper.getFontSize(context, 'body1')
+                            : ResponsiveHelper.getFontSize(context, 'button'),
                         fontWeight: FontWeight.w600,
                       ),
                       textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
+                      overflow: TextOverflow.visible,
                       maxLines: 1,
                     ),
                   ),

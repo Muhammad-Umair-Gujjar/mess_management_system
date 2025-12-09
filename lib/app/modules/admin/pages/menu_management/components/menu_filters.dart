@@ -208,6 +208,8 @@ class MenuFilters extends StatelessWidget {
         ),
       ),
       style: TextStyle(
+        color: Colors.black,
+        fontWeight: FontWeight.w300,
         fontSize: ResponsiveHelper.getResponsiveFontSize(
           context,
           mobile: 12.0,
@@ -224,7 +226,7 @@ class MenuFilters extends StatelessWidget {
                 style: TextStyle(
                   fontSize: ResponsiveHelper.getResponsiveFontSize(
                     context,
-                    mobile: 12.0,
+                    mobile: 14.0,
                     tablet: 13.0,
                     desktop: 14.0,
                   ),
@@ -291,6 +293,7 @@ class MenuFilters extends StatelessWidget {
           ),
         ),
         labelStyle: TextStyle(
+  
           fontSize: ResponsiveHelper.getResponsiveFontSize(
             context,
             mobile: 12.0,
@@ -300,9 +303,11 @@ class MenuFilters extends StatelessWidget {
         ),
       ),
       style: TextStyle(
+        color: Colors.black,
+        fontWeight: FontWeight.w300,
         fontSize: ResponsiveHelper.getResponsiveFontSize(
           context,
-          mobile: 12.0,
+          mobile: 14.0,
           tablet: 13.0,
           desktop: 14.0,
         ),
@@ -316,7 +321,7 @@ class MenuFilters extends StatelessWidget {
                 style: TextStyle(
                   fontSize: ResponsiveHelper.getResponsiveFontSize(
                     context,
-                    mobile: 12.0,
+                    mobile: 14.0,
                     tablet: 13.0,
                     desktop: 14.0,
                   ),

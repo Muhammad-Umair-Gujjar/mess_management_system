@@ -497,7 +497,7 @@ class _SignupPageState extends State<SignupPage> {
     return SizedBox(
       height: ResponsiveHelper.getValue<double>(
         context,
-        mobile: 50,
+        mobile: 55,
         tablet: 55,
         desktop: 60,
       ),
@@ -531,27 +531,30 @@ class _SignupPageState extends State<SignupPage> {
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                
+
                 children: [
                   Icon(
                     FontAwesomeIcons.userPlus,
-                    size: ResponsiveHelper.getIconSize(context, 'medium'),
+                    size: ResponsiveHelper.isMobile(context)
+                        ? ResponsiveHelper.getIconSize(context, 'small')
+                        : ResponsiveHelper.getIconSize(context, 'medium'),
                   ),
                   SizedBox(
                     width: ResponsiveHelper.getSpacing(context, 'small'),
                   ),
-                  Text(
-                    'Create Account',
-                    style: AppTextStyles.button.copyWith(
-                      fontSize: ResponsiveHelper.getFontSize(
-                        context,
-                        'button',
+                  Flexible(
+                    child: Text(
+                      'Create Account',
+                      style: AppTextStyles.button.copyWith(
+                        fontSize: ResponsiveHelper.isMobile(context)
+                            ? ResponsiveHelper.getFontSize(context, 'body1')
+                            : ResponsiveHelper.getFontSize(context, 'button'),
+                        fontWeight: FontWeight.w600,
                       ),
-                      fontWeight: FontWeight.w600,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.visible,
+                      maxLines: 1,
                     ),
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
                   ),
                 ],
               ),

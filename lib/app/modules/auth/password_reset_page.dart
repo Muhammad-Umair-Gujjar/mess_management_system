@@ -459,7 +459,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
     return SizedBox(
       height: ResponsiveHelper.getValue<double>(
         context,
-        mobile: 50,
+        mobile: 60,
         tablet: 55,
         desktop: 60,
       ),
@@ -492,23 +492,24 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
                 children: [
                   Icon(
                     FontAwesomeIcons.paperPlane,
-                    size: ResponsiveHelper.getIconSize(context, 'medium'),
+                    size: ResponsiveHelper.isMobile(context)
+                        ? ResponsiveHelper.getIconSize(context, 'small')
+                        : ResponsiveHelper.getIconSize(context, 'medium'),
                   ),
                   SizedBox(
                     width: ResponsiveHelper.getSpacing(context, 'small'),
                   ),
-                  Expanded(
+                  Flexible(
                     child: Text(
                       'Send Reset Instructions',
                       style: AppTextStyles.button.copyWith(
-                        fontSize: ResponsiveHelper.getFontSize(
-                          context,
-                          'button',
-                        ),
+                        fontSize: ResponsiveHelper.isMobile(context)
+                            ? ResponsiveHelper.getFontSize(context, 'body1')
+                            : ResponsiveHelper.getFontSize(context, 'button'),
                         fontWeight: FontWeight.w600,
                       ),
                       textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
+                      overflow: TextOverflow.visible,
                       maxLines: 1,
                     ),
                   ),

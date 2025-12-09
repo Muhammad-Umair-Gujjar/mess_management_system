@@ -303,6 +303,7 @@ class MenuItemCard extends StatelessWidget {
         SizedBox(width: ResponsiveHelper.getSpacing(context, 'xs')),
         Text(
           text,
+        
           style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
         ),
       ],

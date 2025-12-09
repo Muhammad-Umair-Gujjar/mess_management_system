@@ -41,11 +41,17 @@ class RoleSelectionDropdown extends StatelessWidget {
           child: DropdownButtonFormField<UserRole>(
             value: selectedRole,
             decoration: InputDecoration(
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+              focusedErrorBorder: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(
                 horizontal: ResponsiveHelper.getSpacing(context, 'large'),
                 vertical: ResponsiveHelper.getSpacing(context, 'medium'),
               ),
-              border: InputBorder.none,
+              
           
 
             ),
@@ -167,11 +173,17 @@ class HostelSelectionDropdown extends StatelessWidget {
           child: DropdownButtonFormField<String>(
             value: selectedHostel,
             decoration: InputDecoration(
+               border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                focusedErrorBorder: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(
                 horizontal: ResponsiveHelper.getSpacing(context, 'large'),
                 vertical: ResponsiveHelper.getSpacing(context, 'medium'),
               ),
-              border: InputBorder.none,
+             
               prefixIcon: Icon(
                 FontAwesomeIcons.building,
                 color: AppColors.primary,
@@ -201,6 +213,7 @@ class HostelSelectionDropdown extends StatelessWidget {
             ),
           ),
         ),
+      
       ],
     );
   }
