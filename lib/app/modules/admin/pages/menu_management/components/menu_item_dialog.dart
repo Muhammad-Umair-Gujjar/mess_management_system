@@ -102,12 +102,12 @@ class _MenuItemDialogState extends State<MenuItemDialog> {
       child: Container(
         width: ResponsiveHelper.getResponsiveSpacing(
           context,
-          mobile: MediaQuery.of(context).size.width * 0.9,
-          tablet: 500.0,
+          mobile: double.infinity,
+          tablet: 550.0,
           desktop: 600.0,
         ),
         constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * 0.8,
+          maxHeight: MediaQuery.of(context).size.height * 0.9,
         ),
         padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),
         decoration: AppDecorations.floatingCard(),
@@ -175,7 +175,7 @@ class _MenuItemDialogState extends State<MenuItemDialog> {
       children: [
         Text(
           'Category & Scheduling',
-          style: AppTextStyles.heading4.copyWith(color: AppColors.textPrimary),
+          style: AppTextStyles.body1.copyWith(color: AppColors.textPrimary,fontWeight: FontWeight.w600),
         ),
         SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
         Row(
@@ -267,7 +267,7 @@ class _MenuItemDialogState extends State<MenuItemDialog> {
       children: [
         Text(
           'Nutritional Information',
-          style: AppTextStyles.heading4.copyWith(color: AppColors.textPrimary),
+          style: AppTextStyles.body1.copyWith(color: AppColors.textPrimary,fontWeight: FontWeight.w600),
         ),
         SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
         Row(

@@ -33,27 +33,37 @@ class PendingApprovalsCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text(
-                  'Pending Student Approvals',
-                  style: AppTextStyles.heading5,
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    'Pending Student Approvals',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.heading5,
+                  ),
                 ),
                 const Spacer(),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: ResponsiveHelper.getSpacing(context, 'small'),
-                    vertical: ResponsiveHelper.getSpacing(context, 'xs'),
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.error.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(
-                      ResponsiveHelper.getSpacing(context, 'small'),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+                      vertical: ResponsiveHelper.getSpacing(context, 'xs'),
                     ),
-                  ),
-                  child: Text(
-                    '${pendingRequests.length} pending',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.error,
-                      fontWeight: FontWeight.w600,
+                    decoration: BoxDecoration(
+                      color: AppColors.error.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(
+                        ResponsiveHelper.getSpacing(context, 'small'),
+                      ),
+                    ),
+                    child: Text(
+                      '${pendingRequests.length} pending',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.error,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),

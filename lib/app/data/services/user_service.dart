@@ -16,7 +16,7 @@ class UserService extends GetxService {
   /// Fetch all users (students and staff only) from Firebase
   Future<List<AppUser>> getAllUsers() async {
     try {
-      print('🔍 UserService: Fetching all users from Firebase...');
+      // UserService: Fetching all users from Firebase...
 
       // First try the whereIn query
       try {
@@ -73,9 +73,7 @@ class UserService extends GetxService {
         final data = doc.data() as Map<String, dynamic>;
         final user = AppUser.fromFirestore(data);
         users.add(user);
-        print(
-          '✅ UserService: Loaded user: ${user.fullName} (${user.role.name})',
-        );
+        // UserService: Loaded user: ${user.fullName} (${user.role.name})
       } catch (e) {
         print('❌ UserService: Error parsing user data for doc ${doc.id}: $e');
       }
@@ -87,7 +85,7 @@ class UserService extends GetxService {
   /// Fetch users by role (student or staff)
   Future<List<AppUser>> getUsersByRole(UserRole role) async {
     try {
-      print('🔍 UserService: Fetching ${role.name} users...');
+      // UserService: Fetching ${role.name} users...
 
       if (role == UserRole.admin) {
         print(
@@ -132,7 +130,7 @@ class UserService extends GetxService {
   /// Get student-specific data for a user
   Future<StudentData?> getStudentData(String uid) async {
     try {
-      print('🔍 UserService: Fetching student data for uid: $uid');
+      // UserService: Fetching student data for uid: $uid
 
       final DocumentSnapshot doc = await _firestore
           .collection(studentsCollection)
@@ -160,7 +158,7 @@ class UserService extends GetxService {
   /// Get staff-specific data for a user
   Future<StaffDetails?> getStaffData(String uid) async {
     try {
-      print('🔍 UserService: Fetching staff data for uid: $uid');
+      // UserService: Fetching staff data for uid: $uid
 
       final DocumentSnapshot doc = await _firestore
           .collection(staffCollection)
@@ -257,7 +255,7 @@ class UserService extends GetxService {
   /// Get user statistics
   Future<Map<String, int>> getUserStats() async {
     try {
-      print('📊 UserService: Calculating user statistics...');
+      // UserService: Calculating user statistics...
 
       final List<AppUser> allUsers = await getAllUsers();
 
@@ -277,7 +275,7 @@ class UserService extends GetxService {
             .length,
       };
 
-      print('✅ UserService: Statistics calculated: $stats');
+      // UserService: Statistics calculated
       return stats;
     } catch (e) {
       print('❌ UserService: Error calculating statistics: $e');

@@ -182,7 +182,7 @@ class AdminMenuController extends GetxController {
 
   /// Load all data
   Future<void> loadAllData() async {
-    print('🔵 DEBUG: AdminMenuController - loadAllData called');
+    // AdminMenuController - loadAllData called
     isLoading.value = true;
 
     try {
@@ -193,13 +193,13 @@ class AdminMenuController extends GetxController {
         loadMealCategories(),
         loadActiveSchedule(),
       ]);
-      print('✅ DEBUG: AdminMenuController - All data loaded successfully');
+      // AdminMenuController - All data loaded successfully
     } catch (e) {
-      print('❌ DEBUG: AdminMenuController - Error loading data: $e');
+      // AdminMenuController - Error loading data: $e
       ToastMessage.error('Failed to load menu data');
     } finally {
       isLoading.value = false;
-      print('🔵 DEBUG: AdminMenuController - loadAllData completed');
+      // AdminMenuController - loadAllData completed
     }
   }
 
@@ -208,7 +208,7 @@ class AdminMenuController extends GetxController {
     try {
       final items = await _menuService.getAllMenuItems();
       menuItems.value = items;
-      print('Loaded ${items.length} menu items');
+      // Loaded ${items.length} menu items
     } catch (e) {
       print('Error loading menu items: $e');
       ToastMessage.error('Failed to load menu items');
@@ -220,7 +220,7 @@ class AdminMenuController extends GetxController {
     try {
       final templates = await _menuService.getAllMenuTemplates();
       menuTemplates.value = templates;
-      print('Loaded ${templates.length} menu templates');
+      // Loaded ${templates.length} menu templates
     } catch (e) {
       print('Error loading menu templates: $e');
       ToastMessage.error('Failed to load menu templates');
@@ -232,7 +232,7 @@ class AdminMenuController extends GetxController {
     try {
       final rates = await _menuService.getAllMealRates();
       mealRates.value = rates;
-      print('Loaded ${rates.length} meal rates');
+      // Loaded ${rates.length} meal rates
     } catch (e) {
       print('Error loading meal rates: $e');
       ToastMessage.error('Failed to load meal rates');
@@ -263,7 +263,7 @@ class AdminMenuController extends GetxController {
     try {
       final schedule = await _menuService.getCurrentActiveSchedule();
       activeSchedule.value = schedule;
-      print('Active schedule loaded: ${schedule?.templateId ?? 'none'}');
+      // Active schedule loaded: ${schedule?.templateId ?? 'none'}
     } catch (e) {
       print('Error loading active schedule: $e');
       ToastMessage.error('Failed to load active schedule');
@@ -277,7 +277,7 @@ class AdminMenuController extends GetxController {
     _menuService.menuItemsStream.listen(
       (items) {
         menuItems.value = items;
-        print('Real-time update: ${items.length} menu items');
+        // Real-time update: ${items.length} menu items
       },
       onError: (error) {
         print('Error in menu items stream: $error');
@@ -288,7 +288,7 @@ class AdminMenuController extends GetxController {
     _menuService.activeMenuScheduleStream.listen(
       (schedule) {
         activeSchedule.value = schedule;
-        print('Real-time update: Active schedule changed');
+        // Real-time update: Active schedule changed
       },
       onError: (error) {
         print('Error in active schedule stream: $error');
@@ -299,7 +299,7 @@ class AdminMenuController extends GetxController {
     _menuService.mealRatesStream.listen(
       (rates) {
         mealRates.value = rates;
-        print('Real-time update: ${rates.length} meal rates');
+        // Real-time update: ${rates.length} meal rates
       },
       onError: (error) {
         print('Error in meal rates stream: $error');
@@ -330,7 +330,7 @@ class AdminMenuController extends GetxController {
     bool isVegan = false,
     bool isGlutenFree = false,
   }) async {
-    print('🔵 DEBUG: AdminMenuController - createMenuItem called');
+    // AdminMenuController - createMenuItem called
     print('  Name: $name');
     print('  Description: $description');
     print('  Price: $price');

@@ -7,7 +7,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/responsive_helper.dart';
 import '../../../core/theme/app_theme.dart';
-import 'auth_controller.dart';
+import 'controllers/auth_controller.dart';
 import 'enhanced_login_page.dart';
 import 'components/auth_helpers.dart';
 import 'components/auth_widgets.dart';
@@ -93,12 +93,12 @@ class _SignupPageState extends State<SignupPage> {
       children: [
         // Left side - Hero content
         Expanded(
-          flex: ResponsiveHelper.isTablet(context) ? 2 : 3,
+          flex: ResponsiveHelper.isTablet(context) ? 2 : 1,
           child: _buildHeroSection(context),
         ),
         // Right side - Signup form
         Expanded(
-          flex: ResponsiveHelper.isTablet(context) ? 3 : 4,
+          flex: ResponsiveHelper.isTablet(context) ? 3 : 1,
           child: Container(
             color: Colors.white,
             child: Center(
@@ -189,66 +189,90 @@ class _SignupPageState extends State<SignupPage> {
       padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'xlarge')),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildHeader(context),
 
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
           // Benefits
-          ...[
-            '🎓 Student Portal Access',
-            '📊 Real-time Updates',
-            '💰 Billing Management',
-            '🍽️ Menu Preferences',
-            '📱 Mobile Friendly',
-          ].asMap().entries.map((entry) {
-            final index = entry.key;
-            final benefit = entry.value;
-            return Padding(
-                  padding: EdgeInsets.only(
-                    bottom: ResponsiveHelper.getSpacing(context, 'medium'),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(
-                          ResponsiveHelper.getSpacing(context, 'small'),
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(
-                            ResponsiveHelper.getBorderRadius(context, 'small'),
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...[
+                  '🎓 Student Portal Access',
+                  '📊 Real-time Updates',
+                  '💰 Billing Management',
+                  '🍽️ Menu Preferences',
+                  '📱 Mobile Friendly',
+                ].asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final benefit = entry.value;
+                  return Padding(
+                        padding: EdgeInsets.only(
+                          bottom: ResponsiveHelper.getSpacing(
+                            context,
+                            'medium',
                           ),
                         ),
-                        child: Icon(
-                          FontAwesomeIcons.check,
-                          color: AppColors.primary,
-                          size: ResponsiveHelper.getIconSize(context, 'small'),
-                        ),
-                      ),
-                      SizedBox(
-                        width: ResponsiveHelper.getSpacing(context, 'medium'),
-                      ),
-                      Expanded(
-                        child: Text(
-                          benefit,
-                          style: AppTextStyles.body1.copyWith(
-                            fontSize: ResponsiveHelper.getFontSize(
-                              context,
-                              'body1',
-                            ),
-                            color: Colors.black87,
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(
+                                  ResponsiveHelper.getSpacing(context, 'small'),
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(
+                                    ResponsiveHelper.getBorderRadius(
+                                      context,
+                                      'small',
+                                    ),
+                                  ),
+                                ),
+                                child: Icon(
+                                  FontAwesomeIcons.check,
+                                  color: AppColors.primary,
+                                  size: ResponsiveHelper.getIconSize(
+                                    context,
+                                    'small',
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: ResponsiveHelper.getSpacing(
+                                  context,
+                                  'medium',
+                                ),
+                              ),
+                              Flexible(
+                                child: Text(
+                                  benefit,
+                                  style: AppTextStyles.body1.copyWith(
+                                    fontSize: ResponsiveHelper.getFontSize(
+                                      context,
+                                      'body1',
+                                    ),
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-                .animate()
-                .fadeIn(delay: (800 + index * 100).ms)
-                .slideX(begin: -0.3);
-          }),
+                      )
+                      .animate()
+                      .fadeIn(delay: (800 + index * 100).ms)
+                      .slideX(begin: -0.3);
+                }),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -475,8 +499,8 @@ class _SignupPageState extends State<SignupPage> {
         onPressed: authController.isLoading.value
             ? null
             : () {
-                print('🟢 DEBUG: Signup button pressed!');
-                print('  isLoading: ${authController.isLoading.value}');
+                // Signup button pressed!
+                // isLoading: ${authController.isLoading.value}
                 _handleSignup();
               },
         style: ElevatedButton.styleFrom(
@@ -551,7 +575,7 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   void _handleSignup() {
-    print('🔵 DEBUG: _handleSignup() called in signup_page.dart');
+    // _handleSignup() called in signup_page.dart
 
     // Validation
     if (_validateForm()) {
@@ -569,7 +593,7 @@ class _SignupPageState extends State<SignupPage> {
         confirmPassword: confirmPasswordController.text.trim(),
       );
     } else {
-      print('❌ DEBUG: Form validation failed');
+      // Form validation failed
     }
   }
 

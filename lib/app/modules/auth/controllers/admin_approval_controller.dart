@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:mess_management/app/modules/auth/auth_controller.dart';
-import '../../data/models/auth_models.dart';
-import '../../data/services/auth_service.dart';
+import 'package:mess_management/app/modules/auth/controllers/auth_controller.dart';
+import '../../../data/models/auth_models.dart';
+import '../../../data/services/auth_service.dart';
 
 /// Controller for managing student approval requests in admin dashboard
 class AdminApprovalController extends GetxController {

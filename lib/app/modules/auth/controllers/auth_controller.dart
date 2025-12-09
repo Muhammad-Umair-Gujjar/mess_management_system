@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../data/models/auth_models.dart';
-import '../../data/services/auth_service.dart';
-import '../../routes/app_routes.dart';
-import 'components/auth_helpers.dart';
-import '../../../core/utils/toast_message.dart';
-import '../user/user_controller.dart';
+import '../../../data/models/auth_models.dart';
+import '../../../data/services/auth_service.dart';
+import '../../../routes/app_routes.dart';
+import '../components/auth_helpers.dart';
+import '../../../../core/utils/toast_message.dart';
+import '../../user/user_controller.dart';
 
 class AuthController extends GetxController {
   static AuthController get instance => Get.find();
@@ -90,7 +90,7 @@ class AuthController extends GetxController {
   /// Setup default admin and staff accounts
   Future<void> _setupDefaultAccounts() async {
     try {
-      print('🔵 DEBUG: Setting up default accounts...');
+      // Setting up default accounts...
 
       // Setup default admin account
       await _authService.createDefaultStaffAccount(
@@ -112,7 +112,7 @@ class AuthController extends GetxController {
         department: 'Kitchen',
       );
 
-      print('✅ DEBUG: Default accounts setup completed');
+      // Default accounts setup completed
     } catch (e) {
       print('⚠️ DEBUG: Default accounts setup error (might already exist): $e');
     }
@@ -147,10 +147,10 @@ class AuthController extends GetxController {
 
   /// Student Signup
   Future<void> studentSignup() async {
-    print('🔵 DEBUG: studentSignup() called');
+    // studentSignup() called
 
     // Skip form validation for now, do manual validation
-    print('🔵 DEBUG: Doing manual validation instead of form validation');
+    // Doing manual validation instead of form validation
 
     print('✅ DEBUG: Form validation passed');
     _clearErrors();
@@ -165,7 +165,7 @@ class AuthController extends GetxController {
       final rollNumber = rollNumberController.text.trim();
       final roomNumber = roomNumberController.text.trim();
 
-      print('🔵 DEBUG: Form data collected:');
+      // Form data collected:
       print('  Email: $email');
       print('  First Name: $firstName');
       print('  Last Name: $lastName');
@@ -224,7 +224,7 @@ class AuthController extends GetxController {
         throw Exception(rollNumberValidation);
       }
 
-      print('🔵 DEBUG: Creating StudentSignupRequest...');
+      // Creating StudentSignupRequest...
       final request = StudentSignupRequest(
         email: email,
         firstName: firstName,
@@ -242,7 +242,7 @@ class AuthController extends GetxController {
 
       final result = await _authService.studentSignup(request);
 
-      print('🔵 DEBUG: _authService.studentSignup completed');
+      // _authService.studentSignup completed
       print('  Result success: ${result.success}');
       print('  Result type: ${result.type}');
       print('  Result message: ${result.errorMessage}');
@@ -290,7 +290,7 @@ class AuthController extends GetxController {
       final email = emailController.text.trim();
       final password = passwordController.text.trim();
 
-      print('🔵 DEBUG: Login data:');
+      // Login data:
       print('  Email: $email');
       print('  Password: ${password.isNotEmpty ? "[PROVIDED]" : "[EMPTY]"}');
       print('  Selected Role: ${selectedUserRole.value}');
@@ -314,12 +314,12 @@ class AuthController extends GetxController {
         throw Exception(passwordValidation);
       }
 
-      print('🔵 DEBUG: Determining login type...');
+      // Determining login type...
       if (selectedUserRole.value == UserRole.student) {
-        print('🔵 DEBUG: Calling studentLogin...');
+        // Calling studentLogin...
         result = await _authService.studentLogin(email, password);
       } else {
-        print('🔵 DEBUG: Calling staffAdminLogin...');
+        // Calling staffAdminLogin...
         result = await _authService.staffAdminLogin(
           email,
           password,
@@ -327,7 +327,7 @@ class AuthController extends GetxController {
         );
       }
 
-      print('🔵 DEBUG: Login service call completed');
+      // Login service call completed
       print('  Result success: ${result.success}');
       print('  Result type: ${result.type}');
       print('  Result message: ${result.errorMessage}');

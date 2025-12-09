@@ -8,7 +8,7 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/responsive_helper.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../data/models/auth_models.dart';
-import 'auth_controller.dart';
+import 'controllers/auth_controller.dart';
 import 'password_reset_page.dart';
 import 'signup_page.dart';
 import 'components/auth_dropdowns.dart';
@@ -25,11 +25,18 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  Widget? _loginForm; // Cache the form widget to avoid duplicate keys
+
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+
+  Widget _getLoginForm() {
+    _loginForm ??= _buildLoginForm();
+    return _loginForm!;
   }
 
   @override
@@ -54,7 +61,7 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
           _buildHeader(),
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
-          _buildLoginForm(),
+          _getLoginForm(),
         ],
       ),
     );
@@ -65,12 +72,12 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
       children: [
         // Left side - Hero content
         Expanded(
-          flex: ResponsiveHelper.isTablet(context) ? 2 : 3,
+          flex: ResponsiveHelper.isTablet(context) ? 2 : 1,
           child: _buildHeroSection(),
         ),
         // Right side - Login form
         Expanded(
-          flex: ResponsiveHelper.isTablet(context) ? 2 : 3,
+          flex: ResponsiveHelper.isTablet(context) ? 3 : 1,
           child: Container(
             color: Colors.white,
             child: Center(
@@ -83,7 +90,7 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
                   horizontal: ResponsiveHelper.getSpacing(context, 'xlarge'),
                   vertical: ResponsiveHelper.getSpacing(context, 'large'),
                 ),
-                child: SingleChildScrollView(child: _buildLoginForm()),
+                child: SingleChildScrollView(child: _getLoginForm()),
               ),
             ),
           ),
@@ -159,65 +166,89 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
       padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'xlarge')),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildHeader(),
 
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
           // Features
-          ...[
-            '📊 Real-time Attendance Tracking',
-            '💳 Automated Billing System',
-            '🍽️ Dynamic Menu Management',
-            '📱 Multi-role Dashboard Access',
-          ].asMap().entries.map((entry) {
-            final index = entry.key;
-            final feature = entry.value;
-            return Padding(
-                  padding: EdgeInsets.only(
-                    bottom: ResponsiveHelper.getSpacing(context, 'medium'),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(
-                          ResponsiveHelper.getSpacing(context, 'small'),
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(
-                            ResponsiveHelper.getBorderRadius(context, 'small'),
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...[
+                  '📊 Real-time Attendance Tracking',
+                  '💳 Automated Billing System',
+                  '🍽️ Dynamic Menu Management',
+                  '📱 Multi-role Dashboard Access',
+                ].asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final feature = entry.value;
+                  return Padding(
+                        padding: EdgeInsets.only(
+                          bottom: ResponsiveHelper.getSpacing(
+                            context,
+                            'medium',
                           ),
                         ),
-                        child: Icon(
-                          FontAwesomeIcons.check,
-                          color: AppColors.primary,
-                          size: ResponsiveHelper.getIconSize(context, 'small'),
-                        ),
-                      ),
-                      SizedBox(
-                        width: ResponsiveHelper.getSpacing(context, 'medium'),
-                      ),
-                      Expanded(
-                        child: Text(
-                          feature,
-                          style: AppTextStyles.body1.copyWith(
-                            fontSize: ResponsiveHelper.getFontSize(
-                              context,
-                              'body1',
-                            ),
-                            color: Colors.black87,
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(
+                                  ResponsiveHelper.getSpacing(context, 'small'),
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(
+                                    ResponsiveHelper.getBorderRadius(
+                                      context,
+                                      'small',
+                                    ),
+                                  ),
+                                ),
+                                child: Icon(
+                                  FontAwesomeIcons.check,
+                                  color: AppColors.primary,
+                                  size: ResponsiveHelper.getIconSize(
+                                    context,
+                                    'small',
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: ResponsiveHelper.getSpacing(
+                                  context,
+                                  'medium',
+                                ),
+                              ),
+                              Flexible(
+                                child: Text(
+                                  feature,
+                                  style: AppTextStyles.body1.copyWith(
+                                    fontSize: ResponsiveHelper.getFontSize(
+                                      context,
+                                      'body1',
+                                    ),
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-                .animate()
-                .fadeIn(delay: (800 + index * 100).ms)
-                .slideX(begin: -0.3);
-          }),
+                      )
+                      .animate()
+                      .fadeIn(delay: (800 + index * 100).ms)
+                      .slideX(begin: -0.3);
+                }),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -362,14 +393,14 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
         context,
         mobile: 50,
         tablet: 55,
-        desktop: 60,
+        desktop: 55,
       ),
       child: ElevatedButton(
         onPressed: authController.isLoading.value
             ? null
             : () {
-                print('🟢 DEBUG: Login button pressed!');
-                print('  isLoading: ${authController.isLoading.value}');
+                // Login button pressed!
+                // isLoading: ${authController.isLoading.value}
                 _handleLogin();
               },
         style: ElevatedButton.styleFrom(
@@ -479,29 +510,20 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
   }
 
   void _handleLogin() {
-    print('🔵 DEBUG: _handleLogin() called in enhanced_login_page.dart');
+    // _handleLogin() called in enhanced_login_page.dart
 
     // Basic validation
     if (emailController.text.trim().isEmpty) {
-      print('❌ DEBUG: Email is empty');
+      // Email is empty
       Get.snackbar('Error', 'Please enter your email');
       return;
     }
 
     if (passwordController.text.trim().isEmpty) {
-      print('❌ DEBUG: Password is empty');
+      // Password is empty
       Get.snackbar('Error', 'Please enter your password');
       return;
     }
-
-    print(
-      '✅ DEBUG: Basic validation passed, calling authController.loginWithCredentials...',
-    );
-    print('  Email: ${emailController.text.trim()}');
-    print(
-      '  Password: ${passwordController.text.trim().isNotEmpty ? "[PROVIDED]" : "[EMPTY]"}',
-    );
-    print('  Role: ${authController.selectedRole.value}');
 
     // Call auth controller with form data
     authController.loginWithCredentials(

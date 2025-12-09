@@ -8,7 +8,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/responsive_helper.dart';
 import '../../../widgets/common/responsive_dashboard_layout.dart';
-import '../../auth/auth_controller.dart';
+import '../../auth/controllers/auth_controller.dart';
 import '../../user/user_controller.dart';
 import '../student_controller.dart';
 import 'student_home_page/student_home_page.dart';

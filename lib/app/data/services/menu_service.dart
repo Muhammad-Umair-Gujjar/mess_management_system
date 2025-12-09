@@ -24,7 +24,7 @@ class MenuService extends GetxService {
 
   /// Get all menu items
   Future<List<MenuItem>> getAllMenuItems() async {
-    print('🔵 DEBUG: MenuService - getAllMenuItems called');
+    // MenuService - getAllMenuItems called
     try {
       final snapshot = await _firestore
           .collection(_menuItemsCollection)
@@ -35,10 +35,10 @@ class MenuService extends GetxService {
           .map((doc) => MenuItem.fromFirestore(doc))
           .toList();
 
-      print('✅ DEBUG: MenuService - Retrieved ${items.length} menu items');
+      // MenuService - Retrieved ${items.length} menu items
       return items;
     } catch (e) {
-      print('❌ DEBUG: MenuService - Error getting menu items: $e');
+      // MenuService - Error getting menu items: $e
       print('   Stack trace: ${StackTrace.current}');
       return [];
     }
@@ -81,7 +81,7 @@ class MenuService extends GetxService {
 
   /// Create new menu item
   Future<String?> createMenuItem(MenuItem item) async {
-    print('🔵 DEBUG: MenuService - createMenuItem called');
+    // MenuService - createMenuItem called
     print('   Item name: ${item.name}');
     print('   Item category: ${item.category}');
     print('   Item weekday: ${item.weekday}');
@@ -264,7 +264,7 @@ class MenuService extends GetxService {
 
   /// Get current active schedule
   Future<ActiveMenuSchedule?> getCurrentActiveSchedule() async {
-    print('🔵 DEBUG: MenuService - getCurrentActiveSchedule called');
+    // MenuService - getCurrentActiveSchedule called
     try {
       final snapshot = await _firestore
           .collection(_activeMenuScheduleCollection)
@@ -280,7 +280,7 @@ class MenuService extends GetxService {
         return schedule;
       }
 
-      print('🟡 DEBUG: MenuService - No active schedule found');
+      // MenuService - No active schedule found
       return null;
     } catch (e) {
       print('❌ DEBUG: MenuService - Error getting active schedule: $e');
@@ -452,7 +452,7 @@ class MenuService extends GetxService {
     DateTime startDate,
   ) async {
     try {
-      print('🔵 DEBUG: MenuService - getWeeklyMenu called for $startDate');
+      // MenuService - getWeeklyMenu called for $startDate
 
       // Get all menu items from Firestore
       final allMenuItems = await getAllMenuItems();

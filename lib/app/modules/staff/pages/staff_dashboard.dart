@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../../auth/auth_controller.dart';
+import '../../auth/controllers/auth_controller.dart';
 import '../../user/user_controller.dart';
 
 import '../../../../core/theme/app_decorations.dart';

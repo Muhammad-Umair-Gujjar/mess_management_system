@@ -149,7 +149,7 @@ class MenuFilters extends StatelessWidget {
           uniqueCategories.add(categoryName);
         }
       } catch (e) {
-        print('🔴 DEBUG: Error processing category: $category, Error: $e');
+        // Error processing category: $category, Error: $e
       }
     }
     dropdownItems.addAll(uniqueCategories.toList()..sort());
@@ -236,7 +236,7 @@ class MenuFilters extends StatelessWidget {
           .toList(),
       onChanged: (value) {
         if (value != null) {
-          print('🔵 DEBUG: Category changed to: $value');
+          // Category changed to: $value
           onCategoryChanged(value);
         }
       },

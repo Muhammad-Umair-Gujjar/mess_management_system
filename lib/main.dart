@@ -12,7 +12,6 @@ void main() async {
   // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  print("🔥 Firebase Connected Successfully!");
   runApp(const MessManagementApp());
 }
 

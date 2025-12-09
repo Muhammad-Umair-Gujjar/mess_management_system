@@ -66,7 +66,7 @@ class StudentController extends GetxController {
   }
 
   void loadStudentData() {
-    print('🔵 DEBUG: StudentController - loadStudentData called');
+    // StudentController - loadStudentData called
     isLoading.value = true;
 
     // Load current student (Ali Ahmed) - using dummy data for now
@@ -95,7 +95,7 @@ class StudentController extends GetxController {
     _calculateMonthlyBilling();
     _calculateAttendanceRate();
 
-    print('✅ DEBUG: StudentController - Student data loaded successfully');
+    // StudentController - Student data loaded successfully
     isLoading.value = false;
   }
 
@@ -160,7 +160,7 @@ class StudentController extends GetxController {
     try {
       final schedule = await _menuService.getCurrentActiveSchedule();
       activeMenuSchedule.value = schedule;
-      print('Active schedule loaded: ${schedule?.templateId ?? 'none'}');
+      // Active schedule loaded: ${schedule?.templateId ?? 'none'}
     } catch (e) {
       print('Error loading active schedule: $e');
     }

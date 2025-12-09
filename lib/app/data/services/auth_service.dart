@@ -52,7 +52,7 @@ class AuthService {
       }
       return null;
     } catch (e) {
-      print('Error fetching student data: $e');
+      // Error fetching student data: $e
       return null;
     }
   }
@@ -482,26 +482,22 @@ class AuthService {
 
   /// Get pending student requests (Admin only) - Alternative simple method
   Stream<List<StudentRequest>> getPendingStudentRequestsSimple() {
-    print('🔵 DEBUG: Using simple getPendingStudentRequestsSimple method...');
-    print('🔵 DEBUG: Collection: $_studentRequestsCollection');
+    // Using simple getPendingStudentRequestsSimple method...
+    // Collection: $_studentRequestsCollection
 
     return _firestore.collection(_studentRequestsCollection).snapshots().map((
       snapshot,
     ) {
-      print(
-        '🔵 DEBUG: Simple method - Firestore snapshot received - ${snapshot.docs.length} total documents',
-      );
+      // Simple method - Firestore snapshot received - ${snapshot.docs.length} total documents
 
       final allRequests = snapshot.docs
           .map((doc) {
             try {
               final data = doc.data();
-              print(
-                '🔵 DEBUG: Document ID: ${doc.id}, Status: ${data['status']}',
-              );
+              // Document ID: ${doc.id}, Status: ${data['status']}
               return StudentRequest.fromFirestore(data);
             } catch (e) {
-              print('❌ DEBUG: Error parsing document ${doc.id}: $e');
+              // Error parsing document ${doc.id}: $e
               return null;
             }
           })
@@ -517,15 +513,7 @@ class AuthService {
       // Sort by requestedAt in code
       pendingRequests.sort((a, b) => b.requestedAt.compareTo(a.requestedAt));
 
-      print(
-        '🔵 DEBUG: Filtered to ${pendingRequests.length} pending requests out of ${allRequests.length} total',
-      );
-
-      for (var request in pendingRequests) {
-        print(
-          '  - PENDING: ${request.firstName} ${request.lastName} (${request.email})',
-        );
-      }
+      // Filtered to ${pendingRequests.length} pending requests out of ${allRequests.length} total
 
       return pendingRequests;
     });
@@ -534,24 +522,22 @@ class AuthService {
   /// Get pending student requests (Admin only)
   /// Fixed: Removed orderBy to avoid Firestore composite index requirement
   Stream<List<StudentRequest>> getPendingStudentRequests() {
-    print('🔵 DEBUG: Setting up getPendingStudentRequests stream...');
-    print('🔵 DEBUG: Collection: $_studentRequestsCollection');
-    print('🔵 DEBUG: Looking for status: ${RequestStatus.pending.name}');
+    // Setting up getPendingStudentRequests stream...
+    // Collection: $_studentRequestsCollection
+    // Looking for status: ${RequestStatus.pending.name}
 
     return _firestore
         .collection(_studentRequestsCollection)
         .where('status', isEqualTo: RequestStatus.pending.name)
         .snapshots()
         .map((snapshot) {
-          print(
-            '🔵 DEBUG: Firestore snapshot received - ${snapshot.docs.length} documents',
-          );
+          // Firestore snapshot received - ${snapshot.docs.length} documents
 
           for (var doc in snapshot.docs) {
             final data = doc.data();
-            print('🔵 DEBUG: Document ID: ${doc.id}');
-            print('🔵 DEBUG: Document data: $data');
-            print('🔵 DEBUG: Status field: ${data['status']}');
+            // Document ID: ${doc.id}
+            // Document data: $data
+            // Status field: ${data['status']}
           }
 
           final requests = snapshot.docs
@@ -559,7 +545,7 @@ class AuthService {
                 try {
                   return StudentRequest.fromFirestore(doc.data());
                 } catch (e) {
-                  print('❌ DEBUG: Error parsing document ${doc.id}: $e');
+                  // Error parsing document ${doc.id}: $e
                   return null;
                 }
               })
@@ -814,7 +800,7 @@ class AuthService {
   }) async {
     // Implement external email service integration
     // This could use Firebase Cloud Functions, SendGrid, etc.
-    print('Email to $email: $subject - $message');
+    // Email to $email: $subject - $message
   }
 
   Future<void> _logActivity({
@@ -847,7 +833,7 @@ class AuthService {
           .get();
 
       if (existingUser.docs.isNotEmpty) {
-        print('✅ DEBUG: Default account $email already exists');
+        // Default account $email already exists
         return true;
       }
 

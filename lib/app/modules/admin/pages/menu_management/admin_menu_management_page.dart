@@ -22,10 +22,7 @@ import 'components/menu_item_dialog.dart';
 import 'components/category_card.dart';
 import 'components/nutrition_analytics.dart';
 
-/// Main admin menu management page with Firebase integration
-///
-/// This page now uses Firebase backend through AdminMenuController
-/// instead of dummy data for complete CRUD operations.
+
 class AdminMenuManagementPage extends StatefulWidget {
   const AdminMenuManagementPage({super.key});
 

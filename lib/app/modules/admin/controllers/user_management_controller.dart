@@ -28,7 +28,7 @@ class UserManagementController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    print('🟢 UserManagementController: Initializing...');
+    // UserManagementController: Initializing...
 
     // Initialize user service if not already done
     _ensureServiceInitialized();
@@ -39,7 +39,7 @@ class UserManagementController extends GetxController {
     // Set up reactive filters
     _setupReactiveFilters();
 
-    print('✅ UserManagementController: Initialization complete');
+    // UserManagementController: Initialization complete
   }
 
   void _ensureServiceInitialized() {
@@ -65,7 +65,7 @@ class UserManagementController extends GetxController {
   Future<void> loadUsers() async {
     try {
       isLoading.value = true;
-      print('🔄 UserManagementController: Loading users from Firebase...');
+      // UserManagementController: Loading users from Firebase...
 
       final users = await _userService.getAllUsers();
       allUsers.value = users;
@@ -109,7 +109,7 @@ class UserManagementController extends GetxController {
 
   /// Load additional data for students and staff
   Future<void> _loadAdditionalUserData(List<AppUser> users) async {
-    print('🔄 Loading additional user data...');
+    // Loading additional user data...
 
     for (final user in users) {
       if (user.role == UserRole.student) {
@@ -125,7 +125,7 @@ class UserManagementController extends GetxController {
       }
     }
 
-    print('✅ Additional user data loaded');
+    // Additional user data loaded
   }
 
   /// Load user statistics
@@ -133,7 +133,7 @@ class UserManagementController extends GetxController {
     try {
       final stats = await _userService.getUserStats();
       userStats.value = stats;
-      print('📊 User stats loaded: $stats');
+      // User stats loaded
     } catch (e) {
       print('❌ Error loading user stats: $e');
     }
@@ -196,7 +196,7 @@ class UserManagementController extends GetxController {
     }
 
     filteredUsers.value = filtered;
-    print('✅ Filter applied: ${filtered.length} users match criteria');
+    // Filter applied: ${filtered.length} users match criteria
   }
 
   /// Update search query

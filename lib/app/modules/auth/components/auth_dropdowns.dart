@@ -46,11 +46,8 @@ class RoleSelectionDropdown extends StatelessWidget {
                 vertical: ResponsiveHelper.getSpacing(context, 'medium'),
               ),
               border: InputBorder.none,
-              prefixIcon: Icon(
-                _getRoleIcon(selectedRole),
-                color: _getRoleColor(selectedRole),
-                size: ResponsiveHelper.getIconSize(context, 'medium'),
-              ),
+          
+
             ),
             items: UserRole.values.map((role) {
               return DropdownMenuItem(

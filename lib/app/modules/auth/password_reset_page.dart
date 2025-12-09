@@ -6,7 +6,7 @@ import '../../../app/widgets/common/reusable_text_field.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/utils/responsive_helper.dart';
 import '../../../core/theme/app_theme.dart';
-import 'auth_controller.dart';
+import 'controllers/auth_controller.dart';
 import 'enhanced_login_page.dart';
 import 'components/auth_helpers.dart';
 import 'components/auth_widgets.dart';
@@ -78,12 +78,12 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
       children: [
         // Left side - Hero content
         Expanded(
-          flex: ResponsiveHelper.isTablet(context) ? 1 : 2,
+          flex: ResponsiveHelper.isTablet(context) ? 1 : 1,
           child: _buildHeroSection(),
         ),
         // Right side - Reset form
         Expanded(
-          flex: ResponsiveHelper.isTablet(context) ? 2 : 3,
+          flex: ResponsiveHelper.isTablet(context) ? 2 : 1,
           child: Container(
             color: Colors.white.withOpacity(0.95),
             child: Center(
@@ -150,7 +150,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
 
         // Subtitle
         Text(
-          "No worries! Enter your email and we'll send you reset instructions",
+          "No worries! Enter your email and we'll \nsend you reset instructions",
           style: AppTextStyles.body1.copyWith(
             fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
             color: ResponsiveHelper.isMobile(context)
@@ -170,75 +170,96 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _buildHeader(),
 
             SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
             // Steps
-            ...[
-              '📧 Enter your email address',
-              '✉️ Check your inbox',
-              '🔗 Click the reset link',
-              '🔐 Create new password',
-              '✅ Sign in with new password',
-            ].asMap().entries.map((entry) {
-              final index = entry.key;
-              final step = entry.value;
-              return Padding(
-                    padding: EdgeInsets.only(
-                      bottom: ResponsiveHelper.getSpacing(context, 'medium'),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(
-                            ResponsiveHelper.getSpacing(context, 'small'),
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(
-                              ResponsiveHelper.getBorderRadius(
-                                context,
-                                'small',
-                              ),
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ...[
+                    '📧 Enter your email address',
+                    '✉️ Check your inbox',
+                    '🔗 Click the reset link',
+                    '🔐 Create new password',
+                    '✅ Sign in with new password',
+                  ].asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final step = entry.value;
+                    return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: ResponsiveHelper.getSpacing(
+                              context,
+                              'medium',
                             ),
                           ),
-                          child: Text(
-                            '${index + 1}',
-                            style: AppTextStyles.body2.copyWith(
-                              fontSize: ResponsiveHelper.getFontSize(
-                                context,
-                                'body2',
-                              ),
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.bold,
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(
+                                    ResponsiveHelper.getSpacing(
+                                      context,
+                                      'small',
+                                    ),
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(
+                                      ResponsiveHelper.getBorderRadius(
+                                        context,
+                                        'small',
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    '${index + 1}',
+                                    style: AppTextStyles.body2.copyWith(
+                                      fontSize: ResponsiveHelper.getFontSize(
+                                        context,
+                                        'body2',
+                                      ),
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: ResponsiveHelper.getSpacing(
+                                    context,
+                                    'medium',
+                                  ),
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    step,
+                                    style: AppTextStyles.body1.copyWith(
+                                      fontSize: ResponsiveHelper.getFontSize(
+                                        context,
+                                        'body1',
+                                      ),
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          width: ResponsiveHelper.getSpacing(context, 'medium'),
-                        ),
-                        Expanded(
-                          child: Text(
-                            step,
-                            style: AppTextStyles.body1.copyWith(
-                              fontSize: ResponsiveHelper.getFontSize(
-                                context,
-                                'body1',
-                              ),
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                  .animate()
-                  .fadeIn(delay: (800 + index * 100).ms)
-                  .slideX(begin: -0.3);
-            }),
+                        )
+                        .animate()
+                        .fadeIn(delay: (800 + index * 100).ms)
+                        .slideX(begin: -0.3);
+                  }),
+                ],
+              ),
+            ),
           ],
         ),
       ),

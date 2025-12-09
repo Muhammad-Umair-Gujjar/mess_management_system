@@ -27,18 +27,18 @@ class UserController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    print('🔵 DEBUG: UserController onInit() called');
+    // UserController onInit() called
   }
 
   /// Fetch current user data from Firestore using Firebase Auth UID
   Future<void> fetchCurrentUserData() async {
     try {
       isLoading.value = true;
-      print('🔵 DEBUG: UserController - Fetching user data...');
+      // UserController - Fetching user data...
 
       final user = await _authService.currentUser;
       if (user != null) {
-        print('🔵 DEBUG: UserController - User found: ${user.email}');
+        // UserController - User found: ${user.email}
         currentUser.value = user;
         print(
           '✅ DEBUG: UserController - User data loaded: ${user.fullName} (${user.email})',
@@ -85,7 +85,7 @@ class UserController extends GetxController {
 
   /// Set user data directly (used after login)
   Future<void> setUserData(AppUser user) async {
-    print('🔵 DEBUG: UserController - Setting user data: ${user.fullName}');
+    // UserController - Setting user data
     currentUser.value = user;
 
     // If user is a student, fetch student data

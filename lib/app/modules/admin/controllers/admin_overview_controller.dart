@@ -48,7 +48,7 @@ class AdminOverviewController extends GetxController {
   /// Updated to show real-time pending requests count
   Future<void> _loadPendingStudentRequests() async {
     try {
-      print('🔵 DEBUG: Setting up pending student requests listener...');
+      // Setting up pending student requests listener...
 
       // Use simple method to avoid index issues
       _authService.getPendingStudentRequestsSimple().listen(
@@ -64,7 +64,7 @@ class AdminOverviewController extends GetxController {
           print(
             '🔵 DEBUG: Updated systemStats pendingApprovals to: $currentCount',
           );
-          print('🔵 DEBUG: Current systemStats: $systemStats');
+          // Current systemStats: $systemStats
 
           for (var request in requests) {
             print(
@@ -76,7 +76,7 @@ class AdminOverviewController extends GetxController {
           systemStats.refresh();
         },
         onError: (error) {
-          print('❌ DEBUG: Error in AdminOverviewController stream: $error');
+          // Error in AdminOverviewController stream: $error
         },
       );
     } catch (e) {
@@ -88,7 +88,7 @@ class AdminOverviewController extends GetxController {
   /// Load system statistics
   Future<void> _loadSystemStats() async {
     try {
-      print('🔵 DEBUG: Loading system stats...');
+      // Loading system stats...
 
       // Get all users from UserService
       final users = await _userService.getAllUsers();
@@ -117,7 +117,7 @@ class AdminOverviewController extends GetxController {
         'activeConnections': totalUsers, // Approximate active connections
       });
 
-      print('✅ DEBUG: System stats loaded: $systemStats');
+      // System stats loaded
     } catch (e) {
       print('❌ DEBUG: Error loading system stats: $e');
       // Set default values on error
@@ -137,7 +137,7 @@ class AdminOverviewController extends GetxController {
   /// Load recent activities (placeholder for now)
   Future<void> _loadRecentActivities() async {
     try {
-      print('🔵 DEBUG: Loading recent activities...');
+      // Loading recent activities...
 
       // TODO: Implement real activity logging
       recentActivities.value = [
@@ -164,7 +164,7 @@ class AdminOverviewController extends GetxController {
         },
       ];
 
-      print('✅ DEBUG: Recent activities loaded');
+      // Recent activities loaded
     } catch (e) {
       print('❌ DEBUG: Error loading recent activities: $e');
     }
@@ -191,7 +191,7 @@ class AdminOverviewController extends GetxController {
 
   /// Approve a student request
   Future<void> approveStudentRequest(StudentRequest request) async {
-    print('🔵 DEBUG: Approving student request for ${request.email}');
+    // Approving student request for ${request.email}
 
     if (isProcessingRequest.value) {
       print('⚠️ DEBUG: Already processing a request, please wait');
