@@ -339,7 +339,7 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
               prefixIcon: FontAwesomeIcons.lock,
             ).animate().fadeIn(delay: 900.ms).slideX(begin: -0.3),
 
-            SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'xsmall')),
 
             // Remember Me & Forgot Password Row
             _buildRememberForgotRow(),

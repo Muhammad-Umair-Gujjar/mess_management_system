@@ -183,7 +183,7 @@ class PendingApprovalsCard extends StatelessWidget {
                               SizedBox(
                                 width: ResponsiveHelper.getSpacing(
                                   context,
-                                  'small',
+                                  'xs',
                                 ),
                               ),
                               _buildInfoChip(context, 'Hostel', request.hostel),
@@ -288,6 +288,7 @@ class PendingApprovalsCard extends StatelessWidget {
       ),
       child: Text(
         '$label: $value',
+        overflow: TextOverflow.ellipsis,
         style: AppTextStyles.caption.copyWith(
           color: AppColors.primary,
           fontWeight: FontWeight.w500,

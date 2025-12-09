@@ -56,7 +56,7 @@ class AttendanceCalendarCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
-          flex: 3,
+          flex: (ResponsiveHelper.isMobile(context) ? 7 : 5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -74,6 +74,7 @@ class AttendanceCalendarCard extends StatelessWidget {
               SizedBox(height: ResponsiveHelper.getSpacing(context, 'xs')),
               Text(
                 'Track your daily meal attendance',
+
                 style: AppTextStyles.body2.copyWith(
                   color: AppColors.textLight,
                   fontSize: ResponsiveHelper.getResponsiveFontSize(
@@ -87,7 +88,7 @@ class AttendanceCalendarCard extends StatelessWidget {
             ],
           ),
         ),
-        Expanded(flex: 2, child: _buildFormatToggle(context)),
+        Expanded(flex: (ResponsiveHelper.isMobile(context) ? 5 : 3), child: _buildFormatToggle(context)),
       ],
     );
   }
