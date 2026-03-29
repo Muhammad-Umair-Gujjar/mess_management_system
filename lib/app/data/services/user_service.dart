@@ -12,6 +12,7 @@ class UserService extends GetxService {
   static const String usersCollection = 'users';
   static const String studentsCollection = 'students';
   static const String staffCollection = 'staff';
+  static const String attendanceSubcollection = 'attendance';
 
   /// Fetch all users (students and staff only) from Firebase
   Future<List<AppUser>> getAllUsers() async {
@@ -318,5 +319,173 @@ class UserService extends GetxService {
       print('❌ UserService: Error creating user stream: $e');
       return const Stream.empty();
     }
+  }
+
+  /// Mark a student's attendance for a specific meal on a specific date.
+  ///
+  /// Stored path:
+  /// students/{uid}/attendance/{yyyy-MM}
+  ///   daily.{dd}.{meal}.isPresent
+  Future<void> markStudentMealAttendance({
+    required String userUid,
+    required DateTime date,
+    required String mealType,
+    required bool isPresent,
+    required String markedBy,
+  }) async {
+    try {
+      final normalizedMeal = _normalizeMealType(mealType);
+      final monthId = _monthId(date);
+      final dayId = _dayId(date);
+
+      final DocumentReference monthDoc = _firestore
+          .collection(studentsCollection)
+          .doc(userUid)
+          .collection(attendanceSubcollection)
+          .doc(monthId);
+
+      // Ensure root metadata always exists.
+      await monthDoc.set({
+        'month': monthId,
+        'studentUid': userUid,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      // Use update with dotted field paths to guarantee nested map writes.
+      await monthDoc.update({
+        'daily.$dayId.$normalizedMeal.isPresent': isPresent,
+        'daily.$dayId.$normalizedMeal.markedBy': markedBy,
+        'daily.$dayId.$normalizedMeal.markedAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      print(
+        '[ATTENDANCE DEBUG] Saved students/$userUid/attendance/$monthId daily.$dayId.$normalizedMeal.isPresent=$isPresent',
+      );
+    } catch (e) {
+      print('[ATTENDANCE DEBUG] Error saving attendance for $userUid: $e');
+      rethrow;
+    }
+  }
+
+  /// Get a student's monthly attendance map.
+  ///
+  /// Returns map shape similar to:
+  /// {
+  ///   "01": {"breakfast": {"isPresent": true}, "dinner": {"isPresent": false}},
+  ///   "02": { ... }
+  /// }
+  Future<Map<String, dynamic>> getStudentMonthlyAttendance({
+    required String userUid,
+    required DateTime month,
+  }) async {
+    try {
+      final monthId = _monthId(month);
+      print(
+        '[ATTENDANCE DEBUG] Fetching students/$userUid/attendance/$monthId',
+      );
+
+      final DocumentSnapshot snapshot = await _firestore
+          .collection(studentsCollection)
+          .doc(userUid)
+          .collection(attendanceSubcollection)
+          .doc(monthId)
+          .get();
+
+      if (!snapshot.exists) {
+        print(
+          '[ATTENDANCE DEBUG] No monthly attendance document found at students/$userUid/attendance/$monthId',
+        );
+        return {};
+      }
+
+      final data = snapshot.data();
+      if (data is! Map<String, dynamic>) {
+        print(
+          '[ATTENDANCE DEBUG] Invalid monthly attendance payload type at students/$userUid/attendance/$monthId: ${data.runtimeType}',
+        );
+        return {};
+      }
+
+      final daily = data['daily'];
+      if (daily is Map<String, dynamic>) {
+        print(
+          '[ATTENDANCE DEBUG] Loaded daily keys for students/$userUid/attendance/$monthId: ${daily.keys.toList()}',
+        );
+        return daily;
+      }
+      if (daily is Map) {
+        final converted = Map<String, dynamic>.from(daily);
+        print(
+          '[ATTENDANCE DEBUG] Loaded daily keys for students/$userUid/attendance/$monthId: ${converted.keys.toList()}',
+        );
+        return converted;
+      }
+
+      // Backward-compatibility fallback: some docs may have flat dotted keys
+      // like "daily.27.breakfast.isPresent" instead of nested daily map.
+      final reconstructed = _reconstructDailyMapFromFlatKeys(data);
+      if (reconstructed.isNotEmpty) {
+        print(
+          '[ATTENDANCE DEBUG] Reconstructed daily keys from flat fields for students/$userUid/attendance/$monthId: ${reconstructed.keys.toList()}',
+        );
+        return reconstructed;
+      }
+
+      print(
+        '[ATTENDANCE DEBUG] Field daily missing/invalid at students/$userUid/attendance/$monthId. Type: ${daily.runtimeType}',
+      );
+
+      return {};
+    } catch (e) {
+      print(
+        '[ATTENDANCE DEBUG] Error fetching students/$userUid attendance month: $e',
+      );
+      return {};
+    }
+  }
+
+  String _monthId(DateTime date) {
+    final month = date.month.toString().padLeft(2, '0');
+    return '${date.year}-$month';
+  }
+
+  String _dayId(DateTime date) => date.day.toString().padLeft(2, '0');
+
+  String _normalizeMealType(String mealType) {
+    final normalized = mealType.trim().toLowerCase();
+    return normalized == 'breakfast' ? 'breakfast' : 'dinner';
+  }
+
+  Map<String, dynamic> _reconstructDailyMapFromFlatKeys(
+    Map<String, dynamic> data,
+  ) {
+    final reconstructed = <String, dynamic>{};
+
+    for (final entry in data.entries) {
+      final key = entry.key;
+      if (!key.startsWith('daily.')) {
+        continue;
+      }
+
+      final parts = key.split('.');
+      if (parts.length < 4) {
+        continue;
+      }
+
+      final day = parts[1];
+      final meal = parts[2];
+      final field = parts.sublist(3).join('.');
+
+      final dayMap =
+          reconstructed.putIfAbsent(day, () => <String, dynamic>{})
+              as Map<String, dynamic>;
+      final mealMap =
+          dayMap.putIfAbsent(meal, () => <String, dynamic>{})
+              as Map<String, dynamic>;
+      mealMap[field] = entry.value;
+    }
+
+    return reconstructed;
   }
 }

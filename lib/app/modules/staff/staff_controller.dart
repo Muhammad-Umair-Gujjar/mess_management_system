@@ -8,6 +8,7 @@ import '../../data/models/menu.dart';
 import '../../data/services/dummy_data_service.dart';
 import '../../data/services/user_service.dart';
 import '../../data/models/auth_models.dart';
+import '../user/user_controller.dart';
 import '../../widgets/dashboard_navigation.dart';
 import 'controllers/staff_student_controller.dart';
 
@@ -24,6 +25,19 @@ class StaffController extends GetxController {
   var selectedMealType = MealType.breakfast.obs;
   var searchQuery = ''.obs;
   var statusFilter = 'All'.obs;
+
+  // Attendance cache: studentId_roll + day + meal -> status
+  final RxMap<String, bool?> _attendanceStatusCache = <String, bool?>{}.obs;
+
+  // Mapping from roll number shown in UI to actual user uid in students/users data
+  final RxMap<String, String> _rollToUid = <String, String>{}.obs;
+
+  final Set<String> _loadedAttendanceMonths = <String>{};
+  final Set<String> _loadingAttendanceMonths = <String>{};
+  Worker? _studentFilterWorker;
+  Worker? _authUserWorker;
+  String _loadedForStaffUid = '';
+  bool _isLoadingStaffData = false;
 
   // Staff navigation items
   final List<NavigationItem> navigationItems = [
@@ -62,36 +76,76 @@ class StaffController extends GetxController {
     super.onInit();
     // Initialize student controller
     _studentController = Get.put(StaffStudentController());
-    loadStaffData();
-  }
 
-  void loadStaffData() async {
-    isLoading.value = true;
-
-    // Load real student data from Firebase via student controller
-    await _studentController.loadStudents();
-
-    // Update filtered students to use real data
-    ever(_studentController.filteredStudents, (students) {
+    _studentFilterWorker = ever(_studentController.filteredStudents, (
+      students,
+    ) {
       // Convert AppUser objects to Map format for UI compatibility
       filteredStudents.value = _studentController.studentsAsMap;
       allStudents.value = _studentController.studentsAsMap;
+      _rebuildRollToUidMap();
     });
 
-    // Initial load
-    filteredStudents.value = _studentController.studentsAsMap;
-    allStudents.value = _studentController.studentsAsMap;
+    if (Get.isRegistered<UserController>()) {
+      final userController = Get.find<UserController>();
+      _authUserWorker = ever<AppUser?>(userController.currentUser, (user) {
+        if (user == null || user.role != UserRole.staff) {
+          _loadedForStaffUid = '';
+          _clearAttendanceState();
+          return;
+        }
 
-    // Load attendance records
-    attendanceList.value = DummyDataService.getAttendance();
+        if (_loadedForStaffUid != user.uid) {
+          _loadedForStaffUid = user.uid;
+          loadStaffData(forceReloadAttendance: true);
+        }
+      });
+    }
 
-    // Load menu items
-    menuItems.value = DummyDataService.getWeeklyMenu();
+    loadStaffData(forceReloadAttendance: true);
+  }
 
-    // Load meal rates
-    mealRates.value = DummyDataService.getMealRates();
+  @override
+  void onClose() {
+    _studentFilterWorker?.dispose();
+    _authUserWorker?.dispose();
+    super.onClose();
+  }
 
-    isLoading.value = false;
+  Future<void> loadStaffData({bool forceReloadAttendance = false}) async {
+    if (_isLoadingStaffData) {
+      return;
+    }
+
+    _isLoadingStaffData = true;
+    isLoading.value = true;
+
+    try {
+      // Load real student data from Firebase via student controller
+      await _studentController.loadStudents();
+
+      // Initial load
+      filteredStudents.value = _studentController.studentsAsMap;
+      allStudents.value = _studentController.studentsAsMap;
+      _rebuildRollToUidMap();
+
+      _clearAttendanceState();
+
+      // Preload current month attendance for all loaded students
+      await ensureMonthlyAttendanceLoaded(
+        DateTime.now(),
+        forceReload: forceReloadAttendance,
+      );
+
+      // Load menu items
+      menuItems.value = DummyDataService.getWeeklyMenu();
+
+      // Load meal rates
+      mealRates.value = DummyDataService.getMealRates();
+    } finally {
+      isLoading.value = false;
+      _isLoadingStaffData = false;
+    }
   }
 
   // Navigation methods
@@ -122,42 +176,162 @@ class StaffController extends GetxController {
 
   // Attendance management methods
   bool? isStudentPresent(String studentId, String mealType, DateTime date) {
-    // Check if student has attendance marked for this meal and date
-    // Return true if present, false if absent, null if not marked
-    // This would typically check a database or local storage
-    // For demo purposes, return null (not marked)
-    return null;
+    final monthKey = _monthKey(date);
+    if (!_loadedAttendanceMonths.contains(monthKey) &&
+        !_loadingAttendanceMonths.contains(monthKey)) {
+      // Lazy-load month attendance when card first asks for this date.
+      ensureMonthlyAttendanceLoaded(date);
+    }
+
+    final key = _attendanceKey(studentId, date, mealType);
+    return _attendanceStatusCache[key];
   }
 
-  void markAttendance(
+  Future<bool> markAttendance(
     String studentId,
     String mealType,
     DateTime date,
-    bool isPresent,
-  ) {
-    // Mark attendance for a student for specific meal and date
-    print(
-      'Marking $studentId as ${isPresent ? 'present' : 'absent'} for $mealType on $date',
-    );
+    bool isPresent, {
+    bool showToast = true,
+  }) async {
+    final key = _attendanceKey(studentId, date, mealType);
+    final previousValue = _attendanceStatusCache[key];
 
-    // Update UI to reflect changes
+    // Optimistic update so UI toggles instantly.
+    _attendanceStatusCache[key] = isPresent;
     filteredStudents.refresh();
 
-    // Show success message
-    ToastMessage.success('Attendance marked for ${_getStudentName(studentId)}');
+    final studentUid = _rollToUid[studentId];
+    if (studentUid == null || studentUid.isEmpty) {
+      if (previousValue == null) {
+        _attendanceStatusCache.remove(key);
+      } else {
+        _attendanceStatusCache[key] = previousValue;
+      }
+      filteredStudents.refresh();
+      ToastMessage.error(
+        'Could not resolve user for ${_getStudentName(studentId)}',
+      );
+      return false;
+    }
+
+    try {
+      await _userService.markStudentMealAttendance(
+        userUid: studentUid,
+        date: date,
+        mealType: mealType,
+        isPresent: isPresent,
+        markedBy: _currentStaffId(),
+      );
+
+      _upsertAttendanceRecord(studentId, mealType, date, isPresent);
+
+      if (showToast) {
+        ToastMessage.success(
+          'Attendance marked for ${_getStudentName(studentId)}',
+        );
+      }
+      return true;
+    } catch (e) {
+      if (previousValue == null) {
+        _attendanceStatusCache.remove(key);
+      } else {
+        _attendanceStatusCache[key] = previousValue;
+      }
+      filteredStudents.refresh();
+      ToastMessage.error(
+        'Failed to mark attendance for ${_getStudentName(studentId)}',
+      );
+      return false;
+    }
   }
 
-  void markAllAttendance(String mealType, DateTime date, bool isPresent) {
+  Future<void> markAllAttendance(
+    String mealType,
+    DateTime date,
+    bool isPresent,
+  ) async {
     // Mark all students as present/absent for specific meal and date
+    int failed = 0;
     for (final student in filteredStudents) {
-      markAttendance(student['id'], mealType, date, isPresent);
+      final success = await markAttendance(
+        student['id'],
+        mealType,
+        date,
+        isPresent,
+        showToast: false,
+      );
+      if (!success) {
+        failed++;
+      }
+    }
+
+    if (failed > 0) {
+      ToastMessage.error('Could not mark $failed student records');
     }
   }
 
   List<dynamic> getEventsForDay(DateTime day) {
-    // Return events (attendance data) for calendar view
-    // This would typically fetch from attendance records
-    return [];
+    final hasAnyMarked = _rollToUid.keys.any((studentId) {
+      final breakfast =
+          _attendanceStatusCache[_attendanceKey(studentId, day, 'breakfast')];
+      final dinner =
+          _attendanceStatusCache[_attendanceKey(studentId, day, 'dinner')];
+      return breakfast != null || dinner != null;
+    });
+
+    return hasAnyMarked ? ['attendance_marked'] : [];
+  }
+
+  Future<void> ensureMonthlyAttendanceLoaded(
+    DateTime date, {
+    bool forceReload = false,
+  }) async {
+    final month = _monthKey(date);
+
+    if (forceReload) {
+      _loadedAttendanceMonths.remove(month);
+    }
+
+    if (_loadedAttendanceMonths.contains(month) ||
+        _loadingAttendanceMonths.contains(month)) {
+      return;
+    }
+
+    if (_rollToUid.isEmpty) {
+      _rebuildRollToUidMap();
+    }
+
+    if (_rollToUid.isEmpty) {
+      return;
+    }
+
+    _loadingAttendanceMonths.add(month);
+    try {
+      final entries = _rollToUid.entries.toList();
+      await Future.wait(
+        entries.map((entry) async {
+          final dailyData = await _userService.getStudentMonthlyAttendance(
+            userUid: entry.value,
+            month: date,
+          );
+          _applyMonthlyAttendanceToCache(entry.key, date, dailyData);
+        }),
+      );
+
+      _loadedAttendanceMonths.add(month);
+      filteredStudents.refresh();
+    } catch (_) {
+    } finally {
+      _loadingAttendanceMonths.remove(month);
+    }
+  }
+
+  void _clearAttendanceState() {
+    _attendanceStatusCache.clear();
+    _loadedAttendanceMonths.clear();
+    _loadingAttendanceMonths.clear();
+    attendanceList.clear();
   }
 
   String _getStudentName(String studentId) {
@@ -166,6 +340,137 @@ class StaffController extends GetxController {
       orElse: () => {'name': 'Unknown'},
     );
     return student['name'];
+  }
+
+  void _rebuildRollToUidMap() {
+    final map = <String, String>{};
+
+    for (final student in _studentController.allStudents) {
+      final details = _studentController.studentDetails[student.uid];
+      final rollNumber = details?['rollNumber']?.toString() ?? '';
+      if (rollNumber.isNotEmpty && rollNumber != 'N/A') {
+        map[rollNumber] = student.uid;
+      }
+    }
+
+    _rollToUid.value = map;
+  }
+
+  String _currentStaffId() {
+    if (Get.isRegistered<UserController>()) {
+      final user = Get.find<UserController>().currentUser.value;
+      if (user != null && user.uid.isNotEmpty) {
+        return user.uid;
+      }
+    }
+    return 'staff';
+  }
+
+  void _applyMonthlyAttendanceToCache(
+    String studentId,
+    DateTime monthDate,
+    Map<String, dynamic> dailyData,
+  ) {
+    for (final dayEntry in dailyData.entries) {
+      final dayRaw = dayEntry.key;
+      final dayNumber = int.tryParse(dayRaw);
+      if (dayNumber == null) {
+        continue;
+      }
+
+      final dayValue = dayEntry.value;
+      if (dayValue is! Map) {
+        continue;
+      }
+
+      final dayMap = Map<String, dynamic>.from(dayValue);
+      final date = DateTime(monthDate.year, monthDate.month, dayNumber);
+
+      _setMealFromDayMap(studentId, date, dayMap, 'breakfast');
+      _setMealFromDayMap(studentId, date, dayMap, 'dinner');
+    }
+  }
+
+  void _setMealFromDayMap(
+    String studentId,
+    DateTime date,
+    Map<String, dynamic> dayMap,
+    String mealType,
+  ) {
+    final mealRaw = dayMap[mealType];
+    bool? isPresent;
+
+    if (mealRaw is bool) {
+      isPresent = mealRaw;
+    } else if (mealRaw is Map) {
+      final mealMap = Map<String, dynamic>.from(mealRaw);
+      final rawPresence = mealMap['isPresent'];
+      if (rawPresence is bool) {
+        isPresent = rawPresence;
+      }
+    }
+
+    if (isPresent != null) {
+      _attendanceStatusCache[_attendanceKey(studentId, date, mealType)] =
+          isPresent;
+      _upsertAttendanceRecord(studentId, mealType, date, isPresent);
+    }
+  }
+
+  void _upsertAttendanceRecord(
+    String studentId,
+    String mealType,
+    DateTime date,
+    bool isPresent,
+  ) {
+    final mealTypeEnum = _mealTypeFromString(mealType);
+
+    attendanceList.removeWhere(
+      (a) =>
+          a.studentId == studentId &&
+          a.date.year == date.year &&
+          a.date.month == date.month &&
+          a.date.day == date.day &&
+          a.mealType == mealTypeEnum,
+    );
+
+    attendanceList.add(
+      Attendance(
+        id: 'att_${DateTime.now().millisecondsSinceEpoch}',
+        studentId: studentId,
+        date: date,
+        mealType: mealTypeEnum,
+        isPresent: isPresent,
+        markedAt: DateTime.now(),
+        markedBy: _currentStaffId(),
+      ),
+    );
+  }
+
+  MealType _mealTypeFromString(String mealType) {
+    return _normalizeMealType(mealType) == 'breakfast'
+        ? MealType.breakfast
+        : MealType.dinner;
+  }
+
+  String _normalizeMealType(String mealType) {
+    final normalized = mealType.trim().toLowerCase();
+    return normalized == 'breakfast' ? 'breakfast' : 'dinner';
+  }
+
+  String _dateKey(DateTime date) {
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+    return '${date.year}-$month-$day';
+  }
+
+  String _monthKey(DateTime date) {
+    final month = date.month.toString().padLeft(2, '0');
+    return '${date.year}-$month';
+  }
+
+  String _attendanceKey(String studentId, DateTime date, String mealType) {
+    return '${studentId}_${_dateKey(date)}_${_normalizeMealType(mealType)}';
   }
 
   void markAttendanceOld(String studentId, MealType mealType, bool isPresent) {
@@ -211,7 +516,7 @@ class StaffController extends GetxController {
 
   // Statistics methods
   Map<String, dynamic> getTodayStats() {
-    final today = DateTime.now();
+    final today = selectedDate.value;
     final todayAttendance = attendanceList
         .where(
           (a) =>

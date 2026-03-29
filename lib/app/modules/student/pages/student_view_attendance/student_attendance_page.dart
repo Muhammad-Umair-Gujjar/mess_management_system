@@ -27,6 +27,11 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
     super.initState();
     _selectedDay = ValueNotifier(DateTime.now());
     _pageController = PageController();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final controller = Get.find<StudentController>();
+      controller.preloadAttendanceForDate(_selectedDay.value);
+    });
   }
 
   @override
@@ -66,6 +71,7 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
                 _selectedDay.value = selectedDay;
                 _focusedDay = focusedDay;
               });
+              controller.preloadAttendanceForDate(selectedDay);
             },
             onFormatChanged: (format) {
               setState(() {
@@ -76,6 +82,7 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
               setState(() {
                 _focusedDay = focusedDay;
               });
+              controller.preloadAttendanceForDate(focusedDay);
             },
             onCalendarFormatChanged: (format) {
               setState(() {
@@ -109,6 +116,7 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
                     _selectedDay.value = selectedDay;
                     _focusedDay = focusedDay;
                   });
+                  controller.preloadAttendanceForDate(selectedDay);
                 },
                 onFormatChanged: (format) {
                   setState(() {
@@ -119,6 +127,7 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
                   setState(() {
                     _focusedDay = focusedDay;
                   });
+                  controller.preloadAttendanceForDate(focusedDay);
                 },
                 onCalendarFormatChanged: (format) {
                   setState(() {
@@ -151,7 +160,3 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
     );
   }
 }
-
-
-
-

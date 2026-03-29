@@ -25,7 +25,9 @@ class ActiveStudentsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final studentController = Get.find<StaffStudentController>();
+    final studentController = Get.isRegistered<StaffStudentController>()
+        ? Get.find<StaffStudentController>()
+        : Get.put(StaffStudentController());
 
     return Container(
       padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'large')),

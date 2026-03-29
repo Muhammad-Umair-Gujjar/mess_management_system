@@ -2,15 +2,22 @@ import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import '../../data/models/student.dart';
+import '../../data/models/auth_models.dart';
 import '../../../core/utils/toast_message.dart';
 import '../../data/models/attendance.dart';
 import '../../data/models/menu.dart';
 import '../../data/services/dummy_data_service.dart';
 import '../../data/services/menu_service.dart';
+import '../../data/services/user_service.dart';
+import '../../data/services/auth_service.dart';
+import '../user/user_controller.dart';
 import '../../widgets/dashboard_navigation.dart';
 
 class StudentController extends GetxController {
   final MenuService _menuService = Get.find<MenuService>();
+  final UserService _userService = Get.find<UserService>();
+  final UserController _userController = Get.find<UserController>();
+  final AuthService _authService = AuthService();
 
   var isLoading = false.obs;
   var isLoadingMenu = false.obs;
@@ -26,6 +33,14 @@ class StudentController extends GetxController {
   var currentWeekMenu = <String, Map<String, MenuItem?>>{}.obs;
   var activeMenuSchedule = Rxn<ActiveMenuSchedule>();
   var selectedWeekDate = DateTime.now().obs;
+
+  final Set<String> _loadedAttendanceMonths = <String>{};
+  final Set<String> _loadingAttendanceMonths = <String>{};
+  late final Worker _userWatcher;
+
+  void _attendanceDebug(String message) {
+    print('[ATTENDANCE DEBUG] $message');
+  }
 
   // Navigation menu items
   List<NavigationItem> get navigationItems => [
@@ -60,12 +75,29 @@ class StudentController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _userWatcher = ever<AppUser?>(_userController.currentUser, (user) {
+      if (user == null || user.uid.isEmpty) {
+        _clearAttendanceState();
+        update();
+        return;
+      }
+
+      _clearAttendanceState();
+      ensureMonthlyAttendanceLoaded(DateTime.now());
+    });
+
     selectedWeekDate.value = _getStartOfWeek(DateTime.now());
     loadStudentData();
     _setupRealTimeListeners();
   }
 
-  void loadStudentData() {
+  @override
+  void onClose() {
+    _userWatcher.dispose();
+    super.onClose();
+  }
+
+  Future<void> loadStudentData() async {
     // StudentController - loadStudentData called
     isLoading.value = true;
 
@@ -79,17 +111,11 @@ class StudentController extends GetxController {
       '✅ DEBUG: StudentController - Loaded student: ${currentStudent.value?.name}',
     );
 
-    // Load attendance for current student - using dummy data for now
-    final allAttendance = DummyDataService.getAttendance();
-    attendanceList.value = allAttendance
-        .where((a) => a.studentId == currentStudent.value!.id)
-        .toList();
-    print(
-      '✅ DEBUG: StudentController - Loaded ${attendanceList.length} attendance records',
-    );
+    _clearAttendanceState();
+    await ensureMonthlyAttendanceLoaded(DateTime.now());
 
     // Load Firebase menu data
-    _loadFirebaseMenuData();
+    await _loadFirebaseMenuData();
 
     // Calculate billing and attendance rate
     _calculateMonthlyBilling();
@@ -97,6 +123,7 @@ class StudentController extends GetxController {
 
     // StudentController - Student data loaded successfully
     isLoading.value = false;
+    update();
   }
 
   /// Load menu data from Firebase
@@ -228,13 +255,22 @@ class StudentController extends GetxController {
   }
 
   void _calculateAttendanceRate() {
-    if (attendanceList.isEmpty) return;
+    if (attendanceList.isEmpty) {
+      attendanceRate.value = 0.0;
+      return;
+    }
 
     final presentCount = attendanceList.where((a) => a.isPresent).length;
     attendanceRate.value = (presentCount / attendanceList.length) * 100;
   }
 
   List<Attendance> getAttendanceForDate(DateTime date) {
+    final monthKey = _monthKey(date);
+    if (!_loadedAttendanceMonths.contains(monthKey) &&
+        !_loadingAttendanceMonths.contains(monthKey)) {
+      ensureMonthlyAttendanceLoaded(date);
+    }
+
     return attendanceList
         .where(
           (a) =>
@@ -243,6 +279,193 @@ class StudentController extends GetxController {
               a.date.year == date.year,
         )
         .toList();
+  }
+
+  Future<void> ensureMonthlyAttendanceLoaded(DateTime date) async {
+    final uid = _resolveCurrentStudentUid();
+    if (uid == null || uid.isEmpty) {
+      _attendanceDebug(
+        'Skipped month load because uid is empty for ${_monthKey(date)}',
+      );
+      return;
+    }
+
+    final month = _monthKey(date);
+    _attendanceDebug('Loading month $month for uid $uid');
+
+    if (_loadedAttendanceMonths.contains(month) ||
+        _loadingAttendanceMonths.contains(month)) {
+      _attendanceDebug(
+        'Skipped month $month for uid $uid because it is already loaded/loading',
+      );
+      return;
+    }
+
+    _loadingAttendanceMonths.add(month);
+    try {
+      final dailyData = await _userService.getStudentMonthlyAttendance(
+        userUid: uid,
+        month: date,
+      );
+
+      _attendanceDebug(
+        'Fetched month $month for uid $uid. Day keys: ${dailyData.keys.toList()}',
+      );
+      if (dailyData.isEmpty) {
+        _attendanceDebug(
+          'No attendance data found at students/$uid/attendance/$month',
+        );
+      }
+
+      _applyMonthlyAttendance(uid, date, dailyData);
+      _loadedAttendanceMonths.add(month);
+
+      final monthRecords = attendanceList
+          .where((a) => a.date.year == date.year && a.date.month == date.month)
+          .length;
+      _attendanceDebug(
+        'After parsing month $month for uid $uid, attendanceList has $monthRecords records for that month',
+      );
+
+      _calculateMonthlyBilling();
+      _calculateAttendanceRate();
+      attendanceList.refresh();
+      update();
+    } catch (e) {
+      _attendanceDebug('Error loading month $month for uid $uid: $e');
+    } finally {
+      _loadingAttendanceMonths.remove(month);
+    }
+  }
+
+  void preloadAttendanceForDate(DateTime date) {
+    ensureMonthlyAttendanceLoaded(date);
+  }
+
+  String? _resolveCurrentStudentUid() {
+    final fromUserController = _userController.currentUser.value?.uid;
+    if (fromUserController != null && fromUserController.isNotEmpty) {
+      return fromUserController;
+    }
+
+    final fromFirebaseAuth = _authService.currentFirebaseUser?.uid;
+    if (fromFirebaseAuth != null && fromFirebaseAuth.isNotEmpty) {
+      return fromFirebaseAuth;
+    }
+
+    return null;
+  }
+
+  void _clearAttendanceState() {
+    _loadedAttendanceMonths.clear();
+    _loadingAttendanceMonths.clear();
+    attendanceList.clear();
+    attendanceRate.value = 0.0;
+  }
+
+  void _applyMonthlyAttendance(
+    String studentUid,
+    DateTime monthDate,
+    Map<String, dynamic> dailyData,
+  ) {
+    _attendanceDebug(
+      'Parsing monthly data for uid $studentUid month ${_monthKey(monthDate)} with ${dailyData.length} day entries',
+    );
+
+    for (final dayEntry in dailyData.entries) {
+      final day = int.tryParse(dayEntry.key);
+      if (day == null) {
+        _attendanceDebug(
+          'Skipping day key ${dayEntry.key} because it is not numeric',
+        );
+        continue;
+      }
+
+      final rawDayMap = dayEntry.value;
+      if (rawDayMap is! Map) {
+        _attendanceDebug(
+          'Skipping day $day because value is not a map: ${rawDayMap.runtimeType}',
+        );
+        continue;
+      }
+
+      final dayMap = Map<String, dynamic>.from(rawDayMap);
+      final date = DateTime(monthDate.year, monthDate.month, day);
+      _attendanceDebug('Day $day payload keys: ${dayMap.keys.toList()}');
+
+      _upsertMealAttendanceFromMap(
+        studentUid: studentUid,
+        date: date,
+        mealType: MealType.breakfast,
+        dayMap: dayMap,
+        key: 'breakfast',
+      );
+      _upsertMealAttendanceFromMap(
+        studentUid: studentUid,
+        date: date,
+        mealType: MealType.dinner,
+        dayMap: dayMap,
+        key: 'dinner',
+      );
+    }
+  }
+
+  void _upsertMealAttendanceFromMap({
+    required String studentUid,
+    required DateTime date,
+    required MealType mealType,
+    required Map<String, dynamic> dayMap,
+    required String key,
+  }) {
+    final rawMeal = dayMap[key];
+    bool? isPresent;
+
+    if (rawMeal is bool) {
+      isPresent = rawMeal;
+    } else if (rawMeal is Map) {
+      final mealMap = Map<String, dynamic>.from(rawMeal);
+      final rawIsPresent = mealMap['isPresent'];
+      if (rawIsPresent is bool) {
+        isPresent = rawIsPresent;
+      }
+    }
+
+    if (isPresent == null) {
+      _attendanceDebug(
+        'No isPresent found for $key on ${DateFormat('yyyy-MM-dd').format(date)}. Raw value type: ${rawMeal.runtimeType}',
+      );
+      return;
+    }
+
+    _attendanceDebug(
+      'Resolved $key attendance for ${DateFormat('yyyy-MM-dd').format(date)} as $isPresent',
+    );
+
+    attendanceList.removeWhere(
+      (a) =>
+          a.studentId == studentUid &&
+          a.date.year == date.year &&
+          a.date.month == date.month &&
+          a.date.day == date.day &&
+          a.mealType == mealType,
+    );
+
+    attendanceList.add(
+      Attendance(
+        id: 'att_${studentUid}_${date.millisecondsSinceEpoch}_${mealType.name}',
+        studentId: studentUid,
+        date: date,
+        mealType: mealType,
+        isPresent: isPresent,
+        markedAt: date,
+        markedBy: 'staff',
+      ),
+    );
+  }
+
+  String _monthKey(DateTime date) {
+    final month = date.month.toString().padLeft(2, '0');
+    return '${date.year}-$month';
   }
 
   /// Get menu for specific date and meal type from Firebase data

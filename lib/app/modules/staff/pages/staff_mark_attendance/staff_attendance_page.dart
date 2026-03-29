@@ -34,6 +34,17 @@ class _StaffAttendancePageState extends State<StaffAttendancePage>
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Get.isRegistered<StaffController>()) {
+        final controller = Get.find<StaffController>();
+        controller.selectedDate.value = _selectedDay;
+        controller.ensureMonthlyAttendanceLoaded(
+          _selectedDay,
+          forceReload: true,
+        );
+      }
+    });
   }
 
   @override
@@ -56,7 +67,10 @@ class _StaffAttendancePageState extends State<StaffAttendancePage>
             selectedTabIndex: selectedTabIndex,
             selectedMeal: _selectedMeal,
             onTabChanged: (index) => setState(() => selectedTabIndex = index),
-            onMealChanged: (meal) => setState(() => _selectedMeal = meal),
+            onMealChanged: (meal) {
+              setState(() => _selectedMeal = meal);
+              controller.ensureMonthlyAttendanceLoaded(_selectedDay);
+            },
           ),
 
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
@@ -83,9 +97,12 @@ class _StaffAttendancePageState extends State<StaffAttendancePage>
                       _selectedDay = selectedDay;
                       _focusedDay = focusedDay;
                     });
+                    controller.selectedDate.value = selectedDay;
+                    controller.ensureMonthlyAttendanceLoaded(selectedDay);
                   },
                   onPageChanged: (focusedDay) {
                     setState(() => _focusedDay = focusedDay);
+                    controller.ensureMonthlyAttendanceLoaded(focusedDay);
                   },
                 ),
               ],
@@ -113,8 +130,8 @@ class _StaffAttendancePageState extends State<StaffAttendancePage>
             text: 'Confirm',
             type: isPresent ? ButtonType.success : ButtonType.danger,
             size: ButtonSize.small,
-            onPressed: () {
-              controller.markAllAttendance(
+            onPressed: () async {
+              await controller.markAllAttendance(
                 _selectedMeal,
                 _selectedDay,
                 isPresent,

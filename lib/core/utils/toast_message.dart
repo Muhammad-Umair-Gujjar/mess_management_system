@@ -9,49 +9,80 @@ import '../constants/app_colors.dart';
 /// Provides consistent, customized toast messages throughout the app.
 /// All toasts appear in the top-right corner with appropriate styling.
 class ToastMessage {
+  static bool _hasOverlayContext() {
+    final context = Get.overlayContext ?? Get.context;
+    if (context == null) {
+      return false;
+    }
+    return Overlay.maybeOf(context, rootOverlay: true) != null;
+  }
+
+  static void _safeSnackbar({
+    required VoidCallback show,
+    required String type,
+    required String message,
+  }) {
+    if (!_hasOverlayContext()) {
+      debugPrint(
+        '[TOAST DEBUG] Skipped $type toast because overlay is not ready: $message',
+      );
+      return;
+    }
+
+    try {
+      show();
+    } catch (e) {
+      debugPrint('[TOAST DEBUG] Failed to show $type toast: $e');
+    }
+  }
+
   /// Show success toast message
   static void success(String message, {String? title}) {
-    Get.snackbar(
-      title ?? 'Success',
-      message,
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: AppColors.success.withOpacity(0.9),
-      colorText: Colors.white,
-      icon: Container(
-        padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(50.0),
-        ),
-        child: const Icon(
-          FontAwesomeIcons.check,
-          color: Colors.white,
-          size: 16.0,
-        ),
-      ),
-      duration: const Duration(seconds: 3),
-      margin: EdgeInsets.only(
-        top: 60.0,
-        right: 20.0,
-        left: Get.width > 600 ? Get.width * 0.6 : 20.0,
-      ),
-      borderRadius: 12.0,
-      animationDuration: const Duration(milliseconds: 300),
-      forwardAnimationCurve: Curves.easeOutBack,
-      reverseAnimationCurve: Curves.easeInBack,
-      titleText: Text(
+    _safeSnackbar(
+      type: 'success',
+      message: message,
+      show: () => Get.snackbar(
         title ?? 'Success',
-        style: AppTextStyles.body1.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 16.0,
-        ),
-      ),
-      messageText: Text(
         message,
-        style: AppTextStyles.body2.copyWith(
-          color: Colors.white.withOpacity(0.9),
-          fontSize: 14.0,
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: AppColors.success.withOpacity(0.9),
+        colorText: Colors.white,
+        icon: Container(
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+          child: const Icon(
+            FontAwesomeIcons.check,
+            color: Colors.white,
+            size: 16.0,
+          ),
+        ),
+        duration: const Duration(seconds: 3),
+        margin: EdgeInsets.only(
+          top: 60.0,
+          right: 20.0,
+          left: Get.width > 600 ? Get.width * 0.6 : 20.0,
+        ),
+        borderRadius: 12.0,
+        animationDuration: const Duration(milliseconds: 300),
+        forwardAnimationCurve: Curves.easeOutBack,
+        reverseAnimationCurve: Curves.easeInBack,
+        titleText: Text(
+          title ?? 'Success',
+          style: AppTextStyles.body1.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16.0,
+          ),
+        ),
+        messageText: Text(
+          message,
+          style: AppTextStyles.body2.copyWith(
+            color: Colors.white.withOpacity(0.9),
+            fontSize: 14.0,
+          ),
         ),
       ),
     );
@@ -59,47 +90,51 @@ class ToastMessage {
 
   /// Show error toast message
   static void error(String message, {String? title}) {
-    Get.snackbar(
-      title ?? 'Error',
-      message,
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: AppColors.error.withOpacity(0.9),
-      colorText: Colors.white,
-      icon: Container(
-        padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(50.0),
-        ),
-        child: const Icon(
-          FontAwesomeIcons.xmark,
-          color: Colors.white,
-          size: 16.0,
-        ),
-      ),
-      duration: const Duration(seconds: 4),
-      margin: EdgeInsets.only(
-        top: 60.0,
-        right: 20.0,
-        left: Get.width > 600 ? Get.width * 0.6 : 20.0,
-      ),
-      borderRadius: 12.0,
-      animationDuration: const Duration(milliseconds: 300),
-      forwardAnimationCurve: Curves.easeOutBack,
-      reverseAnimationCurve: Curves.easeInBack,
-      titleText: Text(
+    _safeSnackbar(
+      type: 'error',
+      message: message,
+      show: () => Get.snackbar(
         title ?? 'Error',
-        style: AppTextStyles.body1.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 16.0,
-        ),
-      ),
-      messageText: Text(
         message,
-        style: AppTextStyles.body2.copyWith(
-          color: Colors.white.withOpacity(0.9),
-          fontSize: 14.0,
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: AppColors.error.withOpacity(0.9),
+        colorText: Colors.white,
+        icon: Container(
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+          child: const Icon(
+            FontAwesomeIcons.xmark,
+            color: Colors.white,
+            size: 16.0,
+          ),
+        ),
+        duration: const Duration(seconds: 4),
+        margin: EdgeInsets.only(
+          top: 60.0,
+          right: 20.0,
+          left: Get.width > 600 ? Get.width * 0.6 : 20.0,
+        ),
+        borderRadius: 12.0,
+        animationDuration: const Duration(milliseconds: 300),
+        forwardAnimationCurve: Curves.easeOutBack,
+        reverseAnimationCurve: Curves.easeInBack,
+        titleText: Text(
+          title ?? 'Error',
+          style: AppTextStyles.body1.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16.0,
+          ),
+        ),
+        messageText: Text(
+          message,
+          style: AppTextStyles.body2.copyWith(
+            color: Colors.white.withOpacity(0.9),
+            fontSize: 14.0,
+          ),
         ),
       ),
     );
@@ -107,47 +142,51 @@ class ToastMessage {
 
   /// Show warning toast message
   static void warning(String message, {String? title}) {
-    Get.snackbar(
-      title ?? 'Warning',
-      message,
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: AppColors.warning.withOpacity(0.9),
-      colorText: Colors.white,
-      icon: Container(
-        padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(50.0),
-        ),
-        child: const Icon(
-          FontAwesomeIcons.triangleExclamation,
-          color: Colors.white,
-          size: 16.0,
-        ),
-      ),
-      duration: const Duration(seconds: 4),
-      margin: EdgeInsets.only(
-        top: 60.0,
-        right: 20.0,
-        left: Get.width > 600 ? Get.width * 0.6 : 20.0,
-      ),
-      borderRadius: 12.0,
-      animationDuration: const Duration(milliseconds: 300),
-      forwardAnimationCurve: Curves.easeOutBack,
-      reverseAnimationCurve: Curves.easeInBack,
-      titleText: Text(
+    _safeSnackbar(
+      type: 'warning',
+      message: message,
+      show: () => Get.snackbar(
         title ?? 'Warning',
-        style: AppTextStyles.body1.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 16.0,
-        ),
-      ),
-      messageText: Text(
         message,
-        style: AppTextStyles.body2.copyWith(
-          color: Colors.white.withOpacity(0.9),
-          fontSize: 14.0,
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: AppColors.warning.withOpacity(0.9),
+        colorText: Colors.white,
+        icon: Container(
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+          child: const Icon(
+            FontAwesomeIcons.triangleExclamation,
+            color: Colors.white,
+            size: 16.0,
+          ),
+        ),
+        duration: const Duration(seconds: 4),
+        margin: EdgeInsets.only(
+          top: 60.0,
+          right: 20.0,
+          left: Get.width > 600 ? Get.width * 0.6 : 20.0,
+        ),
+        borderRadius: 12.0,
+        animationDuration: const Duration(milliseconds: 300),
+        forwardAnimationCurve: Curves.easeOutBack,
+        reverseAnimationCurve: Curves.easeInBack,
+        titleText: Text(
+          title ?? 'Warning',
+          style: AppTextStyles.body1.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16.0,
+          ),
+        ),
+        messageText: Text(
+          message,
+          style: AppTextStyles.body2.copyWith(
+            color: Colors.white.withOpacity(0.9),
+            fontSize: 14.0,
+          ),
         ),
       ),
     );
@@ -155,47 +194,51 @@ class ToastMessage {
 
   /// Show info toast message
   static void info(String message, {String? title}) {
-    Get.snackbar(
-      title ?? 'Info',
-      message,
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: AppColors.info.withOpacity(0.9),
-      colorText: Colors.white,
-      icon: Container(
-        padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(50.0),
-        ),
-        child: const Icon(
-          FontAwesomeIcons.circleInfo,
-          color: Colors.white,
-          size: 16.0,
-        ),
-      ),
-      duration: const Duration(seconds: 3),
-      margin: EdgeInsets.only(
-        top: 60.0,
-        right: 20.0,
-        left: Get.width > 600 ? Get.width * 0.6 : 20.0,
-      ),
-      borderRadius: 12.0,
-      animationDuration: const Duration(milliseconds: 300),
-      forwardAnimationCurve: Curves.easeOutBack,
-      reverseAnimationCurve: Curves.easeInBack,
-      titleText: Text(
+    _safeSnackbar(
+      type: 'info',
+      message: message,
+      show: () => Get.snackbar(
         title ?? 'Info',
-        style: AppTextStyles.body1.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 16.0,
-        ),
-      ),
-      messageText: Text(
         message,
-        style: AppTextStyles.body2.copyWith(
-          color: Colors.white.withOpacity(0.9),
-          fontSize: 14.0,
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: AppColors.info.withOpacity(0.9),
+        colorText: Colors.white,
+        icon: Container(
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+          child: const Icon(
+            FontAwesomeIcons.circleInfo,
+            color: Colors.white,
+            size: 16.0,
+          ),
+        ),
+        duration: const Duration(seconds: 3),
+        margin: EdgeInsets.only(
+          top: 60.0,
+          right: 20.0,
+          left: Get.width > 600 ? Get.width * 0.6 : 20.0,
+        ),
+        borderRadius: 12.0,
+        animationDuration: const Duration(milliseconds: 300),
+        forwardAnimationCurve: Curves.easeOutBack,
+        reverseAnimationCurve: Curves.easeInBack,
+        titleText: Text(
+          title ?? 'Info',
+          style: AppTextStyles.body1.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16.0,
+          ),
+        ),
+        messageText: Text(
+          message,
+          style: AppTextStyles.body2.copyWith(
+            color: Colors.white.withOpacity(0.9),
+            fontSize: 14.0,
+          ),
         ),
       ),
     );
@@ -210,43 +253,47 @@ class ToastMessage {
     required IconData icon,
     Duration duration = const Duration(seconds: 3),
   }) {
-    Get.snackbar(
-      title ?? 'Notification',
-      message,
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: backgroundColor.withOpacity(0.9),
-      colorText: textColor,
-      icon: Container(
-        padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: textColor.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(50.0),
-        ),
-        child: Icon(icon, color: textColor, size: 16.0),
-      ),
-      duration: duration,
-      margin: EdgeInsets.only(
-        top: 60.0,
-        right: 20.0,
-        left: Get.width > 600 ? Get.width * 0.6 : 20.0,
-      ),
-      borderRadius: 12.0,
-      animationDuration: const Duration(milliseconds: 300),
-      forwardAnimationCurve: Curves.easeOutBack,
-      reverseAnimationCurve: Curves.easeInBack,
-      titleText: Text(
+    _safeSnackbar(
+      type: 'custom',
+      message: message,
+      show: () => Get.snackbar(
         title ?? 'Notification',
-        style: AppTextStyles.body1.copyWith(
-          color: textColor,
-          fontWeight: FontWeight.bold,
-          fontSize: 16.0,
-        ),
-      ),
-      messageText: Text(
         message,
-        style: AppTextStyles.body2.copyWith(
-          color: textColor.withOpacity(0.9),
-          fontSize: 14.0,
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: backgroundColor.withOpacity(0.9),
+        colorText: textColor,
+        icon: Container(
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: textColor.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+          child: Icon(icon, color: textColor, size: 16.0),
+        ),
+        duration: duration,
+        margin: EdgeInsets.only(
+          top: 60.0,
+          right: 20.0,
+          left: Get.width > 600 ? Get.width * 0.6 : 20.0,
+        ),
+        borderRadius: 12.0,
+        animationDuration: const Duration(milliseconds: 300),
+        forwardAnimationCurve: Curves.easeOutBack,
+        reverseAnimationCurve: Curves.easeInBack,
+        titleText: Text(
+          title ?? 'Notification',
+          style: AppTextStyles.body1.copyWith(
+            color: textColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 16.0,
+          ),
+        ),
+        messageText: Text(
+          message,
+          style: AppTextStyles.body2.copyWith(
+            color: textColor.withOpacity(0.9),
+            fontSize: 14.0,
+          ),
         ),
       ),
     );

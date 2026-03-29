@@ -368,10 +368,13 @@ class DashboardNavigation extends StatelessWidget {
         title: const Text('Confirm Logout'),
         content: const Text('Are you sure you want to logout?'),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(
+            onPressed: _closeDialogSafely,
+            child: const Text('Cancel'),
+          ),
           TextButton(
             onPressed: () {
-              Get.back();
+              _closeDialogSafely();
               Get.offAllNamed('/login');
             },
             child: Text('Logout', style: TextStyle(color: Colors.red)),
@@ -379,6 +382,19 @@ class DashboardNavigation extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _closeDialogSafely() {
+    final overlayContext = Get.overlayContext;
+    if (overlayContext != null) {
+      Navigator.of(overlayContext, rootNavigator: true).maybePop();
+      return;
+    }
+
+    final currentContext = Get.context;
+    if (currentContext != null) {
+      Navigator.of(currentContext, rootNavigator: true).maybePop();
+    }
   }
 
   LinearGradient _getRoleGradient(String role) {
