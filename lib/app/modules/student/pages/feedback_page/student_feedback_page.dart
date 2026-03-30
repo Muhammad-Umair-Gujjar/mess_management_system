@@ -26,6 +26,10 @@ class _StudentFeedbackPageState extends State<StudentFeedbackPage>
       vsync: this,
     );
     _animationController.forward();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Get.find<StudentController>().loadRecentFeedbacks();
+    });
   }
 
   @override

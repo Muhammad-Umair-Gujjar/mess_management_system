@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/utils/responsive_helper.dart';
-import '../../../../../../core/utils/toast_message.dart';
 import '../../../student_controller.dart';
 
 class FeedbackForm extends StatefulWidget {
@@ -22,7 +22,6 @@ class _FeedbackFormState extends State<FeedbackForm> {
 
   int selectedRating = 5;
   String selectedCategory = 'Food Quality';
-  bool isSubmitting = false;
 
   final List<String> categories = [
     'Food Quality',
@@ -49,6 +48,8 @@ class _FeedbackFormState extends State<FeedbackForm> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<StudentController>();
+
     return Container(
       padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
       decoration: AppDecorations.floatingCard(),
@@ -307,80 +308,84 @@ class _FeedbackFormState extends State<FeedbackForm> {
             SizedBox(height: ResponsiveHelper.getSpacing(context, 'xlarge')),
 
             // Submit Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: isSubmitting ? null : _submitFeedback,
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(
-                    vertical: ResponsiveHelper.getSpacing(context, 'medium'),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      ResponsiveHelper.getSpacing(context, 'large'),
+            Obx(
+              () => SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: controller.isSubmittingFeedback.value
+                      ? null
+                      : _submitFeedback,
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(
+                      vertical: ResponsiveHelper.getSpacing(context, 'medium'),
                     ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        ResponsiveHelper.getSpacing(context, 'large'),
+                      ),
+                    ),
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
                   ),
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                ),
-                child: isSubmitting
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: ResponsiveHelper.getSpacing(
-                              context,
-                              'large',
-                            ),
-                            height: ResponsiveHelper.getSpacing(
-                              context,
-                              'large',
-                            ),
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
+                  child: controller.isSubmittingFeedback.value
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: ResponsiveHelper.getSpacing(
+                                context,
+                                'large',
+                              ),
+                              height: ResponsiveHelper.getSpacing(
+                                context,
+                                'large',
+                              ),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            width: ResponsiveHelper.getSpacing(
-                              context,
-                              'small',
+                            SizedBox(
+                              width: ResponsiveHelper.getSpacing(
+                                context,
+                                'small',
+                              ),
                             ),
-                          ),
-                          Text(
-                            'Submitting...',
-                            style: AppTextStyles.subtitle2.copyWith(
-                              color: Colors.white,
+                            Text(
+                              'Submitting...',
+                              style: AppTextStyles.subtitle2.copyWith(
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                        ],
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            FontAwesomeIcons.paperPlane,
-                            size: ResponsiveHelper.getIconSize(
-                              context,
-                              'small',
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              FontAwesomeIcons.paperPlane,
+                              size: ResponsiveHelper.getIconSize(
+                                context,
+                                'small',
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            width: ResponsiveHelper.getSpacing(
-                              context,
-                              'small',
+                            SizedBox(
+                              width: ResponsiveHelper.getSpacing(
+                                context,
+                                'small',
+                              ),
                             ),
-                          ),
-                          Text(
-                            'Submit Feedback',
-                            style: AppTextStyles.subtitle2.copyWith(
-                              color: Colors.white,
+                            Text(
+                              'Submit Feedback',
+                              style: AppTextStyles.subtitle2.copyWith(
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
+                ),
               ),
             ),
             SizedBox(
@@ -395,22 +400,22 @@ class _FeedbackFormState extends State<FeedbackForm> {
   Future<void> _submitFeedback() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      isSubmitting = true;
-    });
+    final controller = Get.find<StudentController>();
+    final success = await controller.submitFeedback(
+      rating: selectedRating,
+      comment: _messageController.text,
+      category: selectedCategory,
+    );
 
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 2));
-
-    // Show success message
-    ToastMessage.success('Thank you for your feedback! We\'ll review it soon.');
+    if (!mounted || !success) {
+      return;
+    }
 
     // Clear form
     _messageController.clear();
     setState(() {
       selectedRating = 5;
       selectedCategory = 'Food Quality';
-      isSubmitting = false;
     });
   }
 }

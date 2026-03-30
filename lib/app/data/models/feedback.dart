@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Feedback {
   final String id;
   final String studentId;
@@ -6,6 +8,8 @@ class Feedback {
   final String comment;
   final DateTime submittedAt;
   final String category;
+  final String status;
+  final String? response;
 
   Feedback({
     required this.id,
@@ -15,7 +19,36 @@ class Feedback {
     required this.comment,
     required this.submittedAt,
     required this.category,
+    this.status = 'pending',
+    this.response,
   });
+
+  factory Feedback.fromFirestore(String id, Map<String, dynamic> data) {
+    return Feedback(
+      id: id,
+      studentId: data['studentId'] ?? '',
+      studentName: data['studentName'] ?? '',
+      rating: data['rating'] ?? 1,
+      comment: data['comment'] ?? '',
+      submittedAt: _parseDateTime(data['submittedAt']),
+      category: data['category'] ?? 'Other',
+      status: data['status'] ?? 'pending',
+      response: data['response'],
+    );
+  }
+
+  static DateTime _parseDateTime(dynamic value) {
+    if (value is Timestamp) {
+      return value.toDate();
+    }
+    if (value is DateTime) {
+      return value;
+    }
+    if (value is String && value.isNotEmpty) {
+      return DateTime.tryParse(value) ?? DateTime.now();
+    }
+    return DateTime.now();
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -26,18 +59,35 @@ class Feedback {
       'comment': comment,
       'submittedAt': submittedAt.toIso8601String(),
       'category': category,
+      'status': status,
+      'response': response,
+    };
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'studentId': studentId,
+      'studentName': studentName,
+      'rating': rating,
+      'comment': comment,
+      'submittedAt': Timestamp.fromDate(submittedAt),
+      'category': category,
+      'status': status,
+      'response': response,
     };
   }
 
   factory Feedback.fromJson(Map<String, dynamic> json) {
     return Feedback(
-      id: json['id'],
-      studentId: json['studentId'],
-      studentName: json['studentName'],
-      rating: json['rating'],
-      comment: json['comment'],
-      submittedAt: DateTime.parse(json['submittedAt']),
-      category: json['category'],
+      id: json['id'] ?? '',
+      studentId: json['studentId'] ?? '',
+      studentName: json['studentName'] ?? '',
+      rating: json['rating'] ?? 1,
+      comment: json['comment'] ?? '',
+      submittedAt: _parseDateTime(json['submittedAt']),
+      category: json['category'] ?? 'Other',
+      status: json['status'] ?? 'pending',
+      response: json['response'],
     );
   }
 
@@ -49,6 +99,8 @@ class Feedback {
     String? comment,
     DateTime? submittedAt,
     String? category,
+    String? status,
+    String? response,
   }) {
     return Feedback(
       id: id ?? this.id,
@@ -58,6 +110,8 @@ class Feedback {
       comment: comment ?? this.comment,
       submittedAt: submittedAt ?? this.submittedAt,
       category: category ?? this.category,
+      status: status ?? this.status,
+      response: response ?? this.response,
     );
   }
 }
@@ -97,9 +151,7 @@ class User {
       id: json['id'],
       name: json['name'],
       email: json['email'],
-      role: UserRole.values.firstWhere(
-        (e) => e.name == json['role'],
-      ),
+      role: UserRole.values.firstWhere((e) => e.name == json['role']),
       profileImage: json['profileImage'] ?? '',
       isActive: json['isActive'] ?? true,
     );
@@ -123,6 +175,3 @@ class User {
     );
   }
 }
-
-
-

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
@@ -54,42 +55,36 @@ class RecentFeedbacks extends StatelessWidget {
 
           // Feedback List
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Builder(
-                    builder: (context) {
-                      final feedbacks = _getDummyFeedbacks();
+            child: Obx(() {
+              final feedbacks = controller.recentFeedbacks;
 
-                      if (feedbacks.isEmpty) {
-                        return _buildEmptyFeedbackState();
-                      }
-
-                      return ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: feedbacks.length,
-                        separatorBuilder: (context, index) => SizedBox(
-                          height: ResponsiveHelper.getSpacing(
-                            context,
-                            'medium',
-                          ),
-                        ),
-                        itemBuilder: (context, index) => FeedbackCard(
-                          feedback: feedbacks[index],
-                          index: index,
-                        ),
-                      );
-                    },
+              if (controller.isLoadingFeedback.value && feedbacks.isEmpty) {
+                return Center(
+                  child: SizedBox(
+                    width: ResponsiveHelper.getSpacing(context, 'xlarge'),
+                    height: ResponsiveHelper.getSpacing(context, 'xlarge'),
+                    child: const CircularProgressIndicator(strokeWidth: 2),
                   ),
-                  SizedBox(
-                    height: ResponsiveHelper.getSpacing(context, 'medium'),
-                  ), // Add bottom padding
-                ],
-              ),
-            ),
+                );
+              }
+
+              if (feedbacks.isEmpty) {
+                return _buildEmptyFeedbackState();
+              }
+
+              return ListView.separated(
+                itemCount: feedbacks.length,
+                separatorBuilder: (context, index) => SizedBox(
+                  height: ResponsiveHelper.getSpacing(context, 'medium'),
+                ),
+                itemBuilder: (context, index) =>
+                    FeedbackCard(feedback: feedbacks[index], index: index),
+              );
+            }),
           ),
+          SizedBox(
+            height: ResponsiveHelper.getSpacing(context, 'medium'),
+          ), // Add bottom padding
         ],
       ),
     ).animate(delay: 300.ms).fadeIn(duration: 300.ms).slideX(begin: 0.3);
@@ -123,39 +118,5 @@ class RecentFeedbacks extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  List<Map<String, dynamic>> _getDummyFeedbacks() {
-    return [
-      {
-        'category': 'Food Quality',
-        'rating': 4,
-        'message':
-            'The food quality has improved significantly. The dal rice was delicious yesterday!',
-        'date': DateTime.now().subtract(const Duration(days: 2)),
-        'status': 'Resolved',
-        'response':
-            'Thank you for your positive feedback! We\'re glad you enjoyed the meal.',
-      },
-      {
-        'category': 'Service',
-        'rating': 3,
-        'message':
-            'The serving time could be better. Sometimes we have to wait too long during dinner.',
-        'date': DateTime.now().subtract(const Duration(days: 5)),
-        'status': 'Reviewed',
-        'response': null,
-      },
-      {
-        'category': 'Cleanliness',
-        'rating': 5,
-        'message':
-            'The dining hall is very clean and well-maintained. Great job!',
-        'date': DateTime.now().subtract(const Duration(days: 8)),
-        'status': 'Resolved',
-        'response':
-            'We appreciate your recognition of our cleaning staff\'s efforts!',
-      },
-    ];
   }
 }

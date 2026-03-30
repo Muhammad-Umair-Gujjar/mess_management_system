@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import '../../data/models/student.dart';
 import '../../data/models/auth_models.dart';
+import '../../data/models/feedback.dart';
 import '../../../core/utils/toast_message.dart';
 import '../../data/models/attendance.dart';
 import '../../data/models/menu.dart';
@@ -23,11 +24,14 @@ class StudentController extends GetxController {
   var isLoadingMenu = false.obs;
   var currentStudent = Rxn<Student>();
   var attendanceList = <Attendance>[].obs;
+  var recentFeedbacks = <Feedback>[].obs;
   var menuItems = <MenuItem>[].obs;
   var mealRates = <MealRate>[].obs;
   var monthlyBilling = 0.0.obs;
   var attendanceRate = 0.0.obs;
   var currentPageIndex = 0.obs;
+  var isLoadingFeedback = false.obs;
+  var isSubmittingFeedback = false.obs;
 
   // Enhanced menu data
   var currentWeekMenu = <String, Map<String, MenuItem?>>{}.obs;
@@ -78,12 +82,15 @@ class StudentController extends GetxController {
     _userWatcher = ever<AppUser?>(_userController.currentUser, (user) {
       if (user == null || user.uid.isEmpty) {
         _clearAttendanceState();
+        _clearFeedbackState();
         update();
         return;
       }
 
       _clearAttendanceState();
+      _clearFeedbackState();
       ensureMonthlyAttendanceLoaded(DateTime.now());
+      loadRecentFeedbacks();
     });
 
     selectedWeekDate.value = _getStartOfWeek(DateTime.now());
@@ -113,6 +120,7 @@ class StudentController extends GetxController {
 
     _clearAttendanceState();
     await ensureMonthlyAttendanceLoaded(DateTime.now());
+    await loadRecentFeedbacks(forceRefresh: true);
 
     // Load Firebase menu data
     await _loadFirebaseMenuData();
@@ -363,6 +371,35 @@ class StudentController extends GetxController {
     attendanceRate.value = 0.0;
   }
 
+  void _clearFeedbackState() {
+    recentFeedbacks.clear();
+    isLoadingFeedback.value = false;
+    isSubmittingFeedback.value = false;
+  }
+
+  Future<void> loadRecentFeedbacks({bool forceRefresh = false}) async {
+    if (isLoadingFeedback.value && !forceRefresh) {
+      return;
+    }
+
+    final studentUid = _resolveCurrentStudentUid();
+    if (studentUid == null || studentUid.isEmpty) {
+      recentFeedbacks.clear();
+      return;
+    }
+
+    isLoadingFeedback.value = true;
+    try {
+      final feedbacks = await _menuService.getStudentFeedbacks(studentUid);
+      recentFeedbacks.assignAll(feedbacks);
+      update();
+    } catch (e) {
+      print('Error loading student feedbacks: $e');
+    } finally {
+      isLoadingFeedback.value = false;
+    }
+  }
+
   void _applyMonthlyAttendance(
     String studentUid,
     DateTime monthDate,
@@ -539,8 +576,8 @@ class StudentController extends GetxController {
     return selectedWeekDate.value.difference(currentWeekStart).inDays == 0;
   }
 
-  /// Submit feedback for a menu item using Firebase
-  Future<void> submitFeedback({
+  /// Submit general feedback using Firebase
+  Future<bool> submitFeedback({
     required int rating,
     required String comment,
     required String category,
@@ -548,36 +585,55 @@ class StudentController extends GetxController {
     DateTime? mealDate,
     List<String> tags = const [],
   }) async {
-    isLoading.value = true;
+    final trimmedComment = comment.trim();
+    if (trimmedComment.isEmpty) {
+      ToastMessage.error('Please enter your feedback message.');
+      return false;
+    }
+
+    final studentUid = _resolveCurrentStudentUid();
+    if (studentUid == null || studentUid.isEmpty) {
+      ToastMessage.error(
+        'Unable to identify student account. Please login again.',
+      );
+      return false;
+    }
+
+    isSubmittingFeedback.value = true;
 
     try {
-      final studentId = currentStudent.value?.id ?? '';
-      final feedbackMealDate = mealDate ?? DateTime.now();
-
-      final feedback = MenuFeedback(
-        id: '', // Will be set by Firestore
-        studentId: studentId,
-        menuItemId: menuItemId,
-        mealDate: feedbackMealDate,
-        mealType: category,
+      final studentName = _userController.currentUser.value?.fullName;
+      final feedback = Feedback(
+        id: '',
+        studentId: studentUid,
+        studentName: (studentName == null || studentName.trim().isEmpty)
+            ? (currentStudent.value?.name ?? 'Student')
+            : studentName,
         rating: rating,
-        comment: comment,
-        tags: tags,
+        comment: trimmedComment,
         submittedAt: DateTime.now(),
+        category: category,
+        status: 'pending',
       );
 
-      final success = await _menuService.submitMenuFeedback(feedback);
+      final success = await _menuService.submitStudentFeedback(feedback);
 
       if (success) {
-        ToastMessage.success('Thank you for your feedback!');
+        await loadRecentFeedbacks(forceRefresh: true);
+        ToastMessage.success(
+          'Thank you for your feedback! We\'ll review it soon.',
+        );
+        return true;
       } else {
         ToastMessage.error('Failed to submit feedback. Please try again.');
+        return false;
       }
     } catch (e) {
       print('Error submitting feedback: $e');
       ToastMessage.error('Failed to submit feedback: ${e.toString()}');
+      return false;
     } finally {
-      isLoading.value = false;
+      isSubmittingFeedback.value = false;
     }
   }
 

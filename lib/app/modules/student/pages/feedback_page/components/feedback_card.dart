@@ -6,9 +6,10 @@ import 'package:intl/intl.dart';
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/utils/responsive_helper.dart';
+import '../../../../../data/models/feedback.dart' as feedback_model;
 
 class FeedbackCard extends StatelessWidget {
-  final Map<String, dynamic> feedback;
+  final feedback_model.Feedback feedback;
   final int index;
 
   const FeedbackCard({super.key, required this.feedback, required this.index});
@@ -23,7 +24,7 @@ class FeedbackCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rating = feedback['rating'] as int;
+    final rating = feedback.rating.clamp(1, 5).toInt();
     final ratingData = ratingEmojis[rating - 1];
 
     return Container(
@@ -70,13 +71,15 @@ class FeedbackCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          feedback['category'],
+                          feedback.category,
                           style: AppTextStyles.subtitle1.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         Text(
-                          DateFormat('MMM dd, yyyy').format(feedback['date']),
+                          DateFormat(
+                            'MMM dd, yyyy',
+                          ).format(feedback.submittedAt),
                           style: AppTextStyles.caption.copyWith(
                             color: AppColors.textLight,
                           ),
@@ -91,17 +94,15 @@ class FeedbackCard extends StatelessWidget {
                           ResponsiveHelper.getSpacing(context, 'small') * 0.5,
                     ),
                     decoration: BoxDecoration(
-                      color: _getStatusColor(
-                        feedback['status'],
-                      ).withOpacity(0.2),
+                      color: _getStatusColor(feedback.status).withOpacity(0.2),
                       borderRadius: BorderRadius.circular(
                         ResponsiveHelper.getSpacing(context, 'small'),
                       ),
                     ),
                     child: Text(
-                      feedback['status'],
+                      feedback.status,
                       style: AppTextStyles.caption.copyWith(
-                        color: _getStatusColor(feedback['status']),
+                        color: _getStatusColor(feedback.status),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -112,11 +113,12 @@ class FeedbackCard extends StatelessWidget {
               SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
 
               Text(
-                feedback['message'],
+                feedback.comment,
                 style: AppTextStyles.body2.copyWith(height: 1.4),
               ),
 
-              if (feedback['response'] != null) ...[
+              if (feedback.response != null &&
+                  feedback.response!.trim().isNotEmpty) ...[
                 SizedBox(
                   height: ResponsiveHelper.getSpacing(context, 'medium'),
                 ),
@@ -165,7 +167,7 @@ class FeedbackCard extends StatelessWidget {
                         height: ResponsiveHelper.getSpacing(context, 'small'),
                       ),
                       Text(
-                        feedback['response'],
+                        feedback.response!,
                         style: AppTextStyles.body2.copyWith(
                           color: AppColors.success,
                         ),

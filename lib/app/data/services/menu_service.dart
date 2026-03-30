@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:collection/collection.dart';
 import '../models/menu.dart';
+import '../models/feedback.dart';
 import '../../../core/utils/toast_message.dart';
 
 class MenuService extends GetxService {
@@ -15,6 +16,7 @@ class MenuService extends GetxService {
   static const String _activeMenuScheduleCollection = 'active_menu_schedule';
   static const String _mealRatesCollection = 'meal_rates';
   static const String _menuFeedbackCollection = 'menu_feedback';
+  static const String _feedbackCollection = 'feedback';
   static const String _mealCategoriesCollection = 'meal_categories';
 
   // Current user helper
@@ -685,6 +687,45 @@ class MenuService extends GetxService {
           .toList();
     } catch (e) {
       print('Error getting menu feedback: $e');
+      return [];
+    }
+  }
+
+  // ========== STUDENT FEEDBACK ==========
+
+  /// Submit general student feedback
+  Future<bool> submitStudentFeedback(Feedback feedback) async {
+    try {
+      await _firestore
+          .collection(_feedbackCollection)
+          .add(feedback.toFirestore());
+      return true;
+    } catch (e) {
+      print('Error submitting student feedback: $e');
+      return false;
+    }
+  }
+
+  /// Get feedback submitted by a specific student
+  Future<List<Feedback>> getStudentFeedbacks(
+    String studentId, {
+    int limit = 30,
+  }) async {
+    try {
+      final snapshot = await _firestore
+          .collection(_feedbackCollection)
+          .where('studentId', isEqualTo: studentId)
+          .limit(limit)
+          .get();
+
+      final feedbacks = snapshot.docs
+          .map((doc) => Feedback.fromFirestore(doc.id, doc.data()))
+          .toList();
+
+      feedbacks.sort((a, b) => b.submittedAt.compareTo(a.submittedAt));
+      return feedbacks;
+    } catch (e) {
+      print('Error getting student feedbacks: $e');
       return [];
     }
   }
