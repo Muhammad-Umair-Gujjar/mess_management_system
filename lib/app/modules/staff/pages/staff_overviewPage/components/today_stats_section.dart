@@ -16,7 +16,9 @@ class TodayStatsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final studentController = Get.find<StaffStudentController>();
+    final studentController = Get.isRegistered<StaffStudentController>()
+        ? Get.find<StaffStudentController>()
+        : Get.put(StaffStudentController());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

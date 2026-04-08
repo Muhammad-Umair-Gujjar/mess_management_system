@@ -348,6 +348,19 @@ class StudentController extends GetxController {
 
   void preloadAttendanceForDate(DateTime date) {
     ensureMonthlyAttendanceLoaded(date);
+    ensureWeeklyMenuLoadedForDate(date);
+  }
+
+  Future<void> ensureWeeklyMenuLoadedForDate(DateTime date) async {
+    final targetWeek = _getStartOfWeek(date);
+    final currentWeek = _getStartOfWeek(selectedWeekDate.value);
+
+    if (_isSameDate(targetWeek, currentWeek)) {
+      return;
+    }
+
+    selectedWeekDate.value = targetWeek;
+    await loadCurrentWeekMenu();
   }
 
   String? _resolveCurrentStudentUid() {
@@ -456,6 +469,9 @@ class StudentController extends GetxController {
   }) {
     final rawMeal = dayMap[key];
     bool? isPresent;
+    String? menuItemId;
+    String? menuName;
+    double? menuPrice;
 
     if (rawMeal is bool) {
       isPresent = rawMeal;
@@ -465,6 +481,16 @@ class StudentController extends GetxController {
       if (rawIsPresent is bool) {
         isPresent = rawIsPresent;
       }
+
+      final rawMenuItemId = mealMap['menuItemId'];
+      final rawMenuName = mealMap['menuName'];
+      if (rawMenuItemId is String && rawMenuItemId.trim().isNotEmpty) {
+        menuItemId = rawMenuItemId;
+      }
+      if (rawMenuName is String && rawMenuName.trim().isNotEmpty) {
+        menuName = rawMenuName;
+      }
+      menuPrice = _toDouble(mealMap['menuPrice']);
     }
 
     if (isPresent == null) {
@@ -496,6 +522,9 @@ class StudentController extends GetxController {
         isPresent: isPresent,
         markedAt: date,
         markedBy: 'staff',
+        menuItemId: menuItemId,
+        menuName: menuName,
+        menuPrice: menuPrice,
       ),
     );
   }
@@ -503,6 +532,20 @@ class StudentController extends GetxController {
   String _monthKey(DateTime date) {
     final month = date.month.toString().padLeft(2, '0');
     return '${date.year}-$month';
+  }
+
+  bool _isSameDate(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  double? _toDouble(dynamic value) {
+    if (value is num) {
+      return value.toDouble();
+    }
+    if (value is String) {
+      return double.tryParse(value);
+    }
+    return null;
   }
 
   /// Get menu for specific date and meal type from Firebase data
@@ -658,21 +701,21 @@ class StudentController extends GetxController {
         .toList();
 
     final presentCount = monthlyAttendance.where((a) => a.isPresent).length;
+    final missedCount = monthlyAttendance.where((a) => !a.isPresent).length;
     final breakfastCount = monthlyAttendance
         .where((a) => a.mealType == MealType.breakfast && a.isPresent)
         .length;
     final dinnerCount = monthlyAttendance
         .where((a) => a.mealType == MealType.dinner && a.isPresent)
         .length;
-    final totalDays = DateTime.now().day;
-    final possibleMeals = totalDays * 2; // 2 meals per day
+    final possibleMeals = monthlyAttendance.length;
 
     return {
       'attendedMeals': presentCount,
       'breakfastCount': breakfastCount,
       'dinnerCount': dinnerCount,
       'totalPossible': possibleMeals,
-      'missedMeals': possibleMeals - presentCount,
+      'missedMeals': missedCount,
     };
   }
 

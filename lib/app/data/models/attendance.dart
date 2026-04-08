@@ -8,6 +8,9 @@ class Attendance {
   final bool isPresent;
   final DateTime markedAt;
   final String markedBy;
+  final String? menuItemId;
+  final String? menuName;
+  final double? menuPrice;
 
   Attendance({
     required this.id,
@@ -17,6 +20,9 @@ class Attendance {
     required this.isPresent,
     required this.markedAt,
     required this.markedBy,
+    this.menuItemId,
+    this.menuName,
+    this.menuPrice,
   });
 
   Map<String, dynamic> toJson() {
@@ -28,6 +34,9 @@ class Attendance {
       'isPresent': isPresent,
       'markedAt': markedAt.toIso8601String(),
       'markedBy': markedBy,
+      'menuItemId': menuItemId,
+      'menuName': menuName,
+      'menuPrice': menuPrice,
     };
   }
 
@@ -36,12 +45,15 @@ class Attendance {
       id: json['id'],
       studentId: json['studentId'],
       date: DateTime.parse(json['date']),
-      mealType: MealType.values.firstWhere(
-        (e) => e.name == json['mealType'],
-      ),
+      mealType: MealType.values.firstWhere((e) => e.name == json['mealType']),
       isPresent: json['isPresent'],
       markedAt: DateTime.parse(json['markedAt']),
       markedBy: json['markedBy'],
+      menuItemId: json['menuItemId'],
+      menuName: json['menuName'],
+      menuPrice: json['menuPrice'] is num
+          ? (json['menuPrice'] as num).toDouble()
+          : double.tryParse(json['menuPrice']?.toString() ?? ''),
     );
   }
 
@@ -53,6 +65,9 @@ class Attendance {
     bool? isPresent,
     DateTime? markedAt,
     String? markedBy,
+    String? menuItemId,
+    String? menuName,
+    double? menuPrice,
   }) {
     return Attendance(
       id: id ?? this.id,
@@ -62,9 +77,9 @@ class Attendance {
       isPresent: isPresent ?? this.isPresent,
       markedAt: markedAt ?? this.markedAt,
       markedBy: markedBy ?? this.markedBy,
+      menuItemId: menuItemId ?? this.menuItemId,
+      menuName: menuName ?? this.menuName,
+      menuPrice: menuPrice ?? this.menuPrice,
     );
   }
 }
-
-
-

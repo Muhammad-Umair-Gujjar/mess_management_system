@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../widgets/common/reusable_text_field.dart';
@@ -36,29 +37,31 @@ class SearchAndFilterRow extends StatelessWidget {
         // Filter dropdown - full width
         Expanded(
           flex: 2,
-          child: DropdownButtonFormField<String>(
-            decoration: InputDecoration(
-              labelText: 'Filter by Status',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(
-                  ResponsiveHelper.getSpacing(context, 'medium'),
+          child: Obx(
+            () => DropdownButtonFormField<String>(
+              decoration: InputDecoration(
+                labelText: 'Filter by Status',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(
+                    ResponsiveHelper.getSpacing(context, 'medium'),
+                  ),
                 ),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+                  vertical: ResponsiveHelper.getSpacing(context, 'xsmall'),
+                ),
+                labelStyle: const TextStyle(fontSize: 12),
               ),
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: ResponsiveHelper.getSpacing(context, 'small'),
-                vertical: ResponsiveHelper.getSpacing(context, 'xsmall'),
-              ),
-              labelStyle: const TextStyle(fontSize: 12),
+              style: const TextStyle(fontSize: 12),
+              value: controller.statusFilter.value,
+              items: ['All', 'Present', 'Absent', 'Not Marked'].map((status) {
+                return DropdownMenuItem(
+                  value: status,
+                  child: Text(status, style: const TextStyle(fontSize: 12)),
+                );
+              }).toList(),
+              onChanged: (value) => controller.filterByStatus(value ?? 'All'),
             ),
-            style: const TextStyle(fontSize: 12),
-            value: 'All',
-            items: ['All', 'Present', 'Absent', 'Not Marked'].map((status) {
-              return DropdownMenuItem(
-                value: status,
-                child: Text(status, style: const TextStyle(fontSize: 12)),
-              );
-            }).toList(),
-            onChanged: (value) => controller.filterByStatus(value ?? 'All'),
           ),
         ),
       ],
@@ -80,27 +83,25 @@ class SearchAndFilterRow extends StatelessWidget {
         SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
         Expanded(
           flex: 2,
-          child: DropdownButtonFormField<String>(
-            decoration: InputDecoration(
-              labelText: 'Filter by Status',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(
-                  ResponsiveHelper.getSpacing(context, 'medium'),
+          child: Obx(
+            () => DropdownButtonFormField<String>(
+              decoration: InputDecoration(
+                labelText: 'Filter by Status',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(
+                    ResponsiveHelper.getSpacing(context, 'medium'),
+                  ),
                 ),
               ),
+              value: controller.statusFilter.value,
+              items: ['All', 'Present', 'Absent', 'Not Marked'].map((status) {
+                return DropdownMenuItem(value: status, child: Text(status));
+              }).toList(),
+              onChanged: (value) => controller.filterByStatus(value ?? 'All'),
             ),
-            value: 'All',
-            items: ['All', 'Present', 'Absent', 'Not Marked'].map((status) {
-              return DropdownMenuItem(value: status, child: Text(status));
-            }).toList(),
-            onChanged: (value) => controller.filterByStatus(value ?? 'All'),
           ),
         ),
       ],
     );
   }
 }
-
-
-
-

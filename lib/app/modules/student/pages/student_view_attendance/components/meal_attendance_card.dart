@@ -29,6 +29,13 @@ class MealAttendanceCard extends StatelessWidget {
         ? AppColors.warning
         : AppColors.info;
 
+    final fallbackMenuItem = controller.getMenuForDate(
+      attendance.date,
+      attendance.mealType,
+    );
+    final menuName = attendance.menuName ?? fallbackMenuItem?.name;
+    final menuPrice = attendance.menuPrice ?? fallbackMenuItem?.price;
+
     return Container(
       margin: EdgeInsets.only(
         bottom: ResponsiveHelper.getSpacing(context, 'medium'),
@@ -53,7 +60,7 @@ class MealAttendanceCard extends StatelessWidget {
           _buildMealHeader(context, mealIcon, mealName, mealColor),
           if (attendance.isPresent) ...[
             SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
-            _buildMealDetails(context, mealColor),
+            _buildMealDetails(context, mealColor, menuName, menuPrice),
           ],
         ],
       ),
@@ -117,7 +124,18 @@ class MealAttendanceCard extends StatelessWidget {
     );
   }
 
-  Widget _buildMealDetails(BuildContext context, Color mealColor) {
+  Widget _buildMealDetails(
+    BuildContext context,
+    Color mealColor,
+    String? menuName,
+    double? menuPrice,
+  ) {
+    final description = _buildMealDescription(
+      attendance.mealType,
+      menuName,
+      menuPrice,
+    );
+
     return Container(
       padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'small')),
       decoration: BoxDecoration(
@@ -136,9 +154,10 @@ class MealAttendanceCard extends StatelessWidget {
           SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
           Flexible(
             child: Text(
-              _getMealDescription(attendance.mealType),
-              style: AppTextStyles.body2.copyWith(color: mealColor,
-              overflow: TextOverflow.ellipsis
+              description,
+              style: AppTextStyles.body2.copyWith(
+                color: mealColor,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
@@ -147,14 +166,23 @@ class MealAttendanceCard extends StatelessWidget {
     );
   }
 
-  String _getMealDescription(MealType mealType) {
-    // This would typically come from the menu data
-    return mealType == MealType.breakfast
-        ? 'Aloo Paratha, Curd, Pickle'
-        : 'Dal Rice, Sabzi, Roti, Salad';
+  String _buildMealDescription(
+    MealType mealType,
+    String? menuName,
+    double? menuPrice,
+  ) {
+    final fallback = mealType == MealType.breakfast
+        ? 'Breakfast menu'
+        : 'Dinner menu';
+
+    final resolvedName = (menuName == null || menuName.trim().isEmpty)
+        ? fallback
+        : menuName;
+
+    if (menuPrice == null) {
+      return resolvedName;
+    }
+
+    return '$resolvedName (Rs ${menuPrice.toStringAsFixed(0)})';
   }
 }
-
-
-
-

@@ -38,7 +38,10 @@ class _StaffAttendancePageState extends State<StaffAttendancePage>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (Get.isRegistered<StaffController>()) {
         final controller = Get.find<StaffController>();
-        controller.selectedDate.value = _selectedDay;
+        controller.setAttendanceContext(
+          date: _selectedDay,
+          mealType: _selectedMeal,
+        );
         controller.ensureMonthlyAttendanceLoaded(
           _selectedDay,
           forceReload: true,
@@ -69,6 +72,7 @@ class _StaffAttendancePageState extends State<StaffAttendancePage>
             onTabChanged: (index) => setState(() => selectedTabIndex = index),
             onMealChanged: (meal) {
               setState(() => _selectedMeal = meal);
+              controller.setAttendanceContext(mealType: meal);
               controller.ensureMonthlyAttendanceLoaded(_selectedDay);
             },
           ),
@@ -97,11 +101,12 @@ class _StaffAttendancePageState extends State<StaffAttendancePage>
                       _selectedDay = selectedDay;
                       _focusedDay = focusedDay;
                     });
-                    controller.selectedDate.value = selectedDay;
+                    controller.setAttendanceContext(date: selectedDay);
                     controller.ensureMonthlyAttendanceLoaded(selectedDay);
                   },
                   onPageChanged: (focusedDay) {
                     setState(() => _focusedDay = focusedDay);
+                    controller.setAttendanceContext(date: focusedDay);
                     controller.ensureMonthlyAttendanceLoaded(focusedDay);
                   },
                 ),

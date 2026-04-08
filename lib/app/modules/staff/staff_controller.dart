@@ -6,6 +6,7 @@ import '../../../core/utils/toast_message.dart';
 import '../../data/models/attendance.dart';
 import '../../data/models/menu.dart';
 import '../../data/services/dummy_data_service.dart';
+import '../../data/services/menu_service.dart';
 import '../../data/services/user_service.dart';
 import '../../data/models/auth_models.dart';
 import '../user/user_controller.dart';
@@ -67,6 +68,7 @@ class StaffController extends GetxController {
 
   // User service for real data
   final UserService _userService = Get.find<UserService>();
+  final MenuService _menuService = Get.find<MenuService>();
 
   // Student controller for managing student data
   late StaffStudentController _studentController;
@@ -77,13 +79,12 @@ class StaffController extends GetxController {
     // Initialize student controller
     _studentController = Get.put(StaffStudentController());
 
-    _studentFilterWorker = ever(_studentController.filteredStudents, (
-      students,
-    ) {
-      // Convert AppUser objects to Map format for UI compatibility
-      filteredStudents.value = _studentController.studentsAsMap;
-      allStudents.value = _studentController.studentsAsMap;
+    _studentFilterWorker = ever(_studentController.filteredStudents, (_) {
+      allStudents.value = _studentsAsMapFromAppUsers(
+        _studentController.allStudents,
+      );
       _rebuildRollToUidMap();
+      _applyFilters();
     });
 
     if (Get.isRegistered<UserController>()) {
@@ -125,8 +126,9 @@ class StaffController extends GetxController {
       await _studentController.loadStudents();
 
       // Initial load
-      filteredStudents.value = _studentController.studentsAsMap;
-      allStudents.value = _studentController.studentsAsMap;
+      allStudents.value = _studentsAsMapFromAppUsers(
+        _studentController.allStudents,
+      );
       _rebuildRollToUidMap();
 
       _clearAttendanceState();
@@ -142,6 +144,8 @@ class StaffController extends GetxController {
 
       // Load meal rates
       mealRates.value = DummyDataService.getMealRates();
+
+      _applyFilters();
     } finally {
       isLoading.value = false;
       _isLoadingStaffData = false;
@@ -157,21 +161,67 @@ class StaffController extends GetxController {
   // Search and filter methods
   void filterStudents(String query) {
     searchQuery.value = query;
-    _studentController.filterStudents(query);
-    filteredStudents.value = _studentController.studentsAsMap;
+    _applyFilters();
   }
 
   void filterByStatus(String status) {
     statusFilter.value = status;
-    _studentController.filterByStatus(status);
-    filteredStudents.value = _studentController.studentsAsMap;
+    _applyFilters();
   }
 
   void _applyFilters() {
-    // Delegate to student controller
-    _studentController.filterStudents(searchQuery.value);
-    _studentController.filterByStatus(statusFilter.value);
-    filteredStudents.value = _studentController.studentsAsMap;
+    var students = List<Map<String, dynamic>>.from(allStudents);
+
+    final query = searchQuery.value.trim().toLowerCase();
+    if (query.isNotEmpty) {
+      students = students.where((student) {
+        final name = student['name']?.toString().toLowerCase() ?? '';
+        final id = student['id']?.toString().toLowerCase() ?? '';
+        final email = student['email']?.toString().toLowerCase() ?? '';
+        return name.contains(query) ||
+            id.contains(query) ||
+            email.contains(query);
+      }).toList();
+    }
+
+    final selectedStatus = statusFilter.value;
+
+    if (selectedStatus != 'All') {
+      final date = selectedDate.value;
+      final mealType = selectedMealType.value == MealType.breakfast
+          ? 'breakfast'
+          : 'dinner';
+
+      students = students.where((student) {
+        final status = isStudentPresent(
+          student['id'].toString(),
+          mealType,
+          date,
+        );
+        if (selectedStatus == 'Present') {
+          return status == true;
+        }
+        if (selectedStatus == 'Absent') {
+          return status == false;
+        }
+        if (selectedStatus == 'Not Marked') {
+          return status == null;
+        }
+        return true;
+      }).toList();
+    }
+
+    filteredStudents.value = students;
+  }
+
+  void setAttendanceContext({DateTime? date, String? mealType}) {
+    if (date != null) {
+      selectedDate.value = date;
+    }
+    if (mealType != null) {
+      selectedMealType.value = _mealTypeFromString(mealType);
+    }
+    _applyFilters();
   }
 
   // Attendance management methods
@@ -199,7 +249,7 @@ class StaffController extends GetxController {
 
     // Optimistic update so UI toggles instantly.
     _attendanceStatusCache[key] = isPresent;
-    filteredStudents.refresh();
+    _applyFilters();
 
     final studentUid = _rollToUid[studentId];
     if (studentUid == null || studentUid.isEmpty) {
@@ -208,7 +258,7 @@ class StaffController extends GetxController {
       } else {
         _attendanceStatusCache[key] = previousValue;
       }
-      filteredStudents.refresh();
+      _applyFilters();
       ToastMessage.error(
         'Could not resolve user for ${_getStudentName(studentId)}',
       );
@@ -216,21 +266,34 @@ class StaffController extends GetxController {
     }
 
     try {
+      final mealSnapshot = await _resolveMealSnapshotForDate(date, mealType);
+
       await _userService.markStudentMealAttendance(
         userUid: studentUid,
         date: date,
         mealType: mealType,
         isPresent: isPresent,
         markedBy: _currentStaffId(),
+        menuItemId: mealSnapshot['menuItemId'] as String?,
+        menuName: mealSnapshot['menuName'] as String?,
+        menuPrice: mealSnapshot['menuPrice'] as double?,
       );
-
-      _upsertAttendanceRecord(studentId, mealType, date, isPresent);
+      _upsertAttendanceRecord(
+        studentId,
+        mealType,
+        date,
+        isPresent,
+        menuItemId: mealSnapshot['menuItemId'] as String?,
+        menuName: mealSnapshot['menuName'] as String?,
+        menuPrice: mealSnapshot['menuPrice'] as double?,
+      );
 
       if (showToast) {
         ToastMessage.success(
           'Attendance marked for ${_getStudentName(studentId)}',
         );
       }
+      _applyFilters();
       return true;
     } catch (e) {
       if (previousValue == null) {
@@ -238,7 +301,7 @@ class StaffController extends GetxController {
       } else {
         _attendanceStatusCache[key] = previousValue;
       }
-      filteredStudents.refresh();
+      _applyFilters();
       ToastMessage.error(
         'Failed to mark attendance for ${_getStudentName(studentId)}',
       );
@@ -320,7 +383,7 @@ class StaffController extends GetxController {
       );
 
       _loadedAttendanceMonths.add(month);
-      filteredStudents.refresh();
+      _applyFilters();
     } catch (_) {
     } finally {
       _loadingAttendanceMonths.remove(month);
@@ -356,6 +419,19 @@ class StaffController extends GetxController {
     _rollToUid.value = map;
   }
 
+  List<Map<String, dynamic>> _studentsAsMapFromAppUsers(List<AppUser> users) {
+    return users.map((student) {
+      final details = _studentController.studentDetails[student.uid] ?? {};
+      return {
+        'id': details['rollNumber'] ?? 'N/A',
+        'name': student.fullName,
+        'email': student.email,
+        'room': details['roomNumber'] ?? 'N/A',
+        'isApproved': student.status == UserStatus.active,
+      };
+    }).toList();
+  }
+
   String _currentStaffId() {
     if (Get.isRegistered<UserController>()) {
       final user = Get.find<UserController>().currentUser.value;
@@ -364,6 +440,61 @@ class StaffController extends GetxController {
       }
     }
     return 'staff';
+  }
+
+  Future<Map<String, dynamic>> _resolveMealSnapshotForDate(
+    DateTime date,
+    String mealType,
+  ) async {
+    final normalizedMeal = _normalizeMealType(mealType);
+    final weekday = _weekdayKey(date);
+
+    try {
+      final weeklyMenu = await _menuService.getWeeklyMenu(_startOfWeek(date));
+      final menuItem = weeklyMenu[weekday]?[normalizedMeal];
+
+      if (menuItem != null) {
+        return {
+          'menuItemId': menuItem.id,
+          'menuName': menuItem.name,
+          'menuPrice': menuItem.price,
+        };
+      }
+
+      final currentRate = await _menuService.getCurrentRate(normalizedMeal);
+      return {
+        'menuItemId': null,
+        'menuName': _displayMealName(normalizedMeal),
+        'menuPrice': currentRate?.rate,
+      };
+    } catch (_) {
+      return {
+        'menuItemId': null,
+        'menuName': _displayMealName(normalizedMeal),
+        'menuPrice': null,
+      };
+    }
+  }
+
+  DateTime _startOfWeek(DateTime date) {
+    return date.subtract(Duration(days: date.weekday - 1));
+  }
+
+  String _weekdayKey(DateTime date) {
+    const weekdays = [
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday',
+      'sunday',
+    ];
+    return weekdays[date.weekday - 1];
+  }
+
+  String _displayMealName(String normalizedMeal) {
+    return normalizedMeal == 'breakfast' ? 'Breakfast' : 'Dinner';
   }
 
   void _applyMonthlyAttendanceToCache(
@@ -399,6 +530,9 @@ class StaffController extends GetxController {
   ) {
     final mealRaw = dayMap[mealType];
     bool? isPresent;
+    String? menuItemId;
+    String? menuName;
+    double? menuPrice;
 
     if (mealRaw is bool) {
       isPresent = mealRaw;
@@ -408,12 +542,29 @@ class StaffController extends GetxController {
       if (rawPresence is bool) {
         isPresent = rawPresence;
       }
+      final rawMenuItemId = mealMap['menuItemId'];
+      final rawMenuName = mealMap['menuName'];
+      if (rawMenuItemId is String && rawMenuItemId.trim().isNotEmpty) {
+        menuItemId = rawMenuItemId;
+      }
+      if (rawMenuName is String && rawMenuName.trim().isNotEmpty) {
+        menuName = rawMenuName;
+      }
+      menuPrice = _toDouble(mealMap['menuPrice']);
     }
 
     if (isPresent != null) {
       _attendanceStatusCache[_attendanceKey(studentId, date, mealType)] =
           isPresent;
-      _upsertAttendanceRecord(studentId, mealType, date, isPresent);
+      _upsertAttendanceRecord(
+        studentId,
+        mealType,
+        date,
+        isPresent,
+        menuItemId: menuItemId,
+        menuName: menuName,
+        menuPrice: menuPrice,
+      );
     }
   }
 
@@ -421,8 +572,11 @@ class StaffController extends GetxController {
     String studentId,
     String mealType,
     DateTime date,
-    bool isPresent,
-  ) {
+    bool isPresent, {
+    String? menuItemId,
+    String? menuName,
+    double? menuPrice,
+  }) {
     final mealTypeEnum = _mealTypeFromString(mealType);
 
     attendanceList.removeWhere(
@@ -443,8 +597,21 @@ class StaffController extends GetxController {
         isPresent: isPresent,
         markedAt: DateTime.now(),
         markedBy: _currentStaffId(),
+        menuItemId: menuItemId,
+        menuName: menuName,
+        menuPrice: menuPrice,
       ),
     );
+  }
+
+  double? _toDouble(dynamic value) {
+    if (value is num) {
+      return value.toDouble();
+    }
+    if (value is String) {
+      return double.tryParse(value);
+    }
+    return null;
   }
 
   MealType _mealTypeFromString(String mealType) {

@@ -332,6 +332,9 @@ class UserService extends GetxService {
     required String mealType,
     required bool isPresent,
     required String markedBy,
+    String? menuItemId,
+    String? menuName,
+    double? menuPrice,
   }) async {
     try {
       final normalizedMeal = _normalizeMealType(mealType);
@@ -344,23 +347,48 @@ class UserService extends GetxService {
           .collection(attendanceSubcollection)
           .doc(monthId);
 
-      // Ensure root metadata always exists.
-      await monthDoc.set({
+      final DocumentSnapshot existingSnapshot = await monthDoc.get();
+      final existingData = existingSnapshot.data();
+
+      if (!existingSnapshot.exists) {
+        await monthDoc.set({
+          'month': monthId,
+          'studentUid': userUid,
+          'updatedAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+      } else if (existingData is Map<String, dynamic>) {
+        final rawDaily = existingData['daily'];
+        if (rawDaily is! Map) {
+          await monthDoc.update({'daily': <String, dynamic>{}});
+        }
+      }
+
+      final updateData = <String, dynamic>{
         'month': monthId,
         'studentUid': userUid,
-        'updatedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
-
-      // Use update with dotted field paths to guarantee nested map writes.
-      await monthDoc.update({
         'daily.$dayId.$normalizedMeal.isPresent': isPresent,
         'daily.$dayId.$normalizedMeal.markedBy': markedBy,
         'daily.$dayId.$normalizedMeal.markedAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
-      });
+      };
+
+      if (menuItemId != null && menuItemId.trim().isNotEmpty) {
+        updateData['daily.$dayId.$normalizedMeal.menuItemId'] = menuItemId;
+      }
+
+      if (menuName != null && menuName.trim().isNotEmpty) {
+        updateData['daily.$dayId.$normalizedMeal.menuName'] = menuName;
+      }
+
+      if (menuPrice != null) {
+        updateData['daily.$dayId.$normalizedMeal.menuPrice'] = menuPrice;
+      }
+
+      // Use dotted field paths to write exactly one day/meal entry.
+      await monthDoc.update(updateData);
 
       print(
-        '[ATTENDANCE DEBUG] Saved students/$userUid/attendance/$monthId daily.$dayId.$normalizedMeal.isPresent=$isPresent',
+        '[ATTENDANCE DEBUG] Saved students/$userUid/attendance/$monthId daily.$dayId.$normalizedMeal.isPresent=$isPresent menuName=${menuName ?? 'n/a'} menuPrice=${menuPrice?.toStringAsFixed(2) ?? 'n/a'}',
       );
     } catch (e) {
       print('[ATTENDANCE DEBUG] Error saving attendance for $userUid: $e');
@@ -454,7 +482,10 @@ class UserService extends GetxService {
 
   String _normalizeMealType(String mealType) {
     final normalized = mealType.trim().toLowerCase();
-    return normalized == 'breakfast' ? 'breakfast' : 'dinner';
+    if (normalized == 'breakfast' || normalized == 'dinner') {
+      return normalized;
+    }
+    throw ArgumentError('Unsupported meal type: $mealType');
   }
 
   Map<String, dynamic> _reconstructDailyMapFromFlatKeys(

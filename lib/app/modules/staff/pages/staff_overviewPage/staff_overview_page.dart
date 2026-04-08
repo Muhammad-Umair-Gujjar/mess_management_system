@@ -17,7 +17,9 @@ class StaffOverviewPage extends StatelessWidget {
     return GetBuilder<StaffController>(
       builder: (controller) {
         return Obx(() {
-          final studentController = Get.find<StaffStudentController>();
+          final studentController = Get.isRegistered<StaffStudentController>()
+              ? Get.find<StaffStudentController>()
+              : Get.put(StaffStudentController());
 
           // Show loading indicator if data is still loading
           if (studentController.isLoading.value) {

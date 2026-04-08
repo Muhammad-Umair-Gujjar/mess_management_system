@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get/get.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
@@ -34,7 +35,7 @@ class AttendanceStatsCard extends StatelessWidget {
           _buildStats(context),
         ],
       ),
-    ).animate().fadeIn(delay:  300.ms ).slideY(begin: 0.3);
+    ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.3);
   }
 
   Widget _buildHeader() {
@@ -42,32 +43,38 @@ class AttendanceStatsCard extends StatelessWidget {
   }
 
   Widget _buildStats(BuildContext context) {
-    final monthlyStats = controller.getMonthlyStats();
-    final attendanceRate = controller.attendanceRate.value;
+    return Obx(() {
+      final monthlyStats = controller.getMonthlyStats();
+      final totalPossible = monthlyStats['totalPossible'] as int;
+      final attendedMeals = monthlyStats['attendedMeals'] as int;
+      final attendanceRate = totalPossible > 0
+          ? (attendedMeals / totalPossible) * 100
+          : 0.0;
 
-    return Column(
-      children: [
-        _StatRow(
-          label: 'Meals Attended',
-          value: '${monthlyStats['attendedMeals']}',
-          color: AppColors.success,
-        ),
-        SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
-        _StatRow(
-          label: 'Meals Missed',
-          value: '${monthlyStats['missedMeals']}',
-          color: AppColors.error,
-        ),
-        SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
-        _StatRow(
-          label: 'Attendance Rate',
-          value: '${attendanceRate.toStringAsFixed(1)}%',
-          color: AppColors.primary,
-        ),
-        SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
-        _buildProgressBar(context, attendanceRate),
-      ],
-    );
+      return Column(
+        children: [
+          _StatRow(
+            label: 'Meals Attended',
+            value: '$attendedMeals',
+            color: AppColors.success,
+          ),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
+          _StatRow(
+            label: 'Meals Missed',
+            value: '${monthlyStats['missedMeals']}',
+            color: AppColors.error,
+          ),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
+          _StatRow(
+            label: 'Attendance Rate',
+            value: '${attendanceRate.toStringAsFixed(1)}%',
+            color: AppColors.primary,
+          ),
+          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+          _buildProgressBar(context, attendanceRate),
+        ],
+      );
+    });
   }
 
   Widget _buildProgressBar(BuildContext context, double attendanceRate) {
@@ -91,7 +98,7 @@ class AttendanceStatsCard extends StatelessWidget {
           ),
         ),
       ),
-    ).animate().scaleX( duration: 300.ms , delay:  300.ms );
+    ).animate().scaleX(duration: 300.ms, delay: 300.ms);
   }
 }
 
@@ -123,7 +130,3 @@ class _StatRow extends StatelessWidget {
     );
   }
 }
-
-
-
-
