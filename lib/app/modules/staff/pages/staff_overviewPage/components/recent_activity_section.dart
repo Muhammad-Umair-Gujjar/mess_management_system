@@ -15,6 +15,12 @@ class RecentActivitySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final breakfastPresent = (todayStats['breakfastPresent'] ?? 0) as int;
+    final dinnerPresent = (todayStats['dinnerPresent'] ?? 0) as int;
+    final totalStudents = (todayStats['totalStudents'] ?? 0) as int;
+    final breakfastAbsent = (todayStats['breakfastAbsent'] ?? 0) as int;
+    final dinnerAbsent = (todayStats['dinnerAbsent'] ?? 0) as int;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
@@ -29,24 +35,25 @@ class RecentActivitySection extends StatelessWidget {
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
           ActivityItem(
             title:
-                'Attendance marked for ${todayStats['breakfastPresent']} students',
+                'Breakfast attendance marked for $breakfastPresent students',
             time: 'Breakfast - Today',
             icon: FontAwesomeIcons.check,
             color: AppColors.success,
           ),
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
           ActivityItem(
-            title: 'Menu updated for tomorrow',
-            time: '2 hours ago',
-            icon: FontAwesomeIcons.utensils,
+            title: 'Dinner attendance marked for $dinnerPresent students',
+            time: 'Dinner - Today',
+            icon: FontAwesomeIcons.moon,
             color: AppColors.info,
           ),
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
           ActivityItem(
-            title: 'New student registered',
-            time: 'Yesterday',
-            icon: FontAwesomeIcons.userPlus,
-            color: AppColors.primary,
+            title:
+                'Absentees today: Breakfast $breakfastAbsent, Dinner $dinnerAbsent (Total active: $totalStudents)',
+            time: 'Live Overview',
+            icon: FontAwesomeIcons.users,
+            color: AppColors.warning,
           ),
         ],
       ),

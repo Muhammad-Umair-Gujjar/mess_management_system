@@ -31,7 +31,7 @@ class StaffOverviewPage extends StatelessWidget {
           return RefreshIndicator(
             onRefresh: () async {
               await studentController.refreshStudents();
-              controller.loadStaffData();
+              await controller.loadStaffData(forceReloadAttendance: true);
             },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),

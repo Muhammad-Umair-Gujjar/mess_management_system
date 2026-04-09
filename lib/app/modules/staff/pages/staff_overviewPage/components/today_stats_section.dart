@@ -30,7 +30,7 @@ class TodayStatsSection extends StatelessWidget {
         SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
         Obx(
-          () => ResponsiveHelper.isDesktop(Get.context!)
+          () => ResponsiveHelper.isDesktop(context)
               ? Row(
                   children: [
                     Expanded(

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 import '../../../../../../core/constants/app_colors.dart';
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/utils/responsive_helper.dart';
+import '../../../../user/user_controller.dart';
 
 class WelcomeSection extends StatelessWidget {
   const WelcomeSection({super.key});
@@ -30,26 +32,34 @@ class WelcomeSection extends StatelessWidget {
               ),
               SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Good ${_getGreeting()}!',
-                      style: AppTextStyles.heading4.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(
-                      height: ResponsiveHelper.getSpacing(context, 'xs'),
-                    ),
-                    Text(
-                      'Welcome back, Sarah. Here\'s your daily overview.',
-                      style: AppTextStyles.body1.copyWith(
-                        color: Colors.white.withOpacity(0.9),
-                      ),
-                    ),
-                  ],
+                child: GetX<UserController>(
+                  builder: (userController) {
+                    final userName = userController.fullName.trim().isNotEmpty
+                        ? userController.fullName
+                        : 'Staff';
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Good ${_getGreeting()}!',
+                          style: AppTextStyles.heading4.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          height: ResponsiveHelper.getSpacing(context, 'xs'),
+                        ),
+                        Text(
+                          'Welcome back, $userName. Here\'s your daily overview.',
+                          style: AppTextStyles.body1.copyWith(
+                            color: Colors.white.withOpacity(0.9),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ],

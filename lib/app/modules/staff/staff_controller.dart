@@ -51,7 +51,6 @@ class StaffController extends GetxController {
       icon: FontAwesomeIcons.calendarCheck,
       title: 'Attendance',
       route: '/staff/attendance',
-      badge: 5,
     ),
     const NavigationItem(
       icon: FontAwesomeIcons.users,

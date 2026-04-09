@@ -24,7 +24,7 @@ class QuickActionsSection extends StatelessWidget {
         ),
         SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
 
-        ResponsiveHelper.isDesktop(Get.context!)
+        ResponsiveHelper.isDesktop(context)
             ? Row(
                 children: [
                   Expanded(
@@ -95,7 +95,3 @@ class QuickActionsSection extends StatelessWidget {
     );
   }
 }
-
-
-
-
