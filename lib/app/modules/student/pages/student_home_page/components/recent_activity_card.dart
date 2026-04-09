@@ -69,21 +69,23 @@ class RecentActivityCard extends StatelessWidget {
   }
 
   Widget _buildActivitiesList(BuildContext context) {
-    final activities = controller.getRecentActivities().take(4).toList();
+    return Obx(() {
+      final activities = controller.getRecentActivities().take(4).toList();
 
-    if (activities.isEmpty) {
-      return _buildEmptyState(context);
-    }
+      if (activities.isEmpty) {
+        return _buildEmptyState(context);
+      }
 
-    return Column(
-      children: activities
-          .asMap()
-          .entries
-          .map(
-            (entry) => _ActivityItem(activity: entry.value, index: entry.key),
-          )
-          .toList(),
-    );
+      return Column(
+        children: activities
+            .asMap()
+            .entries
+            .map(
+              (entry) => _ActivityItem(activity: entry.value, index: entry.key),
+            )
+            .toList(),
+      );
+    });
   }
 
   Widget _buildEmptyState(BuildContext context) {

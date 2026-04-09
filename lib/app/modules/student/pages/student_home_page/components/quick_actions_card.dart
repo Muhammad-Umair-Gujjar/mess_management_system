@@ -99,25 +99,25 @@ class QuickActionsCard extends StatelessWidget {
         'title': 'View Menu',
         'icon': FontAwesomeIcons.utensils,
         'color': AppColors.secondary,
-        'onTap': () => Get.toNamed('/student/menu'),
+        'onTap': () => controller.changePage(3),
       },
       {
         'title': 'View Attendance',
         'icon': FontAwesomeIcons.calendarCheck,
         'color': AppColors.success,
-        'onTap': () => Get.toNamed('/student/attendance'),
+        'onTap': () => controller.changePage(1),
       },
       {
         'title': 'Bills',
         'icon': FontAwesomeIcons.creditCard,
         'color': AppColors.info,
-        'onTap': () => Get.toNamed('/student/payment'),
+        'onTap': () => controller.changePage(2),
       },
       {
-        'title': 'Complaint',
-        'icon': FontAwesomeIcons.exclamationTriangle,
+        'title': 'Feedback',
+        'icon': FontAwesomeIcons.comment,
         'color': AppColors.warning,
-        'onTap': () => Get.toNamed('/student/complaint'),
+        'onTap': () => controller.changePage(4),
       },
     ];
   }

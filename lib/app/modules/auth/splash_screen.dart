@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/utils/responsive_helper.dart';
+import '../../data/services/auth_service.dart';
+import '../../data/models/auth_models.dart';
+import '../user/user_controller.dart';
+import 'controllers/auth_controller.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -58,12 +62,45 @@ class _SplashScreenState extends State<SplashScreen>
       _showContent = true;
     });
 
-    // Wait a bit more then navigate directly to login
+    // Wait a bit more then resolve current auth session route.
     await Future.delayed(const Duration(seconds: 1));
 
     if (mounted) {
-      Get.offAllNamed('/login');
+      await _navigateBasedOnSession();
     }
+  }
+
+  Future<void> _navigateBasedOnSession() async {
+    final authService = AuthService();
+    final authController = Get.find<AuthController>();
+    final userController = Get.find<UserController>();
+
+    final user = await authService.currentUser;
+
+    if (!mounted) {
+      return;
+    }
+
+    if (user != null && user.isActive) {
+      authController.currentUser.value = user;
+      authController.isAuthenticated.value = true;
+      await userController.setUserData(user);
+
+      switch (user.role) {
+        case UserRole.student:
+          Get.offAllNamed('/student');
+          break;
+        case UserRole.staff:
+          Get.offAllNamed('/staff');
+          break;
+        case UserRole.admin:
+          Get.offAllNamed('/admin');
+          break;
+      }
+      return;
+    }
+
+    Get.offAllNamed('/login');
   }
 
   Future<void> _simulateDataLoading() async {

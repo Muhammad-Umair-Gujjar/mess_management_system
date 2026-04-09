@@ -133,14 +133,23 @@ class AuthController extends GetxController {
         if (user != null && user.isActive) {
           currentUser.value = user;
           isAuthenticated.value = true;
+          if (Get.isRegistered<UserController>()) {
+            await Get.find<UserController>().setUserData(user);
+          }
           // Don't navigate here as _navigateBasedOnRole will handle it
         } else {
           currentUser.value = null;
           isAuthenticated.value = false;
+          if (Get.isRegistered<UserController>()) {
+            Get.find<UserController>().clearUserData();
+          }
         }
       } else if (firebaseUser == null) {
         currentUser.value = null;
         isAuthenticated.value = false;
+        if (Get.isRegistered<UserController>()) {
+          Get.find<UserController>().clearUserData();
+        }
       }
     });
   }

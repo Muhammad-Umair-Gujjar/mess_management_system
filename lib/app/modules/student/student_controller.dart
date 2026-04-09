@@ -79,7 +79,6 @@ class StudentController extends GetxController {
       icon: FontAwesomeIcons.comment,
       title: 'Feedback',
       route: '/student/feedback',
-      badge: 2,
     ),
   ];
 
@@ -88,6 +87,7 @@ class StudentController extends GetxController {
     super.onInit();
     _userWatcher = ever<AppUser?>(_userController.currentUser, (user) {
       if (user == null || user.uid.isEmpty) {
+        currentStudent.value = null;
         _clearAttendanceState();
         _clearFeedbackState();
         _clearBillingState();
@@ -95,6 +95,7 @@ class StudentController extends GetxController {
         return;
       }
 
+      _syncCurrentStudentFromSession();
       _clearAttendanceState();
       _clearFeedbackState();
       _clearBillingState();
@@ -118,14 +119,13 @@ class StudentController extends GetxController {
     // StudentController - loadStudentData called
     isLoading.value = true;
 
-    // Load current student (Ali Ahmed) - using dummy data for now
-    final students = DummyDataService.getStudents();
-    currentStudent.value = students.firstWhere(
-      (s) => s.id == '1',
-      orElse: () => students.first,
-    );
+    if (!_userController.hasUserData && _authService.currentFirebaseUser != null) {
+      await _userController.fetchCurrentUserData();
+    }
+
+    _syncCurrentStudentFromSession();
     print(
-      '✅ DEBUG: StudentController - Loaded student: ${currentStudent.value?.name}',
+      '✅ DEBUG: StudentController - Loaded student from session: ${currentStudent.value?.name}',
     );
 
     _clearAttendanceState();
@@ -143,6 +143,25 @@ class StudentController extends GetxController {
     // StudentController - Student data loaded successfully
     isLoading.value = false;
     update();
+  }
+
+  void _syncCurrentStudentFromSession() {
+    final user = _userController.currentUser.value;
+    if (user == null || user.uid.isEmpty) {
+      currentStudent.value = null;
+      return;
+    }
+
+    final studentData = _userController.currentStudentData.value;
+    currentStudent.value = Student(
+      id: user.uid,
+      name: user.fullName.trim().isNotEmpty ? user.fullName : 'Student',
+      email: user.email,
+      hostelName: studentData?.hostel ?? '',
+      roomNumber: studentData?.roomNumber ?? '',
+      joinDate: user.createdAt,
+      isApproved: user.isActive,
+    );
   }
 
   /// Load menu data from Firebase
@@ -1060,54 +1079,118 @@ class StudentController extends GetxController {
   }
 
   Map<String, dynamic> getStudentStats() {
+    final now = DateTime.now();
+    final endOfMonth = DateTime(now.year, now.month + 1, 0);
+
     return {
       'currentBill': monthlyBilling.value.toInt(),
       'attendancePercentage': attendanceRate.value.toInt(),
-      'pendingDues': 150, // Mock value
-      'daysRemaining': 15, // Mock value
+      'pendingDues': 0,
+      'daysRemaining': endOfMonth.day - now.day,
     };
   }
 
+  int getDaysActiveThisMonth() {
+    final now = DateTime.now();
+    final uniqueDays = attendanceList
+        .where(
+          (a) =>
+              a.date.year == now.year &&
+              a.date.month == now.month &&
+              a.isPresent,
+        )
+        .map((a) => a.date.day)
+        .toSet();
+
+    return uniqueDays.length;
+  }
+
   Map<String, Map<String, dynamic>> getTodaysMenu() {
-    // Mock today's menu data
+    final today = DateTime.now();
+    final breakfast = getMenuForDate(today, MealType.breakfast);
+    final dinner = getMenuForDate(today, MealType.dinner);
+
     return {
       'Breakfast': {
-        'items': ['Idli', 'Sambhar', 'Chutney', 'Tea'],
+        'items': [breakfast?.name ?? 'No menu available'],
       },
       'Dinner': {
-        'items': ['Rice', 'Dal', 'Sabji', 'Roti'],
+        'items': [dinner?.name ?? 'No menu available'],
       },
     };
   }
 
   List<Map<String, dynamic>> getRecentActivities() {
-    // Mock recent activities data
-    return [
-      {
-        'title': 'Breakfast Attendance Marked',
-        'description': 'You attended breakfast today',
-        'time': '2h ago',
+    final activities = <Map<String, dynamic>>[];
+
+    final sortedAttendance = attendanceList.toList()
+      ..sort((a, b) => b.markedAt.compareTo(a.markedAt));
+
+    for (final attendance in sortedAttendance.take(2)) {
+      final mealLabel = attendance.mealType == MealType.breakfast
+          ? 'Breakfast'
+          : 'Dinner';
+
+      activities.add({
+        'title': '$mealLabel Attendance ${attendance.isPresent ? 'Marked' : 'Not Marked'}',
+        'description': attendance.isPresent
+            ? 'You attended $mealLabel on ${DateFormat('dd MMM').format(attendance.date)}'
+            : 'You missed $mealLabel on ${DateFormat('dd MMM').format(attendance.date)}',
+        'time': _timeAgo(attendance.markedAt),
         'type': 'attendance',
-      },
-      {
-        'title': 'Bill Payment Due',
-        'description': 'Monthly bill payment is due',
-        'time': '1d ago',
+      });
+    }
+
+    final currentBill = currentMonthBill.value;
+    if (currentBill != null) {
+      activities.add({
+        'title': 'Monthly Bill Generated',
+        'description':
+            'Bill for ${_displayMonthFromMonthId(currentBill.monthId)} is Rs ${currentBill.totalAmount.toStringAsFixed(0)}',
+        'time': _timeAgo(currentBill.updatedAt),
         'type': 'payment',
-      },
-      {
-        'title': 'Menu Updated',
-        'description': 'This week\'s menu has been updated',
-        'time': '2d ago',
-        'type': 'meal',
-      },
-      {
+      });
+    }
+
+    if (recentFeedbacks.isNotEmpty) {
+      final feedback = recentFeedbacks.first;
+      activities.add({
         'title': 'Feedback Submitted',
-        'description': 'Your feedback has been received',
-        'time': '3d ago',
+        'description':
+            'Category: ${feedback.category} • Rating: ${feedback.rating}/5',
+        'time': _timeAgo(feedback.submittedAt),
         'type': 'complaint',
-      },
-    ];
+      });
+    }
+
+    final weekRange = getWeekDisplayString();
+    activities.add({
+      'title': 'Weekly Menu Loaded',
+      'description': 'Menu available for $weekRange',
+      'time': _timeAgo(DateTime.now()),
+      'type': 'meal',
+    });
+
+    return activities.take(4).toList();
+  }
+
+  String _timeAgo(DateTime dateTime) {
+    final now = DateTime.now();
+    final diff = now.difference(dateTime);
+
+    if (diff.inMinutes < 1) {
+      return 'just now';
+    }
+    if (diff.inHours < 1) {
+      return '${diff.inMinutes}m ago';
+    }
+    if (diff.inDays < 1) {
+      return '${diff.inHours}h ago';
+    }
+    if (diff.inDays < 30) {
+      return '${diff.inDays}d ago';
+    }
+    return DateFormat('dd MMM').format(dateTime);
   }
 
   // Navigation methods

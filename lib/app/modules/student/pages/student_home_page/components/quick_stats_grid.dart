@@ -16,18 +16,25 @@ class QuickStatsGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       final monthlyStats = controller.getMonthlyStats();
+      final studentStats = controller.getStudentStats();
       final attendanceRate = controller.attendanceRate.value;
       final monthlyBill = controller.monthlyBilling.value;
+      final daysActive = controller.getDaysActiveThisMonth();
+      final attendedMeals = monthlyStats['attendedMeals'] ?? 0;
+      final breakfastCount = monthlyStats['breakfastCount'] ?? 0;
+      final dinnerCount = monthlyStats['dinnerCount'] ?? 0;
+      final missedMeals = monthlyStats['missedMeals'] ?? 0;
+      final daysRemaining = studentStats['daysRemaining'] ?? 0;
 
       final gridData = [
         GridCardData(
           title: 'Meals Attended',
-          value: '${monthlyStats['attendedMeals']}',
+          value: '$attendedMeals',
           // subtitle: 'This Month',
           icon: FontAwesomeIcons.check,
           color: AppColors.success,
-          trend: '+8%',
-          trendIcon: FontAwesomeIcons.arrowTrendUp,
+          trend: '$breakfastCount B • $dinnerCount D',
+          trendIcon: FontAwesomeIcons.utensils,
           trendColor: AppColors.success,
         ),
         GridCardData(
@@ -36,9 +43,9 @@ class QuickStatsGrid extends StatelessWidget {
           // subtitle: 'Current',
           icon: FontAwesomeIcons.receipt,
           color: AppColors.warning,
-          trend: '+5%',
-          trendIcon: FontAwesomeIcons.arrowTrendUp,
-          trendColor: AppColors.success,
+          trend: '$attendedMeals meals',
+          trendIcon: FontAwesomeIcons.bowlFood,
+          trendColor: AppColors.warning,
         ),
         GridCardData(
           title: 'Attendance Rate',
@@ -46,18 +53,20 @@ class QuickStatsGrid extends StatelessWidget {
           // subtitle: 'Overall',
           icon: FontAwesomeIcons.chartLine,
           color: AppColors.primary,
-          trend: '+2%',
-          trendIcon: FontAwesomeIcons.arrowTrendUp,
-          trendColor: AppColors.success,
+          trend: missedMeals > 0 ? '$missedMeals missed' : 'No missed meals',
+          trendIcon: missedMeals > 0
+              ? FontAwesomeIcons.triangleExclamation
+              : FontAwesomeIcons.circleCheck,
+          trendColor: missedMeals > 0 ? AppColors.warning : AppColors.success,
         ),
         GridCardData(
           title: 'Days Active',
-          value: '${DateTime.now().day}',
+          value: '$daysActive',
           // subtitle: 'This Month',
           icon: FontAwesomeIcons.calendar,
           color: AppColors.info,
-          trend: '${DateTime.now().day}d',
-          trendIcon: FontAwesomeIcons.calendar,
+          trend: '$daysRemaining left',
+          trendIcon: FontAwesomeIcons.calendarDays,
           trendColor: AppColors.info,
         ),
       ];

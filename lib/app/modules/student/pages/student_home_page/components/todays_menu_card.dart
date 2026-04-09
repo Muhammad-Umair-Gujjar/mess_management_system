@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
@@ -15,34 +16,46 @@ class TodaysMenuCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: ResponsiveHelper.getPadding(context, 'cardPadding'),
-      decoration: AppDecorations.floatingCard(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(context),
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
-          _buildMealCard(
-            context,
-            '🌅 Breakfast',
-            'Aloo Paratha, Curd, Pickle',
-            '8:00 AM - 10:00 AM',
-            AppColors.warning,
-          ),
-          SizedBox(
-            height: ResponsiveHelper.getSpacing(context, 'sectionMargin'),
-          ),
-          _buildMealCard(
-            context,
-            '🌙 Dinner',
-            'Dal Rice, Sabzi, Roti, Salad',
-            '7:00 PM - 9:00 PM',
-            AppColors.info,
-          ),
-        ],
-      ),
-    ).animate().fadeIn(delay: 300.ms).slideX(begin: -0.3);
+    return Obx(() {
+      final todaysMenu = controller.getTodaysMenu();
+      final breakfastItems =
+          (todaysMenu['Breakfast']?['items'] as List<dynamic>? ?? const [])
+              .map((e) => e.toString())
+              .toList();
+      final dinnerItems =
+          (todaysMenu['Dinner']?['items'] as List<dynamic>? ?? const [])
+              .map((e) => e.toString())
+              .toList();
+
+      return Container(
+        padding: ResponsiveHelper.getPadding(context, 'cardPadding'),
+        decoration: AppDecorations.floatingCard(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(context),
+            SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
+            _buildMealCard(
+              context,
+              '🌅 Breakfast',
+              breakfastItems.join(', '),
+              '8:00 AM - 10:00 AM',
+              AppColors.warning,
+            ),
+            SizedBox(
+              height: ResponsiveHelper.getSpacing(context, 'sectionMargin'),
+            ),
+            _buildMealCard(
+              context,
+              '🌙 Dinner',
+              dinnerItems.join(', '),
+              '7:00 PM - 9:00 PM',
+              AppColors.info,
+            ),
+          ],
+        ),
+      ).animate().fadeIn(delay: 300.ms).slideX(begin: -0.3);
+    });
   }
 
   Widget _buildHeader(BuildContext context) {
