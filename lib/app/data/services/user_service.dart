@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import '../models/auth_models.dart';
+import '../models/billing.dart';
 
 /// Service class for managing user data operations with Firebase Firestore
 class UserService extends GetxService {
@@ -13,6 +14,7 @@ class UserService extends GetxService {
   static const String studentsCollection = 'students';
   static const String staffCollection = 'staff';
   static const String attendanceSubcollection = 'attendance';
+  static const String billingSubcollection = 'billing';
 
   /// Fetch all users (students and staff only) from Firebase
   Future<List<AppUser>> getAllUsers() async {
@@ -518,5 +520,81 @@ class UserService extends GetxService {
     }
 
     return reconstructed;
+  }
+
+  /// Create or update a student's monthly bill record.
+  ///
+  /// Stored path:
+  /// students/{uid}/billing/{yyyy-MM}
+  Future<void> upsertStudentMonthlyBill({
+    required String studentUid,
+    required MonthlyBillRecord bill,
+  }) async {
+    await _firestore
+        .collection(studentsCollection)
+        .doc(studentUid)
+        .collection(billingSubcollection)
+        .doc(bill.monthId)
+        .set(bill.toFirestore(), SetOptions(merge: true));
+  }
+
+  /// Get a student's bill for a specific month.
+  Future<MonthlyBillRecord?> getStudentMonthlyBill({
+    required String studentUid,
+    required String monthId,
+  }) async {
+    final snapshot = await _firestore
+        .collection(studentsCollection)
+        .doc(studentUid)
+        .collection(billingSubcollection)
+        .doc(monthId)
+        .get();
+
+    if (!snapshot.exists) {
+      return null;
+    }
+
+    final data = snapshot.data();
+    if (data == null) {
+      return null;
+    }
+
+    return MonthlyBillRecord.fromFirestore(snapshot.id, data);
+  }
+
+  /// Get latest billing history for a student.
+  Future<List<MonthlyBillRecord>> getStudentBillingHistory({
+    required String studentUid,
+    int limit = 6,
+  }) async {
+    try {
+      final snapshot = await _firestore
+          .collection(studentsCollection)
+          .doc(studentUid)
+          .collection(billingSubcollection)
+          .orderBy('monthId', descending: true)
+          .limit(limit)
+          .get();
+
+      return snapshot.docs
+          .map((doc) => MonthlyBillRecord.fromFirestore(doc.id, doc.data()))
+          .toList();
+    } catch (_) {
+      final snapshot = await _firestore
+          .collection(studentsCollection)
+          .doc(studentUid)
+          .collection(billingSubcollection)
+          .get();
+
+      final records = snapshot.docs
+          .map((doc) => MonthlyBillRecord.fromFirestore(doc.id, doc.data()))
+          .toList();
+
+      records.sort((a, b) => b.monthId.compareTo(a.monthId));
+      if (records.length <= limit) {
+        return records;
+      }
+      return records.sublist(0, limit);
+    }
   }
 }

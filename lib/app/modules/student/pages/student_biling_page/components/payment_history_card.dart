@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
@@ -59,27 +60,66 @@ class PaymentHistoryCard extends StatelessWidget {
   }
 
   Widget _buildHistoryList(BuildContext context) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: ResponsiveHelper.getSpacing(context, 'xlarge') * 12,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: List.generate(6, (index) {
-            final month = DateTime.now().subtract(Duration(days: 100));
-            final amount = (2500 + (100)).toDouble();
+    return Obx(() {
+      final history = controller.billingHistory;
 
-            return _PaymentHistoryItem(
-              month: DateFormat('MMM yyyy').format(month),
-              amount: amount,
-              status: index == 0 ? 'Current' : 'Paid',
-              index: index,
-            );
-          }),
+      if (controller.isLoadingBilling.value && history.isEmpty) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      if (history.isEmpty) {
+        return Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: ResponsiveHelper.getSpacing(context, 'xlarge'),
+          ),
+          child: Text(
+            'No billing history available yet.',
+            style: AppTextStyles.body2.copyWith(color: AppColors.textLight),
+          ),
+        );
+      }
+
+      return ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: ResponsiveHelper.getSpacing(context, 'xlarge') * 12,
         ),
-      ),
-    );
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: history.take(6).toList().asMap().entries.map((entry) {
+              final index = entry.key;
+              final bill = entry.value;
+
+              final month = DateTime.tryParse('${bill.monthId}-01');
+              final monthLabel = month == null
+                  ? bill.monthId
+                  : DateFormat('MMM yyyy').format(month);
+
+              return _PaymentHistoryItem(
+                month: monthLabel,
+                amount: bill.totalAmount,
+                status: _normalizeStatus(bill.status, index),
+                showAmount:
+                    _normalizeStatus(bill.status, index).toLowerCase() ==
+                    'paid',
+                index: index,
+              );
+            }).toList(),
+          ),
+        ),
+      );
+    });
+  }
+
+  String _normalizeStatus(String rawStatus, int index) {
+    final normalized = rawStatus.trim().toLowerCase();
+    if (normalized == 'paid') {
+      return 'Paid';
+    }
+    if (index == 0) {
+      return 'Current';
+    }
+    return 'Generated';
   }
 }
 
@@ -87,12 +127,14 @@ class _PaymentHistoryItem extends StatelessWidget {
   final String month;
   final double amount;
   final String status;
+  final bool showAmount;
   final int index;
 
   const _PaymentHistoryItem({
     required this.month,
     required this.amount,
     required this.status,
+    required this.showAmount,
     required this.index,
   });
 
@@ -127,10 +169,12 @@ class _PaymentHistoryItem extends StatelessWidget {
               SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
               _buildItemContent(isCurrent, isPaid),
               Text(
-                '${amount.toStringAsFixed(0)} Rs',
+                showAmount ? '${amount.toStringAsFixed(0)} Rs' : '-',
                 style: AppTextStyles.subtitle1.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: isCurrent ? AppColors.primary : AppColors.textDark,
+                  color: showAmount
+                      ? (isCurrent ? AppColors.primary : AppColors.textDark)
+                      : AppColors.textLight,
                 ),
               ),
             ],

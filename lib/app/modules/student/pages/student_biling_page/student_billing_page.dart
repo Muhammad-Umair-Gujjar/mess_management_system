@@ -8,7 +8,6 @@ import '../../student_controller.dart';
 import 'components/current_bill_card.dart';
 import 'components/meal_count_cards.dart';
 import 'components/payment_history_card.dart';
-import 'components/meal_rates_card.dart';
 
 class StudentBillingPage extends StatefulWidget {
   const StudentBillingPage({super.key});
@@ -37,6 +36,10 @@ class _StudentBillingPageState extends State<StudentBillingPage>
     // Start animations
     _countAnimationController.forward();
     _chartAnimationController.forward();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Get.find<StudentController>().prepareBillingData();
+    });
   }
 
   @override
@@ -80,11 +83,6 @@ class _StudentBillingPageState extends State<StudentBillingPage>
           ),
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
           PaymentHistoryCard(controller: controller),
-          SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
-          MealRatesCard(
-            controller: controller,
-            countAnimationController: _countAnimationController,
-          ),
           SizedBox(
             height: ResponsiveHelper.getSpacing(context, 'medium'),
           ), // Add bottom padding
@@ -123,14 +121,7 @@ class _StudentBillingPageState extends State<StudentBillingPage>
             flex: 4,
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: [
-                PaymentHistoryCard(controller: controller),
-                SizedBox(height: ResponsiveHelper.getSpacing(context, 'large')),
-                MealRatesCard(
-                  controller: controller,
-                  countAnimationController: _countAnimationController,
-                ),
-              ],
+              children: [PaymentHistoryCard(controller: controller)],
             ),
           ),
         ],
@@ -139,8 +130,7 @@ class _StudentBillingPageState extends State<StudentBillingPage>
   }
 
   void _downloadPDF() {
-    // Implement PDF download functionality
-    ToastMessage.success('Your billing PDF is being generated...');
+    Get.find<StudentController>().downloadCurrentBillPdf();
   }
 
   void _exportCSV() {

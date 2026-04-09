@@ -1,9 +1,12 @@
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 import '../../data/models/student.dart';
 import '../../data/models/auth_models.dart';
 import '../../data/models/feedback.dart';
+import '../../data/models/billing.dart';
 import '../../../core/utils/toast_message.dart';
 import '../../data/models/attendance.dart';
 import '../../data/models/menu.dart';
@@ -28,10 +31,14 @@ class StudentController extends GetxController {
   var menuItems = <MenuItem>[].obs;
   var mealRates = <MealRate>[].obs;
   var monthlyBilling = 0.0.obs;
+  var currentMonthBill = Rxn<MonthlyBillRecord>();
+  var billingHistory = <MonthlyBillRecord>[].obs;
   var attendanceRate = 0.0.obs;
   var currentPageIndex = 0.obs;
   var isLoadingFeedback = false.obs;
   var isSubmittingFeedback = false.obs;
+  var isLoadingBilling = false.obs;
+  var isGeneratingBillPdf = false.obs;
 
   // Enhanced menu data
   var currentWeekMenu = <String, Map<String, MenuItem?>>{}.obs;
@@ -83,14 +90,17 @@ class StudentController extends GetxController {
       if (user == null || user.uid.isEmpty) {
         _clearAttendanceState();
         _clearFeedbackState();
+        _clearBillingState();
         update();
         return;
       }
 
       _clearAttendanceState();
       _clearFeedbackState();
+      _clearBillingState();
       ensureMonthlyAttendanceLoaded(DateTime.now());
       loadRecentFeedbacks();
+      prepareBillingData();
     });
 
     selectedWeekDate.value = _getStartOfWeek(DateTime.now());
@@ -128,6 +138,7 @@ class StudentController extends GetxController {
     // Calculate billing and attendance rate
     _calculateMonthlyBilling();
     _calculateAttendanceRate();
+    await prepareBillingData();
 
     // StudentController - Student data loaded successfully
     isLoading.value = false;
@@ -181,8 +192,13 @@ class StudentController extends GetxController {
   Future<void> loadMealRates() async {
     try {
       final rates = await _menuService.getAllMealRates();
-      mealRates.value = rates;
-      print('Loaded ${rates.length} meal rates');
+      if (rates.isEmpty) {
+        mealRates.value = DummyDataService.getMealRates();
+        print('Loaded fallback meal rates: ${mealRates.length}');
+      } else {
+        mealRates.value = rates;
+        print('Loaded ${rates.length} meal rates');
+      }
     } catch (e) {
       print('Error loading meal rates: $e');
       // Fallback to dummy data if Firebase fails
@@ -232,15 +248,6 @@ class StudentController extends GetxController {
   }
 
   void _calculateMonthlyBilling() {
-    if (mealRates.isEmpty) return;
-
-    final breakfastRate = mealRates
-        .firstWhere((r) => r.mealType == MealType.breakfast)
-        .rate;
-    final dinnerRate = mealRates
-        .firstWhere((r) => r.mealType == MealType.dinner)
-        .rate;
-
     final now = DateTime.now();
     final currentMonthAttendance = attendanceList
         .where(
@@ -251,15 +258,22 @@ class StudentController extends GetxController {
         )
         .toList();
 
-    final breakfastCount = currentMonthAttendance
-        .where((a) => a.mealType == MealType.breakfast)
-        .length;
-    final dinnerCount = currentMonthAttendance
-        .where((a) => a.mealType == MealType.dinner)
-        .length;
+    double total = 0;
+    for (final attendance in currentMonthAttendance) {
+      total += _resolveAttendanceUnitPrice(attendance);
+    }
 
-    monthlyBilling.value =
-        (breakfastCount * breakfastRate) + (dinnerCount * dinnerRate);
+    var resolvedTotal = total;
+    if (resolvedTotal <= 0) {
+      final existingCurrent = currentMonthBill.value;
+      if (existingCurrent != null &&
+          existingCurrent.monthId == _monthKey(now) &&
+          existingCurrent.totalAmount > 0) {
+        resolvedTotal = existingCurrent.totalAmount;
+      }
+    }
+
+    monthlyBilling.value = resolvedTotal;
   }
 
   void _calculateAttendanceRate() {
@@ -388,6 +402,14 @@ class StudentController extends GetxController {
     recentFeedbacks.clear();
     isLoadingFeedback.value = false;
     isSubmittingFeedback.value = false;
+  }
+
+  void _clearBillingState() {
+    currentMonthBill.value = null;
+    billingHistory.clear();
+    isLoadingBilling.value = false;
+    isGeneratingBillPdf.value = false;
+    monthlyBilling.value = 0.0;
   }
 
   Future<void> loadRecentFeedbacks({bool forceRefresh = false}) async {
@@ -548,6 +570,298 @@ class StudentController extends GetxController {
     return null;
   }
 
+  Future<void> prepareBillingData({DateTime? monthDate}) async {
+    final targetMonth = monthDate ?? DateTime.now();
+    await ensureMonthlyAttendanceLoaded(targetMonth);
+
+    if (mealRates.isEmpty) {
+      await loadMealRates();
+    }
+
+    await _generateAndStoreMonthlyBill(targetMonth);
+    await loadBillingHistory();
+  }
+
+  Future<void> loadBillingHistory({int limit = 6}) async {
+    final studentUid = _resolveCurrentStudentUid();
+    if (studentUid == null || studentUid.isEmpty) {
+      billingHistory.clear();
+      return;
+    }
+
+    isLoadingBilling.value = true;
+    try {
+      final history = await _userService.getStudentBillingHistory(
+        studentUid: studentUid,
+        limit: limit,
+      );
+      billingHistory.assignAll(history);
+
+      final currentMonth = _monthKey(DateTime.now());
+      final latestCurrent = history.firstWhereOrNull(
+        (record) => record.monthId == currentMonth,
+      );
+      if (latestCurrent != null) {
+        currentMonthBill.value = latestCurrent;
+        monthlyBilling.value = latestCurrent.totalAmount;
+      }
+    } catch (e) {
+      print('Error loading billing history: $e');
+      billingHistory.clear();
+    } finally {
+      isLoadingBilling.value = false;
+    }
+  }
+
+  Future<MonthlyBillRecord?> _generateAndStoreMonthlyBill(
+    DateTime monthDate,
+  ) async {
+    final studentUid = _resolveCurrentStudentUid();
+    if (studentUid == null || studentUid.isEmpty) {
+      return null;
+    }
+
+    final monthId = _monthKey(monthDate);
+    final monthAttendance = attendanceList
+        .where(
+          (a) =>
+              a.date.year == monthDate.year &&
+              a.date.month == monthDate.month &&
+              a.isPresent,
+        )
+        .toList()
+      ..sort((a, b) => a.date.compareTo(b.date));
+
+    final existing = await _userService.getStudentMonthlyBill(
+      studentUid: studentUid,
+      monthId: monthId,
+    );
+
+    final items = monthAttendance.map((attendance) {
+      final fallbackMenu = getMenuForDate(attendance.date, attendance.mealType);
+      final menuName =
+          (attendance.menuName != null && attendance.menuName!.trim().isNotEmpty)
+          ? attendance.menuName!
+          : (fallbackMenu?.name ?? _defaultMealName(attendance.mealType));
+      final menuItemId = attendance.menuItemId ?? fallbackMenu?.id;
+      final unitPrice = _resolveAttendanceUnitPrice(attendance);
+
+      return BillLineItem(
+        date: attendance.date,
+        mealType: attendance.mealType.name,
+        menuItemId: menuItemId,
+        menuName: menuName,
+        unitPrice: unitPrice,
+        pricingSource: _pricingSource(attendance),
+      );
+    }).toList();
+
+    final totalAmount = items.fold<double>(
+      0,
+      (sum, item) => sum + item.unitPrice,
+    );
+    final breakfastCount = monthAttendance
+        .where((a) => a.mealType == MealType.breakfast)
+        .length;
+    final dinnerCount = monthAttendance
+        .where((a) => a.mealType == MealType.dinner)
+        .length;
+
+    final appUser = _userController.currentUser.value;
+    final studentData = _userController.currentStudentData.value;
+
+    final record = MonthlyBillRecord(
+      id: monthId,
+      monthId: monthId,
+      studentUid: studentUid,
+      studentName: appUser?.fullName ?? currentStudent.value?.name ?? 'Student',
+      studentEmail: appUser?.email ?? '',
+      rollNumber: studentData?.rollNumber ?? 'N/A',
+      hostel: studentData?.hostel ?? 'N/A',
+      roomNumber: studentData?.roomNumber ?? 'N/A',
+      presentMeals: monthAttendance.length,
+      breakfastCount: breakfastCount,
+      dinnerCount: dinnerCount,
+      totalAmount: totalAmount,
+      status: existing?.status ?? 'generated',
+      generatedAt: existing?.generatedAt ?? DateTime.now(),
+      updatedAt: DateTime.now(),
+      items: items,
+    );
+
+    await _userService.upsertStudentMonthlyBill(studentUid: studentUid, bill: record);
+
+    currentMonthBill.value = record;
+    monthlyBilling.value = totalAmount;
+    return record;
+  }
+
+  double _resolveAttendanceUnitPrice(Attendance attendance) {
+    final snapshotPrice = attendance.menuPrice;
+    if (snapshotPrice != null && snapshotPrice > 0) {
+      return snapshotPrice;
+    }
+
+    final fallbackMenu = getMenuForDate(attendance.date, attendance.mealType);
+    final fallbackMenuPrice = fallbackMenu?.price;
+    if (fallbackMenuPrice != null && fallbackMenuPrice > 0) {
+      return fallbackMenuPrice;
+    }
+
+    final mealRate = getRateForMealType(attendance.mealType.name);
+    if (mealRate != null && mealRate.rate > 0) {
+      return mealRate.rate;
+    }
+
+    return _defaultUnitPrice(attendance.mealType);
+  }
+
+  String _pricingSource(Attendance attendance) {
+    final snapshotPrice = attendance.menuPrice;
+    if (snapshotPrice != null && snapshotPrice > 0) {
+      return 'attendance-menu';
+    }
+    return 'meal-rate';
+  }
+
+  String _defaultMealName(MealType mealType) {
+    return mealType == MealType.breakfast ? 'Breakfast' : 'Dinner';
+  }
+
+  Future<void> downloadCurrentBillPdf() async {
+    if (isGeneratingBillPdf.value) {
+      return;
+    }
+
+    isGeneratingBillPdf.value = true;
+    try {
+      final bill = currentMonthBill.value ?? await _generateAndStoreMonthlyBill(DateTime.now());
+      if (bill == null) {
+        ToastMessage.error('No bill data available to export.');
+        return;
+      }
+
+      final pdf = pw.Document();
+      final monthLabel = _displayMonthFromMonthId(bill.monthId);
+      final generatedOn = DateFormat('dd MMM yyyy, hh:mm a').format(bill.updatedAt);
+
+      pdf.addPage(
+        pw.MultiPage(
+          build: (context) => [
+            pw.Text(
+              'Hostel Mess Monthly Bill',
+              style: pw.TextStyle(
+                fontSize: 20,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+            pw.SizedBox(height: 8),
+            pw.Text('Billing Month: $monthLabel'),
+            pw.Text('Generated On: $generatedOn'),
+            pw.SizedBox(height: 16),
+            pw.Text(
+              'Student Details',
+              style: pw.TextStyle(
+                fontSize: 14,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+            pw.SizedBox(height: 6),
+            pw.Table(
+              border: pw.TableBorder.all(width: 0.5),
+              children: [
+                _pdfRow('Name', bill.studentName),
+                _pdfRow('Email', bill.studentEmail),
+                _pdfRow('Roll Number', bill.rollNumber),
+                _pdfRow('Hostel', bill.hostel),
+                _pdfRow('Room Number', bill.roomNumber),
+              ],
+            ),
+            pw.SizedBox(height: 16),
+            pw.Text(
+              'Summary',
+              style: pw.TextStyle(
+                fontSize: 14,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+            pw.SizedBox(height: 6),
+            pw.Table(
+              border: pw.TableBorder.all(width: 0.5),
+              children: [
+                _pdfRow('Present Meals', '${bill.presentMeals}'),
+                _pdfRow('Breakfast Count', '${bill.breakfastCount}'),
+                _pdfRow('Dinner Count', '${bill.dinnerCount}'),
+                _pdfRow('Total Amount', 'Rs ${bill.totalAmount.toStringAsFixed(0)}'),
+              ],
+            ),
+            pw.SizedBox(height: 16),
+            pw.Text(
+              'Bill Items',
+              style: pw.TextStyle(
+                fontSize: 14,
+                fontWeight: pw.FontWeight.bold,
+              ),
+            ),
+            pw.SizedBox(height: 6),
+            pw.Table.fromTextArray(
+              border: pw.TableBorder.all(width: 0.5),
+              headers: ['Date', 'Meal', 'Menu Item', 'Price'],
+              data: bill.items.map((item) {
+                return [
+                  DateFormat('dd MMM yyyy').format(item.date),
+                  _capitalize(item.mealType),
+                  item.menuName,
+                  'Rs ${item.unitPrice.toStringAsFixed(0)}',
+                ];
+              }).toList(),
+            ),
+          ],
+        ),
+      );
+
+      final bytes = await pdf.save();
+      final filename = 'bill_${bill.monthId}_${bill.rollNumber}.pdf';
+      await Printing.sharePdf(bytes: bytes, filename: filename);
+      ToastMessage.success('Billing PDF generated successfully.');
+    } catch (e) {
+      print('Error generating billing PDF: $e');
+      ToastMessage.error('Failed to generate billing PDF.');
+    } finally {
+      isGeneratingBillPdf.value = false;
+    }
+  }
+
+  pw.TableRow _pdfRow(String label, String value) {
+    return pw.TableRow(
+      children: [
+        pw.Padding(
+          padding: const pw.EdgeInsets.all(6),
+          child: pw.Text(label, style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+        ),
+        pw.Padding(
+          padding: const pw.EdgeInsets.all(6),
+          child: pw.Text(value),
+        ),
+      ],
+    );
+  }
+
+  String _displayMonthFromMonthId(String monthId) {
+    final parsed = DateTime.tryParse('$monthId-01');
+    if (parsed == null) {
+      return monthId;
+    }
+    return DateFormat('MMMM yyyy').format(parsed);
+  }
+
+  String _capitalize(String value) {
+    if (value.isEmpty) {
+      return value;
+    }
+    return '${value[0].toUpperCase()}${value.substring(1)}';
+  }
+
   /// Get menu for specific date and meal type from Firebase data
   MenuItem? getMenuForDate(DateTime date, MealType mealType) {
     final dayKey = DateFormat(
@@ -560,9 +874,35 @@ class StudentController extends GetxController {
 
   /// Get meal rate for specific meal type
   MealRate? getRateForMealType(String mealType) {
-    return mealRates.firstWhereOrNull(
-      (rate) => rate.category == mealType && rate.isActive,
+    final normalizedMeal = mealType.trim().toLowerCase();
+
+    final fromLiveRates = mealRates.firstWhereOrNull((rate) {
+      final category = rate.category.trim().toLowerCase();
+      final type = rate.mealType.name.toLowerCase();
+      return rate.isActive && (category == normalizedMeal || type == normalizedMeal);
+    });
+
+    if (fromLiveRates != null) {
+      return fromLiveRates;
+    }
+
+    return DummyDataService.getMealRates().firstWhereOrNull((rate) {
+      final category = rate.category.trim().toLowerCase();
+      final type = rate.mealType.name.toLowerCase();
+      return rate.isActive && (category == normalizedMeal || type == normalizedMeal);
+    });
+  }
+
+  double _defaultUnitPrice(MealType mealType) {
+    final dummyRate = DummyDataService.getMealRates().firstWhereOrNull(
+      (rate) => rate.mealType == mealType && rate.rate > 0,
     );
+
+    if (dummyRate != null) {
+      return dummyRate.rate;
+    }
+
+    return mealType == MealType.breakfast ? 25 : 40;
   }
 
   /// Navigate to different week
@@ -720,8 +1060,6 @@ class StudentController extends GetxController {
   }
 
   Map<String, dynamic> getStudentStats() {
-    final monthlyStats = getMonthlyStats();
-
     return {
       'currentBill': monthlyBilling.value.toInt(),
       'attendancePercentage': attendanceRate.value.toInt(),

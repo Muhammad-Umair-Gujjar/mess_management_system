@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
@@ -26,7 +27,7 @@ class CurrentBillCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'mediumr')),
+      padding: EdgeInsets.all(ResponsiveHelper.getSpacing(context, 'medium')),
       decoration: AppShadows.glassmorphicCard(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,80 +85,89 @@ class CurrentBillCard extends StatelessWidget {
   }
 
   Widget _buildAnimatedBillAmount(BuildContext context) {
-    return AnimatedBuilder(
-      animation: countAnimationController,
-      builder: (context, child) {
-        final animatedValue =
-            Tween<double>(begin: 0, end: controller.monthlyBilling.value)
-                .animate(
-                  CurvedAnimation(
-                    parent: countAnimationController,
-                    curve: Curves.easeOutBack,
-                  ),
-                )
-                .value;
+    return Obx(() {
+      final monthlyStats = controller.getMonthlyStats();
+      final mealsBilled = monthlyStats['attendedMeals'] ?? 0;
+      final billAmount =
+          controller.currentMonthBill.value?.totalAmount ??
+          controller.monthlyBilling.value;
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '${animatedValue.toStringAsFixed(0)} Rs',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: ResponsiveHelper.getResponsiveFontSize(
-                  context,
-                  mobile: 26,
-                  tablet: 26,
-                  desktop: 24,
+      return AnimatedBuilder(
+        animation: countAnimationController,
+        builder: (context, child) {
+          final animatedValue =
+              Tween<double>(begin: 0, end: billAmount)
+                  .animate(
+                    CurvedAnimation(
+                      parent: countAnimationController,
+                      curve: Curves.easeOutBack,
+                    ),
+                  )
+                  .value;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${animatedValue.toStringAsFixed(0)} Rs',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: ResponsiveHelper.getResponsiveFontSize(
+                    context,
+                    mobile: 26,
+                    tablet: 26,
+                    desktop: 24,
+                  ),
+                  foreground: Paint()
+                    ..shader = AppColors.primaryGradient.createShader(
+                      const Rect.fromLTWH(0, 0, 200, 70),
+                    ),
                 ),
-                foreground: Paint()
-                  ..shader = AppColors.primaryGradient.createShader(
-                    const Rect.fromLTWH(0, 0, 200, 70),
-                  ),
               ),
-            ),
-            SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: ResponsiveHelper.getSpacing(context, 'small'),
-                    vertical:
-                        ResponsiveHelper.getSpacing(context, 'small') * 0.5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.success.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(
-                      ResponsiveHelper.getSpacing(context, 'medium'),
+              SizedBox(height: ResponsiveHelper.getSpacing(context, 'small')),
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+                      vertical:
+                          ResponsiveHelper.getSpacing(context, 'small') * 0.5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.success.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(
+                        ResponsiveHelper.getSpacing(context, 'medium'),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          FontAwesomeIcons.circleCheck,
+                          size: ResponsiveHelper.getIconSize(context, 'small'),
+                          color: AppColors.success,
+                        ),
+                        SizedBox(
+                          width:
+                              ResponsiveHelper.getSpacing(context, 'small') *
+                              0.5,
+                        ),
+                        Text(
+                          '$mealsBilled meals billed',
+                          style: AppTextStyles.caption.copyWith(
+                            color: AppColors.success,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        FontAwesomeIcons.circleCheck,
-                        size: ResponsiveHelper.getIconSize(context, 'small'),
-                        color: AppColors.success,
-                      ),
-                      SizedBox(
-                        width:
-                            ResponsiveHelper.getSpacing(context, 'small') * 0.5,
-                      ),
-                      Text(
-                        '12% vs last month',
-                        style: AppTextStyles.caption.copyWith(
-                          color: AppColors.success,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
+                ],
+              ),
+            ],
+          );
+        },
+      );
+    });
   }
 
   Widget _buildQuickActions() {

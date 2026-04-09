@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 import '../../../../../../core/theme/app_decorations.dart';
 import '../../../../../../core/constants/app_colors.dart';
@@ -20,33 +21,35 @@ class MealCountCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final stats = controller.getMonthlyStats();
+    return Obx(() {
+      final stats = controller.getMonthlyStats();
 
-    return Row(
-      children: [
-        Expanded(
-          child: _MealCountCard(
-            title: 'Breakfast',
-            count: stats['breakfastCount'] ?? 0,
-            icon: FontAwesomeIcons.sun,
-            color: AppColors.warning,
-            delay: 0,
-            countAnimationController: countAnimationController,
+      return Row(
+        children: [
+          Expanded(
+            child: _MealCountCard(
+              title: 'Breakfast',
+              count: stats['breakfastCount'] ?? 0,
+              icon: FontAwesomeIcons.sun,
+              color: AppColors.warning,
+              delay: 0,
+              countAnimationController: countAnimationController,
+            ),
           ),
-        ),
-        SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
-        Expanded(
-          child: _MealCountCard(
-            title: 'Dinner',
-            count: stats['dinnerCount'] ?? 0,
-            icon: FontAwesomeIcons.moon,
-            color: AppColors.info,
-            delay: 100,
-            countAnimationController: countAnimationController,
+          SizedBox(width: ResponsiveHelper.getSpacing(context, 'medium')),
+          Expanded(
+            child: _MealCountCard(
+              title: 'Dinner',
+              count: stats['dinnerCount'] ?? 0,
+              icon: FontAwesomeIcons.moon,
+              color: AppColors.info,
+              delay: 100,
+              countAnimationController: countAnimationController,
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 }
 
