@@ -84,6 +84,7 @@ class AppUser {
   final String lastName;
   final UserRole role;
   final UserStatus status;
+  final bool isDeleted;
   final String? profileImageUrl;
   final DateTime createdAt;
   final DateTime? lastLoginAt;
@@ -97,6 +98,7 @@ class AppUser {
     required this.lastName,
     required this.role,
     required this.status,
+    this.isDeleted = false,
     this.profileImageUrl,
     required this.createdAt,
     this.lastLoginAt,
@@ -117,6 +119,7 @@ class AppUser {
       'lastName': lastName,
       'role': role.name,
       'status': status.name,
+      'isDeleted': isDeleted,
       'profileImageUrl': profileImageUrl,
       'createdAt': createdAt.toIso8601String(),
       'lastLoginAt': lastLoginAt?.toIso8601String(),
@@ -139,6 +142,7 @@ class AppUser {
         (e) => e.name == data['status'],
         orElse: () => UserStatus.pending,
       ),
+      isDeleted: data['isDeleted'] ?? false,
       profileImageUrl: data['profileImageUrl'],
       createdAt: DateTime.parse(
         data['createdAt'] ?? DateTime.now().toIso8601String(),
@@ -158,6 +162,7 @@ class AppUser {
     String? lastName,
     UserRole? role,
     UserStatus? status,
+    bool? isDeleted,
     String? profileImageUrl,
     DateTime? createdAt,
     DateTime? lastLoginAt,
@@ -171,6 +176,7 @@ class AppUser {
       lastName: lastName ?? this.lastName,
       role: role ?? this.role,
       status: status ?? this.status,
+      isDeleted: isDeleted ?? this.isDeleted,
       profileImageUrl: profileImageUrl ?? this.profileImageUrl,
       createdAt: createdAt ?? this.createdAt,
       lastLoginAt: lastLoginAt ?? this.lastLoginAt,

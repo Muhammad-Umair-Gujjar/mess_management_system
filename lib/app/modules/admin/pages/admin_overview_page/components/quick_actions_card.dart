@@ -29,7 +29,7 @@ class QuickActionsCard extends StatelessWidget {
         'subtitle': 'Modify meal pricing',
         'icon': FontAwesomeIcons.indianRupee,
         'color': AppColors.warning,
-        'onTap': () => controller.changePage(3),
+        'onTap': () => controller.changePage(2),
       },
       {
         'title': 'Menu Management',
@@ -43,7 +43,7 @@ class QuickActionsCard extends StatelessWidget {
         'subtitle': 'Broadcast to users',
         'icon': FontAwesomeIcons.bell,
         'color': AppColors.info,
-        'onTap': () => controller.changePage(5),
+        'onTap': () => controller.changePage(1),
       },
     ];
 
@@ -74,10 +74,6 @@ class QuickActionsCard extends StatelessWidget {
               .toList(),
         ],
       ),
-    ).animate().fadeIn(duration:  300.ms ).slideX(begin: 0.3);
+    ).animate().fadeIn(duration: 300.ms).slideX(begin: 0.3);
   }
 }
-
-
-
-

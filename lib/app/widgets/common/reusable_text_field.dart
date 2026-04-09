@@ -63,31 +63,14 @@ class ReusableTextField extends StatefulWidget {
   State<ReusableTextField> createState() => _ReusableTextFieldState();
 }
 
-class _ReusableTextFieldState extends State<ReusableTextField>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
+class _ReusableTextFieldState extends State<ReusableTextField> {
   bool _obscureText = false;
   bool _isFocused = false;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: const  Duration(milliseconds: 300) ,
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.02).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
-
     _obscureText = widget.type == TextFieldType.password;
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
   }
 
   @override
@@ -106,131 +89,107 @@ class _ReusableTextFieldState extends State<ReusableTextField>
           ),
           SizedBox(height: ResponsiveHelper.getSpacing(context, 'xsmall')),
         ],
-        AnimatedBuilder(
-          animation: _scaleAnimation,
-          builder: (context, child) {
-            return Transform.scale(
-              scale: _scaleAnimation.value,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(
-                    widget.borderRadius ??
-                        ResponsiveHelper.getBorderRadius(context, 'medium'),
-                  ),
-                  boxShadow: _isFocused
-                      ? [
-                          BoxShadow(
-                            color: AppColors.primary.withOpacity(0.2),
-                            blurRadius: ResponsiveHelper.getBorderRadius(
-                              context,
-                              'medium',
-                            ),
-                            offset: Offset(
-                              0,
-                              ResponsiveHelper.getSpacing(context, 'xs'),
-                            ),
-                          ),
-                        ]
-                      : AppShadows.light,
-                ),
-                child: TextFormField(
-                  controller: widget.controller,
-                  focusNode: widget.focusNode,
-                  autofocus: widget.autofocus,
-                  enabled: widget.enabled,
-                  readOnly: widget.readOnly,
-                  obscureText: _obscureText,
-                  maxLines: widget.maxLines,
-                  maxLength: widget.maxLength,
-                  textInputAction: widget.textInputAction,
-                  keyboardType: _getKeyboardType(),
-                  inputFormatters:
-                      widget.inputFormatters ?? _getInputFormatters(),
-                  style: AppTextStyles.body1.copyWith(
-                    fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
-                    color: AppColors.textPrimary,
-                  ),
-                  onTap: () {
-                    widget.onTap?.call();
-                    setState(() => _isFocused = true);
-                    _animationController.forward();
-                  },
-                  onChanged: (value) {
-                    widget.onChanged?.call(value);
-                  },
-                  onFieldSubmitted: (value) {
-                    widget.onSubmitted?.call(value);
-                    setState(() => _isFocused = false);
-                    _animationController.reverse();
-                  },
-                  onEditingComplete: () {
-                    setState(() => _isFocused = false);
-                    _animationController.reverse();
-                  },
-                  decoration: InputDecoration(
-                    hintText: widget.hintText,
-                    helperText: widget.helperText,
-                    errorText: widget.errorText,
-                    filled: true,
-                    fillColor: AppColors.cardBackground,
-                    contentPadding:
-                        widget.contentPadding ??
-                        EdgeInsets.symmetric(
-                          horizontal: ResponsiveHelper.getSpacing(
-                            context,
-                            'large',
-                          ),
-                          vertical: ResponsiveHelper.getSpacing(
-                            context,
-                            'medium',
-                          ),
-                        ),
-                    hintStyle: AppTextStyles.body2.copyWith(
-                      color: AppColors.textLight,
-                      fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(
+              widget.borderRadius ??
+                  ResponsiveHelper.getBorderRadius(context, 'medium'),
+            ),
+            boxShadow: _isFocused
+                ? [
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.2),
+                      blurRadius: ResponsiveHelper.getBorderRadius(
+                        context,
+                        'medium',
+                      ),
+                      offset: Offset(
+                        0,
+                        ResponsiveHelper.getSpacing(context, 'xs'),
+                      ),
                     ),
-                    helperStyle: AppTextStyles.caption.copyWith(
-                      color: AppColors.textLight,
+                  ]
+                : AppShadows.light,
+          ),
+          child: TextFormField(
+            controller: widget.controller,
+            focusNode: widget.focusNode,
+            autofocus: widget.autofocus,
+            enabled: widget.enabled,
+            readOnly: widget.readOnly,
+            obscureText: _obscureText,
+            maxLines: widget.maxLines,
+            maxLength: widget.maxLength,
+            textInputAction: widget.textInputAction,
+            keyboardType: _getKeyboardType(),
+            inputFormatters: widget.inputFormatters ?? _getInputFormatters(),
+            style: AppTextStyles.body1.copyWith(
+              fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
+              color: AppColors.textPrimary,
+            ),
+            onTap: () {
+              widget.onTap?.call();
+              setState(() => _isFocused = true);
+            },
+            onChanged: (value) {
+              widget.onChanged?.call(value);
+            },
+            onFieldSubmitted: (value) {
+              widget.onSubmitted?.call(value);
+              setState(() => _isFocused = false);
+            },
+            onEditingComplete: () {
+              setState(() => _isFocused = false);
+            },
+            decoration: InputDecoration(
+              hintText: widget.hintText,
+              helperText: widget.helperText,
+              errorText: widget.errorText,
+              filled: true,
+              fillColor: AppColors.cardBackground,
+              contentPadding:
+                  widget.contentPadding ??
+                  EdgeInsets.symmetric(
+                    horizontal: ResponsiveHelper.getSpacing(
+                      context,
+                      'large',
                     ),
-                    errorStyle: AppTextStyles.caption.copyWith(
-                      color: AppColors.error,
-                    ),
-                    prefixIcon: widget.prefixIcon != null
-                        ? Container(
-                            margin: EdgeInsets.only(
-                              left: ResponsiveHelper.getSpacing(
-                                context,
-                                'medium',
-                              ),
-                              right: ResponsiveHelper.getSpacing(
-                                context,
-                                'small',
-                              ),
-                            ),
-                            child: Icon(
-                              widget.prefixIcon,
-                              size: ResponsiveHelper.getIconSize(
-                                context,
-                                'small',
-                              ),
-                              color: _isFocused
-                                  ? AppColors.primary
-                                  : AppColors.textLight,
-                            ),
-                          )
-                        : null,
-                    suffixIcon: _buildSuffixIcon(),
-                    border: _buildBorder(),
-                    enabledBorder: _buildBorder(),
-                    focusedBorder: _buildFocusedBorder(),
-                    errorBorder: _buildErrorBorder(),
-                    focusedErrorBorder: _buildErrorBorder(),
-                    disabledBorder: _buildDisabledBorder(),
+                    vertical: ResponsiveHelper.getSpacing(context, 'medium'),
                   ),
-                ),
+              hintStyle: AppTextStyles.body2.copyWith(
+                color: AppColors.textLight,
+                fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
               ),
-            );
-          },
+              helperStyle: AppTextStyles.caption.copyWith(
+                color: AppColors.textLight,
+              ),
+              errorStyle: AppTextStyles.caption.copyWith(
+                color: AppColors.error,
+              ),
+              prefixIcon: widget.prefixIcon != null
+                  ? Container(
+                      margin: EdgeInsets.only(
+                        left: ResponsiveHelper.getSpacing(context, 'medium'),
+                        right: ResponsiveHelper.getSpacing(context, 'small'),
+                      ),
+                      child: Icon(
+                        widget.prefixIcon,
+                        size: ResponsiveHelper.getIconSize(context, 'small'),
+                        color: _isFocused
+                            ? AppColors.primary
+                            : AppColors.textLight,
+                      ),
+                    )
+                  : null,
+              suffixIcon: _buildSuffixIcon(),
+              border: _buildBorder(),
+              enabledBorder: _buildBorder(),
+              focusedBorder: _buildFocusedBorder(),
+              errorBorder: _buildErrorBorder(),
+              focusedErrorBorder: _buildErrorBorder(),
+              disabledBorder: _buildDisabledBorder(),
+            ),
+          ),
         ),
       ],
     );

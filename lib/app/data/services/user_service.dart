@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import '../models/auth_models.dart';
 import '../models/billing.dart';
@@ -193,10 +195,17 @@ class UserService extends GetxService {
         '🔄 UserService: Updating user status to ${status.name} for uid: $uid',
       );
 
-      await _firestore.collection(usersCollection).doc(uid).update({
+      final updates = <String, dynamic>{
         'status': status.name,
         'updatedAt': DateTime.now().toIso8601String(),
-      });
+      };
+
+      if (status == UserStatus.active) {
+        updates['isDeleted'] = false;
+        updates['deletedAt'] = null;
+      }
+
+      await _firestore.collection(usersCollection).doc(uid).update(updates);
 
       print('✅ UserService: Successfully updated user status');
       return true;
@@ -213,7 +222,9 @@ class UserService extends GetxService {
 
       await _firestore.collection(usersCollection).doc(uid).update({
         'status': UserStatus.suspended.name,
+        'isDeleted': true,
         'deletedAt': DateTime.now().toIso8601String(),
+        'updatedAt': DateTime.now().toIso8601String(),
       });
 
       print('✅ UserService: Successfully soft deleted user');
@@ -221,6 +232,195 @@ class UserService extends GetxService {
     } catch (e) {
       print('❌ UserService: Error deleting user: $e');
       return false;
+    }
+  }
+
+  /// Create a managed staff/student user with default password and Firestore profile.
+  Future<bool> createManagedUser({
+    required UserRole role,
+    required String email,
+    required String firstName,
+    required String lastName,
+    required String createdByAdminId,
+    String password = '12345678',
+    String rollNumber = '',
+    String hostel = '',
+    String roomNumber = '',
+    String department = '',
+    int semester = 1,
+    String employeeId = '',
+    String position = '',
+    String phoneNumber = '',
+  }) async {
+    if (role == UserRole.admin) {
+      print('❌ UserService: Admin creation is not supported in user management');
+      return false;
+    }
+
+    final trimmedEmail = email.trim().toLowerCase();
+    final trimmedFirstName = firstName.trim();
+    final trimmedLastName = lastName.trim();
+
+    try {
+      final existing = await _firestore
+          .collection(usersCollection)
+          .where('email', isEqualTo: trimmedEmail)
+          .limit(1)
+          .get();
+
+      if (existing.docs.isNotEmpty) {
+        print('❌ UserService: Email already exists for $trimmedEmail');
+        return false;
+      }
+
+      final uid = await _createAuthUserWithSecondaryApp(
+        email: trimmedEmail,
+        password: password,
+      );
+
+      final now = DateTime.now();
+      final appUser = AppUser(
+        uid: uid,
+        email: trimmedEmail,
+        firstName: trimmedFirstName,
+        lastName: trimmedLastName,
+        role: role,
+        status: UserStatus.active,
+        isDeleted: false,
+        createdAt: now,
+        isEmailVerified: false,
+        createdBy: createdByAdminId,
+      );
+
+      final batch = _firestore.batch();
+      batch.set(_firestore.collection(usersCollection).doc(uid), appUser.toFirestore());
+
+      if (role == UserRole.student) {
+        final studentDetails = StudentDetails(
+          uid: uid,
+          rollNumber: rollNumber.trim(),
+          department: department.trim(),
+          semester: semester,
+          hostel: hostel.trim(),
+          roomNumber: roomNumber.trim(),
+          phoneNumber: phoneNumber.trim(),
+          batch: now.year,
+          approvedAt: now,
+          approvedBy: createdByAdminId,
+          academicInfo: AcademicInfo(
+            fees: FeeInfo(total: 0, paid: 0, pending: 0),
+          ),
+        );
+        batch.set(
+          _firestore.collection(studentsCollection).doc(uid),
+          studentDetails.toFirestore(),
+        );
+      } else if (role == UserRole.staff) {
+        final staffDetails = StaffDetails(
+          uid: uid,
+          employeeId: employeeId.trim(),
+          department: department.trim(),
+          position: position.trim(),
+          joiningDate: now,
+          phoneNumber: phoneNumber.trim(),
+        );
+        batch.set(
+          _firestore.collection(staffCollection).doc(uid),
+          staffDetails.toFirestore(),
+        );
+      }
+
+      await batch.commit();
+      return true;
+    } catch (e) {
+      print('❌ UserService: Error creating managed user: $e');
+      return false;
+    }
+  }
+
+  /// Update managed user details in Firestore.
+  Future<bool> updateManagedUser({
+    required String uid,
+    required UserRole role,
+    required String firstName,
+    required String lastName,
+    String? email,
+    String rollNumber = '',
+    String hostel = '',
+    String roomNumber = '',
+    String department = '',
+    int semester = 1,
+    String employeeId = '',
+    String position = '',
+    String phoneNumber = '',
+  }) async {
+    try {
+      final updates = <String, dynamic>{
+        'firstName': firstName.trim(),
+        'lastName': lastName.trim(),
+        'updatedAt': DateTime.now().toIso8601String(),
+      };
+
+      if (email != null && email.trim().isNotEmpty) {
+        updates['email'] = email.trim().toLowerCase();
+      }
+
+      await _firestore.collection(usersCollection).doc(uid).update(updates);
+
+      if (role == UserRole.student) {
+        await _firestore.collection(studentsCollection).doc(uid).set({
+          'department': department.trim(),
+          'hostel': hostel.trim(),
+          'roomNumber': roomNumber.trim(),
+          'rollNumber': rollNumber.trim(),
+          'semester': semester,
+          'phoneNumber': phoneNumber.trim(),
+        }, SetOptions(merge: true));
+      } else if (role == UserRole.staff) {
+        await _firestore.collection(staffCollection).doc(uid).set({
+          'employeeId': employeeId.trim(),
+          'department': department.trim(),
+          'position': position.trim(),
+          'phoneNumber': phoneNumber.trim(),
+        }, SetOptions(merge: true));
+      }
+
+      return true;
+    } catch (e) {
+      print('❌ UserService: Error updating managed user: $e');
+      return false;
+    }
+  }
+
+  Future<String> _createAuthUserWithSecondaryApp({
+    required String email,
+    required String password,
+  }) async {
+    final secondaryAppName =
+        'user_mgmt_${DateTime.now().microsecondsSinceEpoch}';
+    final secondaryApp = await Firebase.initializeApp(
+      name: secondaryAppName,
+      options: Firebase.app().options,
+    );
+    final secondaryAuth = firebase_auth.FirebaseAuth.instanceFor(
+      app: secondaryApp,
+    );
+
+    try {
+      final credential = await secondaryAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final uid = credential.user?.uid;
+      if (uid == null || uid.isEmpty) {
+        throw Exception('Failed to create auth user uid');
+      }
+
+      return uid;
+    } finally {
+      await secondaryAuth.signOut();
+      await secondaryApp.delete();
     }
   }
 

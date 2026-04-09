@@ -191,6 +191,20 @@ class AuthService {
         return AuthResult.failure('Invalid role selected');
       }
 
+      if (user.isDeleted) {
+        await _auth.signOut();
+        return AuthResult.failure(
+          'Your account is deleted. Contact administrator.',
+        );
+      }
+
+      if (user.status == UserStatus.suspended) {
+        await _auth.signOut();
+        return AuthResult.failure(
+          'Your account is suspended. Contact administrator.',
+        );
+      }
+
       // Check if user is active
       if (!user.isActive) {
         await _auth.signOut();
@@ -255,6 +269,18 @@ class AuthService {
 
       if (user.role != UserRole.student) {
         return AuthResult.failure('Please use staff/admin login');
+      }
+
+      if (user.isDeleted) {
+        return AuthResult.failure(
+          'Your account is deleted. Contact administrator.',
+        );
+      }
+
+      if (user.status == UserStatus.suspended) {
+        return AuthResult.failure(
+          'Your account is suspended. Contact administrator.',
+        );
       }
 
       if (!user.isActive) {

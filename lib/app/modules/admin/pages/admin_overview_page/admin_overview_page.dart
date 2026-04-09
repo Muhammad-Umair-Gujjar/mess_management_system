@@ -16,7 +16,9 @@ class AdminOverviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<AdminController>();
-    final overviewController = Get.put(AdminOverviewController());
+    final overviewController = Get.isRegistered<AdminOverviewController>()
+        ? Get.find<AdminOverviewController>()
+        : Get.put(AdminOverviewController());
     final isMobile = ResponsiveHelper.isMobile(context);
 
     return Container(

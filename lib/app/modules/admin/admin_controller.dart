@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/dashboard_navigation.dart';
 import '../../../core/utils/toast_message.dart';
 import '../../data/services/user_service.dart';
+import '../../data/services/auth_service.dart';
 import '../../data/models/auth_models.dart';
 
 class AdminController extends GetxController {
@@ -12,6 +15,8 @@ class AdminController extends GetxController {
 
   // User service for real data
   final UserService _userService = Get.find<UserService>();
+  final AuthService _authService = AuthService();
+  StreamSubscription<List<StudentRequest>>? _pendingRequestsSubscription;
 
   // Real-time user stats
   final RxMap<String, int> realUserStats = <String, int>{}.obs;
@@ -19,13 +24,33 @@ class AdminController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _watchPendingRequests();
     loadRealUserStats();
+  }
+
+  @override
+  void onClose() {
+    _pendingRequestsSubscription?.cancel();
+    super.onClose();
+  }
+
+  void _watchPendingRequests() {
+    _pendingRequestsSubscription?.cancel();
+    _pendingRequestsSubscription = _authService
+        .getPendingStudentRequestsSimple()
+        .listen((requests) {
+          realUserStats['pendingApprovals'] = requests.length;
+          realUserStats.refresh();
+        });
   }
 
   /// Load real user statistics from UserService
   Future<void> loadRealUserStats() async {
     try {
       final users = await _userService.getAllUsers();
+      final pendingRequests = await _authService
+          .getPendingStudentRequestsSimple()
+          .first;
 
       // Exclude admin users from total count to match user management display
       final nonAdminUsers = users
@@ -38,9 +63,7 @@ class AdminController extends GetxController {
       final totalStaff = users
           .where((user) => user.role == UserRole.staff)
           .length;
-      final pendingApprovals = users
-          .where((user) => user.status == UserStatus.pending)
-          .length;
+        final pendingApprovals = pendingRequests.length;
 
       realUserStats.value = {
         'totalUsers': totalUsers,

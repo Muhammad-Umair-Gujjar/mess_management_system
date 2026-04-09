@@ -21,18 +21,39 @@ class ToastMessage {
     required VoidCallback show,
     required String type,
     required String message,
+    int attempt = 0,
   }) {
     if (!_hasOverlayContext()) {
-      debugPrint(
-        '[TOAST DEBUG] Skipped $type toast because overlay is not ready: $message',
-      );
+      if (attempt < 4) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Future.delayed(
+            Duration(milliseconds: 120 * (attempt + 1)),
+            () => _safeSnackbar(
+              show: show,
+              type: type,
+              message: message,
+              attempt: attempt + 1,
+            ),
+          );
+        });
+      }
       return;
     }
 
     try {
       show();
     } catch (e) {
-      debugPrint('[TOAST DEBUG] Failed to show $type toast: $e');
+      if (attempt < 1) {
+        Future.delayed(
+          const Duration(milliseconds: 150),
+          () => _safeSnackbar(
+            show: show,
+            type: type,
+            message: message,
+            attempt: attempt + 1,
+          ),
+        );
+      }
     }
   }
 

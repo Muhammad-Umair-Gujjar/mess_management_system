@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import '../../../data/models/auth_models.dart';
 import '../../../data/services/auth_service.dart';
@@ -16,6 +18,7 @@ class AdminOverviewController extends GetxController {
   final pendingStudentRequests = <StudentRequest>[].obs;
   final systemStats = <String, dynamic>{}.obs;
   final recentActivities = <Map<String, dynamic>>[].obs;
+  StreamSubscription<List<StudentRequest>>? _pendingRequestsSubscription;
 
   @override
   void onInit() {
@@ -25,6 +28,7 @@ class AdminOverviewController extends GetxController {
 
   @override
   void onClose() {
+    _pendingRequestsSubscription?.cancel();
     super.onClose();
   }
 
@@ -51,7 +55,8 @@ class AdminOverviewController extends GetxController {
       // Setting up pending student requests listener...
 
       // Use simple method to avoid index issues
-      _authService.getPendingStudentRequestsSimple().listen(
+      await _pendingRequestsSubscription?.cancel();
+      _pendingRequestsSubscription = _authService.getPendingStudentRequestsSimple().listen(
         (requests) {
           print(
             '🔵 DEBUG: AdminOverviewController received ${requests.length} pending requests',
@@ -198,12 +203,18 @@ class AdminOverviewController extends GetxController {
       return;
     }
 
+    final adminId = _authService.currentFirebaseUser?.uid;
+    if (adminId == null || adminId.isEmpty) {
+      ToastMessage.error('Admin session not found. Please login again.');
+      return;
+    }
+
     isProcessingRequest.value = true;
 
     try {
       final success = await _authService.approveStudentRequest(
         request.requestId,
-        'current_admin_id', // TODO: Get current admin ID
+        adminId,
       );
 
       if (success) {
@@ -237,12 +248,18 @@ class AdminOverviewController extends GetxController {
       return;
     }
 
+    final adminId = _authService.currentFirebaseUser?.uid;
+    if (adminId == null || adminId.isEmpty) {
+      ToastMessage.error('Admin session not found. Please login again.');
+      return;
+    }
+
     isProcessingRequest.value = true;
 
     try {
       final success = await _authService.rejectStudentRequest(
         request.requestId,
-        'current_admin_id', // TODO: Get current admin ID
+        adminId,
         reason,
       );
 

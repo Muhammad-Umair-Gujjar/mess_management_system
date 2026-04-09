@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import '../../../data/services/user_service.dart';
+import '../../../data/services/auth_service.dart';
 import '../../../data/services/user_test_data_service.dart';
 import '../../../data/models/auth_models.dart';
 import '../../../../core/utils/toast_message.dart';
@@ -10,6 +11,7 @@ class UserManagementController extends GetxController {
       Get.find<UserManagementController>();
 
   final UserService _userService = Get.find<UserService>();
+  final AuthService _authService = AuthService();
 
   // Observables
   final RxList<AppUser> allUsers = <AppUser>[].obs;
@@ -231,19 +233,8 @@ class UserManagementController extends GetxController {
         // Update local data
         final userIndex = allUsers.indexWhere((user) => user.uid == userId);
         if (userIndex != -1) {
-          final updatedUser = allUsers[userIndex];
-          allUsers[userIndex] = AppUser(
-            uid: updatedUser.uid,
-            email: updatedUser.email,
-            firstName: updatedUser.firstName,
-            lastName: updatedUser.lastName,
-            role: updatedUser.role,
+          allUsers[userIndex] = allUsers[userIndex].copyWith(
             status: UserStatus.suspended,
-            profileImageUrl: updatedUser.profileImageUrl,
-            createdAt: updatedUser.createdAt,
-            lastLoginAt: updatedUser.lastLoginAt,
-            isEmailVerified: updatedUser.isEmailVerified,
-            createdBy: updatedUser.createdBy,
           );
         }
 
@@ -273,19 +264,9 @@ class UserManagementController extends GetxController {
         // Update local data
         final userIndex = allUsers.indexWhere((user) => user.uid == userId);
         if (userIndex != -1) {
-          final updatedUser = allUsers[userIndex];
-          allUsers[userIndex] = AppUser(
-            uid: updatedUser.uid,
-            email: updatedUser.email,
-            firstName: updatedUser.firstName,
-            lastName: updatedUser.lastName,
-            role: updatedUser.role,
+          allUsers[userIndex] = allUsers[userIndex].copyWith(
             status: UserStatus.active,
-            profileImageUrl: updatedUser.profileImageUrl,
-            createdAt: updatedUser.createdAt,
-            lastLoginAt: updatedUser.lastLoginAt,
-            isEmailVerified: updatedUser.isEmailVerified,
-            createdBy: updatedUser.createdBy,
+            isDeleted: false,
           );
         }
 
@@ -309,32 +290,137 @@ class UserManagementController extends GetxController {
       final success = await _userService.deleteUser(userId);
 
       if (success) {
-        // Remove from local data
-        allUsers.removeWhere((user) => user.uid == userId);
-        studentDataMap.remove(userId);
-        staffDataMap.remove(userId);
+        final userIndex = allUsers.indexWhere((user) => user.uid == userId);
+        if (userIndex != -1) {
+          allUsers[userIndex] = allUsers[userIndex].copyWith(
+            status: UserStatus.suspended,
+            isDeleted: true,
+          );
+        }
 
         _applyFilters();
         await _loadUserStats();
-        Get.snackbar(
-          'Success',
-          'User deleted successfully',
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        ToastMessage.success('User marked as deleted successfully');
       } else {
-        Get.snackbar(
-          'Error',
-          'Failed to delete user',
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        ToastMessage.error('Failed to delete user');
       }
     } catch (e) {
       print('❌ Error deleting user: $e');
-      Get.snackbar(
-        'Error',
-        'Error deleting user: $e',
-        snackPosition: SnackPosition.BOTTOM,
+      ToastMessage.error('Error deleting user: $e');
+    }
+  }
+
+  /// Add a new student/staff user with default auth password.
+  Future<bool> addUser({
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String role,
+    String rollNumber = '',
+    String hostel = '',
+    String roomNumber = '',
+    String department = '',
+    int semester = 1,
+    String employeeId = '',
+    String position = '',
+    String phoneNumber = '',
+  }) async {
+    try {
+      final roleEnum = _parseRole(role);
+      final adminId = _authService.currentFirebaseUser?.uid ?? 'system_admin';
+
+      final success = await _userService.createManagedUser(
+        role: roleEnum,
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        createdByAdminId: adminId,
+        password: '12345678',
+        rollNumber: rollNumber,
+        hostel: hostel,
+        roomNumber: roomNumber,
+        department: department,
+        semester: semester,
+        employeeId: employeeId,
+        position: position,
+        phoneNumber: phoneNumber,
       );
+
+      if (success) {
+        await loadUsers();
+        ToastMessage.success(
+          'User added successfully. Default password is 12345678.',
+        );
+        return true;
+      }
+
+      ToastMessage.error('Failed to add user');
+      return false;
+    } catch (e) {
+      ToastMessage.error('Failed to add user: $e');
+      return false;
+    }
+  }
+
+  /// Update existing user details in Firestore.
+  Future<bool> updateUserDetails({
+    required String uid,
+    required String firstName,
+    required String lastName,
+    required String role,
+    String? email,
+    String rollNumber = '',
+    String hostel = '',
+    String roomNumber = '',
+    String department = '',
+    int semester = 1,
+    String employeeId = '',
+    String position = '',
+    String phoneNumber = '',
+  }) async {
+    try {
+      final roleEnum = _parseRole(role);
+
+      final success = await _userService.updateManagedUser(
+        uid: uid,
+        role: roleEnum,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        rollNumber: rollNumber,
+        hostel: hostel,
+        roomNumber: roomNumber,
+        department: department,
+        semester: semester,
+        employeeId: employeeId,
+        position: position,
+        phoneNumber: phoneNumber,
+      );
+
+      if (success) {
+        await loadUsers();
+        ToastMessage.success('User details updated successfully');
+        return true;
+      }
+
+      ToastMessage.error('Failed to update user details');
+      return false;
+    } catch (e) {
+      ToastMessage.error('Failed to update user details: $e');
+      return false;
+    }
+  }
+
+  UserRole _parseRole(String role) {
+    switch (role.trim().toLowerCase()) {
+      case 'student':
+        return UserRole.student;
+      case 'staff':
+        return UserRole.staff;
+      case 'admin':
+        return UserRole.admin;
+      default:
+        return UserRole.student;
     }
   }
 
@@ -355,18 +441,22 @@ class UserManagementController extends GetxController {
 
   /// Get formatted user data for display
   Map<String, dynamic> getFormattedUserData(AppUser user) {
+    final statusLabel = user.isDeleted
+        ? 'Deleted'
+        : user.isActive
+        ? 'Active'
+        : user.status == UserStatus.suspended
+        ? 'Suspended'
+        : user.status == UserStatus.pending
+        ? 'Pending'
+        : 'Inactive';
+
     final Map<String, dynamic> userData = {
       'id': user.uid,
       'name': user.fullName,
       'email': user.email,
       'role': user.role.name.toUpperCase(),
-      'status': user.isActive
-          ? 'Active'
-          : user.status == UserStatus.suspended
-          ? 'Suspended'
-          : user.status == UserStatus.pending
-          ? 'Pending'
-          : 'Inactive',
+      'status': statusLabel,
       'lastLogin': _formatLastLogin(user.lastLoginAt),
       'joinDate': _formatDate(user.createdAt),
     };

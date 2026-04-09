@@ -21,6 +21,9 @@ class SystemStatsGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       final stats = overviewController.systemStats;
+      final monthlyRevenue = stats['monthlyRevenue'] is num
+          ? stats['monthlyRevenue'] as num
+          : 0;
       final overviewStats = [
         {
           'title': 'Total Users',
@@ -48,8 +51,7 @@ class SystemStatsGrid extends StatelessWidget {
         },
         {
           'title': 'Monthly Revenue',
-          'value':
-              '${(stats['monthlyRevenue']! / 1000).toStringAsFixed(0)}K Rs',
+          'value': '${(monthlyRevenue / 1000).toStringAsFixed(0)}K Rs',
           'icon': FontAwesomeIcons.chartLine,
           'color': AppColors.warning,
           'trend': '+18%',
