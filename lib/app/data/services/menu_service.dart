@@ -730,6 +730,49 @@ class MenuService extends GetxService {
     }
   }
 
+  /// Get all student feedback for admin review
+  Future<List<Feedback>> getAllStudentFeedbacks({int limit = 200}) async {
+    try {
+      final snapshot = await _firestore
+          .collection(_feedbackCollection)
+          .limit(limit)
+          .get();
+
+      final feedbacks = snapshot.docs
+          .map((doc) => Feedback.fromFirestore(doc.id, doc.data()))
+          .toList();
+
+      feedbacks.sort((a, b) => b.submittedAt.compareTo(a.submittedAt));
+      return feedbacks;
+    } catch (e) {
+      print('Error getting all student feedbacks: $e');
+      return [];
+    }
+  }
+
+  /// Respond to a specific student feedback
+  Future<bool> respondToStudentFeedback({
+    required String feedbackId,
+    required String response,
+    String status = 'reviewed',
+  }) async {
+    final trimmedResponse = response.trim();
+    if (feedbackId.trim().isEmpty || trimmedResponse.isEmpty) {
+      return false;
+    }
+
+    try {
+      await _firestore.collection(_feedbackCollection).doc(feedbackId).update({
+        'response': trimmedResponse,
+        'status': status,
+      });
+      return true;
+    } catch (e) {
+      print('Error responding to student feedback: $e');
+      return false;
+    }
+  }
+
   // ========== ANALYTICS ==========
 
   /// Get menu analytics

@@ -6,6 +6,7 @@ import '../../../app/widgets/common/reusable_text_field.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/responsive_helper.dart';
+import '../../../core/utils/toast_message.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../data/models/auth_models.dart';
 import 'controllers/auth_controller.dart';
@@ -527,13 +528,13 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
     // Basic validation
     if (emailController.text.trim().isEmpty) {
       // Email is empty
-      Get.snackbar('Error', 'Please enter your email');
+      ToastMessage.error('Please enter your email');
       return;
     }
 
     if (passwordController.text.trim().isEmpty) {
       // Password is empty
-      Get.snackbar('Error', 'Please enter your password');
+      ToastMessage.error('Please enter your password');
       return;
     }
 

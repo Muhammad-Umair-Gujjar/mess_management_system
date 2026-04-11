@@ -63,7 +63,7 @@ class AdminController extends GetxController {
       final totalStaff = users
           .where((user) => user.role == UserRole.staff)
           .length;
-        final pendingApprovals = pendingRequests.length;
+      final pendingApprovals = pendingRequests.length;
 
       realUserStats.value = {
         'totalUsers': totalUsers,
@@ -108,6 +108,11 @@ class AdminController extends GetxController {
       icon: FontAwesomeIcons.utensils,
       title: 'Menu Management',
       route: '/admin/menu',
+    ),
+    const NavigationItem(
+      icon: FontAwesomeIcons.comments,
+      title: 'Feedback',
+      route: '/admin/feedback',
     ),
   ];
 
@@ -248,6 +253,8 @@ class AdminController extends GetxController {
         return 'User Management';
       case 2:
         return 'Menu Management';
+      case 3:
+        return 'Feedback';
       default:
         return 'Admin Dashboard';
     }
@@ -262,6 +269,8 @@ class AdminController extends GetxController {
         return 'Manage users, staff, and permissions';
       case 2:
         return 'Configure menu items and categories';
+      case 3:
+        return 'Review student feedback and send responses';
       default:
         return 'System overview and quick actions';
     }
