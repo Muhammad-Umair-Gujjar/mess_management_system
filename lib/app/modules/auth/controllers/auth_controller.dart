@@ -102,6 +102,16 @@ class AuthController extends GetxController {
         department: 'Administration',
       );
 
+      // Setup additional default admin account
+      await _authService.createDefaultStaffAccount(
+        email: 'admin@gmail.com',
+        password: '12345678',
+        firstName: 'Admin',
+        lastName: 'User',
+        role: UserRole.admin,
+        department: 'Administration',
+      );
+
       // Setup default staff account
       await _authService.createDefaultStaffAccount(
         email: 'staff@gmail.com',
