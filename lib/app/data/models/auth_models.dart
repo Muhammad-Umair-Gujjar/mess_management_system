@@ -190,6 +190,7 @@ class AppUser {
 class StudentRequest {
   final String requestId;
   final String email;
+  final String? pendingAuthUid;
   final String firstName;
   final String lastName;
   final String rollNumber;
@@ -208,6 +209,7 @@ class StudentRequest {
   StudentRequest({
     required this.requestId,
     required this.email,
+    this.pendingAuthUid,
     required this.firstName,
     required this.lastName,
     required this.rollNumber,
@@ -233,6 +235,7 @@ class StudentRequest {
     return {
       'requestId': requestId,
       'email': email,
+      'pendingAuthUid': pendingAuthUid,
       'firstName': firstName,
       'lastName': lastName,
       'rollNumber': rollNumber,
@@ -254,6 +257,7 @@ class StudentRequest {
     return StudentRequest(
       requestId: data['requestId'] ?? '',
       email: data['email'] ?? '',
+      pendingAuthUid: data['pendingAuthUid'],
       firstName: data['firstName'] ?? '',
       lastName: data['lastName'] ?? '',
       rollNumber: data['rollNumber'] ?? '',
@@ -281,6 +285,7 @@ class StudentRequest {
   StudentRequest copyWith({
     String? requestId,
     String? email,
+    String? pendingAuthUid,
     String? firstName,
     String? lastName,
     String? rollNumber,
@@ -299,6 +304,7 @@ class StudentRequest {
     return StudentRequest(
       requestId: requestId ?? this.requestId,
       email: email ?? this.email,
+      pendingAuthUid: pendingAuthUid ?? this.pendingAuthUid,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       rollNumber: rollNumber ?? this.rollNumber,
@@ -614,6 +620,7 @@ enum AuthResultType { success, pending, rejected, inactive }
 // Student Signup Request Model
 class StudentSignupRequest {
   final String email;
+  final String password;
   final String firstName;
   final String lastName;
   final String rollNumber;
@@ -626,6 +633,7 @@ class StudentSignupRequest {
 
   StudentSignupRequest({
     required this.email,
+    required this.password,
     required this.firstName,
     required this.lastName,
     required this.rollNumber,

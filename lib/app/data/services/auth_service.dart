@@ -84,6 +84,9 @@ class AuthService {
 
   /// Student Signup - Creates request for admin approval
   Future<AuthResult> studentSignup(StudentSignupRequest request) async {
+    firebase_auth.User? pendingAuthUser;
+    var requestStored = false;
+
     try {
       // Check if email is already registered or has pending request
       final existingUser = await _getUserByEmail(request.email);
@@ -110,6 +113,17 @@ class AuthService {
         return AuthResult.failure('Roll number already exists');
       }
 
+      // Create pending Firebase auth account using the same password entered at signup
+      final pendingCredential = await _auth.createUserWithEmailAndPassword(
+        email: request.email,
+        password: request.password,
+      );
+
+      pendingAuthUser = pendingCredential.user;
+      if (pendingAuthUser == null || pendingAuthUser.uid.trim().isEmpty) {
+        return AuthResult.failure('Failed to initialize signup account');
+      }
+
       // Create student request
       final requestId = _firestore
           .collection(_studentRequestsCollection)
@@ -118,6 +132,7 @@ class AuthService {
       final studentRequest = StudentRequest(
         requestId: requestId,
         email: request.email,
+        pendingAuthUid: pendingAuthUser.uid,
         firstName: request.firstName,
         lastName: request.lastName,
         rollNumber: request.rollNumber,
@@ -134,25 +149,61 @@ class AuthService {
           .collection(_studentRequestsCollection)
           .doc(requestId)
           .set(studentRequest.toFirestore());
+      requestStored = true;
 
-      // Send notification to all admins
-      await _notifyAdminsNewStudentRequest(studentRequest);
+      try {
+        // Send notification to all admins
+        await _notifyAdminsNewStudentRequest(studentRequest);
 
-      // Log the request
-      await _logActivity(
-        action: 'student_signup_request',
-        userId: null,
-        details: {
-          'email': request.email,
-          'rollNumber': request.rollNumber,
-          'requestId': requestId,
-        },
-      );
+        // Log the request
+        await _logActivity(
+          action: 'student_signup_request',
+          userId: null,
+          details: {
+            'email': request.email,
+            'rollNumber': request.rollNumber,
+            'requestId': requestId,
+          },
+        );
+      } catch (e) {
+        print('Error sending signup notifications/logs: $e');
+      }
+
+      // Ensure pending user is signed out after request submission
+      if (_auth.currentUser?.uid == pendingAuthUser.uid) {
+        await _auth.signOut();
+      }
 
       return AuthResult.pending(
         'Signup request submitted successfully. You will be notified once approved.',
       );
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      String message = 'Signup failed';
+      switch (e.code) {
+        case 'email-already-in-use':
+          message = 'Email already registered';
+          break;
+        case 'invalid-email':
+          message = 'Invalid email address';
+          break;
+        case 'weak-password':
+          message = 'Password is too weak';
+          break;
+      }
+      return AuthResult.failure(message, e.code);
     } catch (e) {
+      if (!requestStored && pendingAuthUser != null) {
+        try {
+          await pendingAuthUser.delete();
+        } catch (_) {}
+      }
+
+      if (_auth.currentUser?.uid == pendingAuthUser?.uid) {
+        try {
+          await _auth.signOut();
+        } catch (_) {}
+      }
+
       return AuthResult.failure('Signup failed: ${e.toString()}');
     }
   }
@@ -336,11 +387,7 @@ class AuthService {
   }
 
   /// Approve student request (Admin only)
-  Future<bool> approveStudentRequest(
-    String requestId,
-    String adminId, {
-    String? password,
-  }) async {
+  Future<bool> approveStudentRequest(String requestId, String adminId) async {
     try {
       // Get the request
       final requestDoc = await _firestore
@@ -357,14 +404,12 @@ class AuthService {
         throw AuthException('Request already processed');
       }
 
-      // Create Firebase user account
-      final tempPassword = password ?? _generateTempPassword();
-      final userCredential = await _auth.createUserWithEmailAndPassword(
-        email: request.email,
-        password: tempPassword,
-      );
-
-      final uid = userCredential.user!.uid;
+      final uid = request.pendingAuthUid?.trim() ?? '';
+      if (uid.isEmpty) {
+        throw AuthException(
+          'This request does not have a pending signup account. Ask the student to sign up again.',
+        );
+      }
 
       // Create user record
       final user = AppUser(
@@ -429,8 +474,8 @@ class AuthService {
         type: 'account_approved',
         title: 'Account Approved!',
         message:
-            'Your student account has been approved. You can now login with your email and the password sent to you.',
-        data: {'requestId': requestId, 'tempPassword': tempPassword},
+            'Your student account has been approved. You can now login with your email and the password you set during signup.',
+        data: {'requestId': requestId},
       );
 
       // Log the approval
@@ -443,7 +488,6 @@ class AuthService {
           'studentUid': uid,
         },
       );
-
 
       return true;
     } catch (e) {
@@ -750,13 +794,6 @@ class AuthService {
     await _firestore.collection(_usersCollection).doc(uid).update({
       'lastLoginAt': DateTime.now().toIso8601String(),
     });
-  }
-
-  String _generateTempPassword() {
-    const chars =
-        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    final random = DateTime.now().millisecondsSinceEpoch;
-    return List.generate(8, (index) => chars[random % chars.length]).join();
   }
 
   Future<void> _notifyAdminsNewStudentRequest(StudentRequest request) async {

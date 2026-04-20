@@ -236,6 +236,7 @@ class AuthController extends GetxController {
       // Creating StudentSignupRequest...
       final request = StudentSignupRequest(
         email: email,
+        password: password,
         firstName: firstName,
         lastName: lastName,
         rollNumber: rollNumber,
