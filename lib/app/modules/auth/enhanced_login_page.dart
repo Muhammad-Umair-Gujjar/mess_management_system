@@ -393,6 +393,7 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
 
   Widget _buildLoginButton() {
     return SizedBox(
+      width: double.infinity,
       height: ResponsiveHelper.getValue<double>(
         context,
         mobile: 60,
@@ -411,6 +412,7 @@ class _EnhancedLoginPageState extends State<EnhancedLoginPage> {
           backgroundColor: _getRoleColor(authController.selectedRole.value),
           foregroundColor: Colors.white,
           elevation: 8,
+          tapTargetSize: MaterialTapTargetSize.padded,
           shadowColor: _getRoleColor(
             authController.selectedRole.value,
           ).withOpacity(0.3),

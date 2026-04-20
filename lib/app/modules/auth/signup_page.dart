@@ -6,6 +6,7 @@ import '../../../app/widgets/common/reusable_text_field.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/responsive_helper.dart';
+import '../../../core/utils/toast_message.dart';
 import '../../../core/theme/app_theme.dart';
 import 'controllers/auth_controller.dart';
 import 'enhanced_login_page.dart';
@@ -54,7 +55,12 @@ class _SignupPageState extends State<SignupPage> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(FontAwesomeIcons.arrowLeft),
-          onPressed: () => Get.back(),
+          onPressed: () async {
+            final didPop = await Navigator.of(context).maybePop();
+            if (!didPop) {
+              Get.offAll(() => const EnhancedLoginPage());
+            }
+          },
         ),
         title: Text(
           'Create Account',
@@ -211,7 +217,6 @@ class _SignupPageState extends State<SignupPage> {
                   '🎓 Student Portal Access',
                   '📊 Real-time Updates',
                   '💰 Billing Management',
-                  '🍽️ Menu Preferences',
                   '📱 Mobile Friendly',
                 ].asMap().entries.map((entry) {
                   final index = entry.key;
@@ -495,6 +500,7 @@ class _SignupPageState extends State<SignupPage> {
 
   Widget _buildRegisterButton(BuildContext context) {
     return SizedBox(
+      width: double.infinity,
       height: ResponsiveHelper.getValue<double>(
         context,
         mobile: 55,
@@ -514,6 +520,7 @@ class _SignupPageState extends State<SignupPage> {
           foregroundColor: Colors.white,
           elevation: 8,
           shadowColor: AppColors.studentRole.withOpacity(0.3),
+          tapTargetSize: MaterialTapTargetSize.padded,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
               ResponsiveHelper.getBorderRadius(context, 'medium'),
@@ -593,6 +600,11 @@ class _SignupPageState extends State<SignupPage> {
   void _handleSignup() {
     // _handleSignup() called in signup_page.dart
 
+    if (_hasEmptyRequiredFields()) {
+      ToastMessage.error('Please fill all the details');
+      return;
+    }
+
     // Validation
     if (_validateForm()) {
       print(
@@ -611,6 +623,16 @@ class _SignupPageState extends State<SignupPage> {
     } else {
       // Form validation failed
     }
+  }
+
+  bool _hasEmptyRequiredFields() {
+    return firstNameController.text.trim().isEmpty ||
+        lastNameController.text.trim().isEmpty ||
+        rollNoController.text.trim().isEmpty ||
+        emailController.text.trim().isEmpty ||
+        passwordController.text.trim().isEmpty ||
+        confirmPasswordController.text.trim().isEmpty ||
+        roomNumberController.text.trim().isEmpty;
   }
 
   bool _validateForm() {
@@ -644,8 +666,8 @@ class _SignupPageState extends State<SignupPage> {
       return false;
     }
 
-    if (passwordController.text.length < 6) {
-      Get.snackbar('Error', 'Password must be at least 6 characters');
+    if (passwordController.text.length < 8) {
+      ToastMessage.error('Password must be 8 characters');
       return false;
     }
 
