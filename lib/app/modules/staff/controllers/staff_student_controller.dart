@@ -17,7 +17,7 @@ class StaffStudentController extends GetxController {
       RxMap<String, Map<String, dynamic>>();
   final RxBool isLoading = false.obs;
   final RxString searchQuery = ''.obs;
-  final RxString statusFilter = 'All'.obs;
+  final RxString statusFilter = 'Active'.obs;
 
   @override
   void onInit() {
@@ -37,7 +37,7 @@ class StaffStudentController extends GetxController {
           .toList();
 
       allStudents.value = students;
-      filteredStudents.value = students;
+      _applyFilters();
 
       // Load student details from students collection
       await _loadStudentDetails(students);
@@ -107,7 +107,10 @@ class StaffStudentController extends GetxController {
     if (statusFilter.value != 'All') {
       if (statusFilter.value == 'Active') {
         filtered = filtered
-            .where((student) => student.status == UserStatus.active)
+            .where(
+              (student) =>
+                  student.status == UserStatus.active && !student.isDeleted,
+            )
             .toList();
       } else if (statusFilter.value == 'Pending') {
         filtered = filtered
@@ -133,13 +136,32 @@ class StaffStudentController extends GetxController {
     }).toList();
   }
 
+  /// Active, non-deleted student records.
+  List<AppUser> get activeStudents => allStudents
+      .where(
+        (student) => student.status == UserStatus.active && !student.isDeleted,
+      )
+      .toList();
+
+  /// Active students in map format for UI consumption.
+  List<Map<String, dynamic>> get activeStudentsAsMap {
+    return activeStudents.map((student) {
+      final details = studentDetails[student.uid] ?? {};
+      return {
+        'id': details['rollNumber'] ?? 'N/A',
+        'name': student.fullName,
+        'email': student.email,
+        'room': details['roomNumber'] ?? 'N/A',
+        'isApproved': true,
+      };
+    }).toList();
+  }
+
   /// Get total student count
   int get totalStudentCount => allStudents.length;
 
   /// Get active student count
-  int get activeStudentCount => allStudents
-      .where((student) => student.status == UserStatus.active)
-      .length;
+  int get activeStudentCount => activeStudents.length;
 
   /// Get pending student count
   int get pendingStudentCount => allStudents

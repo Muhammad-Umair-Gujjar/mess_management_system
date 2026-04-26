@@ -169,7 +169,9 @@ class _AddEditUserViewState extends State<AddEditUserView> {
   }
 
   void _showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -193,20 +195,25 @@ class _AddEditUserViewState extends State<AddEditUserView> {
               ),
               const Spacer(),
               if (!widget.isEditMode)
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: ResponsiveHelper.getSpacing(context, 'small'),
-                    vertical: ResponsiveHelper.getSpacing(context, 'xs'),
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.info.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(
-                      ResponsiveHelper.getBorderRadius(context, 'small'),
+                Flexible(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+                      vertical: ResponsiveHelper.getSpacing(context, 'xs'),
                     ),
-                  ),
-                  child: Text(
-                    'Default Password: 12345678',
-                    style: AppTextStyles.caption.copyWith(color: AppColors.info),
+                    decoration: BoxDecoration(
+                      color: AppColors.info.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(
+                        ResponsiveHelper.getBorderRadius(context, 'small'),
+                      ),
+                    ),
+                    child: Text(
+                      'Default Password: 12345678',
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.info,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
             ],
@@ -225,7 +232,9 @@ class _AddEditUserViewState extends State<AddEditUserView> {
                           controller: _firstNameController,
                         ),
                       ),
-                      SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
+                      SizedBox(
+                        width: ResponsiveHelper.getSpacing(context, 'small'),
+                      ),
                       Expanded(
                         child: ReusableTextField(
                           label: 'Last Name',
@@ -235,7 +244,9 @@ class _AddEditUserViewState extends State<AddEditUserView> {
                       ),
                     ],
                   ),
-                  SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+                  SizedBox(
+                    height: ResponsiveHelper.getSpacing(context, 'medium'),
+                  ),
                   Row(
                     children: [
                       Expanded(
@@ -248,7 +259,9 @@ class _AddEditUserViewState extends State<AddEditUserView> {
                           controller: _emailController,
                         ),
                       ),
-                      SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
+                      SizedBox(
+                        width: ResponsiveHelper.getSpacing(context, 'small'),
+                      ),
                       Expanded(
                         flex: 2,
                         child: Column(
@@ -269,18 +282,55 @@ class _AddEditUserViewState extends State<AddEditUserView> {
                             ),
                             DropdownButtonFormField<String>(
                               value: _selectedRole,
-                              decoration: const InputDecoration(
-                                hintText: 'Select role',
-                                border: OutlineInputBorder(),
+                              isExpanded: true,
+                              isDense: true,
+                              iconSize: 20,
+                              style: TextStyle(
+                                fontSize: ResponsiveHelper.getFontSize(
+                                  context,
+                                  'small',
+                                ),
+                                color: Colors.black87,
                               ),
-                              items: const [
+                              decoration: InputDecoration(
+                                hintText: 'Select role',
+                                border: const OutlineInputBorder(),
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: ResponsiveHelper.getSpacing(
+                                    context,
+                                    'small',
+                                  ),
+                                ),
+                              ),
+                              items: [
                                 DropdownMenuItem(
                                   value: 'Student',
-                                  child: Text('Student'),
+                                  child: Text(
+                                    'Student',
+                                    style: TextStyle(
+                                      fontSize: ResponsiveHelper.getFontSize(
+                                        context,
+                                        'small',
+                                      ),
+                                      color: Colors.black87,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                                 DropdownMenuItem(
                                   value: 'Staff',
-                                  child: Text('Staff'),
+                                  child: Text(
+                                    'Staff',
+                                    style: TextStyle(
+                                      fontSize: ResponsiveHelper.getFontSize(
+                                        context,
+                                        'small',
+                                      ),
+                                      color: Colors.black87,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ],
                               onChanged: widget.isEditMode
@@ -295,21 +345,27 @@ class _AddEditUserViewState extends State<AddEditUserView> {
                       ),
                     ],
                   ),
-                  SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+                  SizedBox(
+                    height: ResponsiveHelper.getSpacing(context, 'medium'),
+                  ),
                   ReusableTextField(
                     label: 'Phone Number (Optional)',
                     hintText: 'Enter phone number',
                     type: TextFieldType.phone,
                     controller: _phoneController,
                   ),
-                  SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+                  SizedBox(
+                    height: ResponsiveHelper.getSpacing(context, 'medium'),
+                  ),
                   if (_isStudent) ...[
                     ReusableTextField(
                       label: 'Roll Number',
                       hintText: 'Enter roll number',
                       controller: _rollNumberController,
                     ),
-                    SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+                    SizedBox(
+                      height: ResponsiveHelper.getSpacing(context, 'medium'),
+                    ),
                     Row(
                       children: [
                         Expanded(
@@ -319,7 +375,9 @@ class _AddEditUserViewState extends State<AddEditUserView> {
                             controller: _hostelController,
                           ),
                         ),
-                        SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
+                        SizedBox(
+                          width: ResponsiveHelper.getSpacing(context, 'small'),
+                        ),
                         Expanded(
                           child: ReusableTextField(
                             label: 'Room Number',
@@ -329,7 +387,9 @@ class _AddEditUserViewState extends State<AddEditUserView> {
                         ),
                       ],
                     ),
-                    SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+                    SizedBox(
+                      height: ResponsiveHelper.getSpacing(context, 'medium'),
+                    ),
                     Row(
                       children: [
                         Expanded(
@@ -339,7 +399,9 @@ class _AddEditUserViewState extends State<AddEditUserView> {
                             controller: _departmentController,
                           ),
                         ),
-                        SizedBox(width: ResponsiveHelper.getSpacing(context, 'small')),
+                        SizedBox(
+                          width: ResponsiveHelper.getSpacing(context, 'small'),
+                        ),
                         Expanded(
                           child: ReusableTextField(
                             label: 'Semester',
@@ -356,13 +418,17 @@ class _AddEditUserViewState extends State<AddEditUserView> {
                       hintText: 'Enter employee id',
                       controller: _employeeIdController,
                     ),
-                    SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+                    SizedBox(
+                      height: ResponsiveHelper.getSpacing(context, 'medium'),
+                    ),
                     ReusableTextField(
                       label: 'Department',
                       hintText: 'e.g., Kitchen',
                       controller: _departmentController,
                     ),
-                    SizedBox(height: ResponsiveHelper.getSpacing(context, 'medium')),
+                    SizedBox(
+                      height: ResponsiveHelper.getSpacing(context, 'medium'),
+                    ),
                     ReusableTextField(
                       label: 'Position',
                       hintText: 'e.g., Mess Manager',
@@ -401,7 +467,3 @@ class _AddEditUserViewState extends State<AddEditUserView> {
     );
   }
 }
-
-
-
-

@@ -432,27 +432,33 @@ class CustomGridView extends StatelessWidget {
               child: Icon(item.icon, size: iconSize, color: item.color),
             ),
             if (item.trend != null || item.trendIcon != null)
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (item.trendIcon != null)
-                    Icon(
-                      item.trendIcon,
-                      size: trendIconSize,
-                      color: item.trendColor ?? AppColors.success,
-                    ),
-                  if (item.trend != null) ...[
-                    if (item.trendIcon != null) SizedBox(width: trendSpacing),
-                    Text(
-                      item.trend!,
-                      style: AppTextStyles.caption.copyWith(
+              Flexible(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (item.trendIcon != null)
+                      Icon(
+                        item.trendIcon,
+                        size: trendIconSize,
                         color: item.trendColor ?? AppColors.success,
-                        fontWeight: FontWeight.w600,
-                        fontSize: trendFontSize,
                       ),
-                    ),
+                    if (item.trend != null) ...[
+                      if (item.trendIcon != null) SizedBox(width: trendSpacing),
+                      Flexible(
+                        child: Text(
+                          item.trend!,
+                          style: AppTextStyles.caption.copyWith(
+                            color: item.trendColor ?? AppColors.success,
+                            fontWeight: FontWeight.w600,
+                            fontSize: trendFontSize,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
           ],
         ),

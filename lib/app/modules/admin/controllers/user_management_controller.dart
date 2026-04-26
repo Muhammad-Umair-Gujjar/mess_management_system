@@ -188,8 +188,11 @@ class UserManagementController extends GetxController {
       filtered = filtered.where((user) {
         if (statusFilter == 'active') {
           return user.status == UserStatus.active;
-        } else if (statusFilter == 'inactive' || statusFilter == 'suspended') {
+        } else if (statusFilter == 'inactive') {
           return user.status == UserStatus.suspended;
+        } else if (statusFilter == 'suspended') {
+          // Suspended filter should not include deleted accounts.
+          return user.status == UserStatus.suspended && !user.isDeleted;
         } else if (statusFilter == 'pending') {
           return user.status == UserStatus.pending;
         }

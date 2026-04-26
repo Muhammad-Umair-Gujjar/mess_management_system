@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import '../models/auth_models.dart';
 import '../models/billing.dart';
+import '../models/mess_off.dart';
 
 /// Service class for managing user data operations with Firebase Firestore
 class UserService extends GetxService {
@@ -17,6 +18,7 @@ class UserService extends GetxService {
   static const String staffCollection = 'staff';
   static const String attendanceSubcollection = 'attendance';
   static const String billingSubcollection = 'billing';
+  static const String messOffSubcollection = 'mess_off';
 
   /// Fetch all users (students and staff only) from Firebase
   Future<List<AppUser>> getAllUsers() async {
@@ -253,7 +255,9 @@ class UserService extends GetxService {
     String phoneNumber = '',
   }) async {
     if (role == UserRole.admin) {
-      print('❌ UserService: Admin creation is not supported in user management');
+      print(
+        '❌ UserService: Admin creation is not supported in user management',
+      );
       return false;
     }
 
@@ -293,7 +297,10 @@ class UserService extends GetxService {
       );
 
       final batch = _firestore.batch();
-      batch.set(_firestore.collection(usersCollection).doc(uid), appUser.toFirestore());
+      batch.set(
+        _firestore.collection(usersCollection).doc(uid),
+        appUser.toFirestore(),
+      );
 
       if (role == UserRole.student) {
         final studentDetails = StudentDetails(
@@ -796,5 +803,90 @@ class UserService extends GetxService {
       }
       return records.sublist(0, limit);
     }
+  }
+
+  // ── Mess Off ──────────────────────────────────────────────────────────────
+
+  /// Save a new mess-off period for a student.
+  /// Stored at students/{uid}/mess_off/{docId}
+  /// Returns the generated document id.
+  Future<String> setStudentMessOff({
+    required String userUid,
+    required DateTime startDate,
+    required DateTime endDate,
+    required String setByUid,
+    List<String> meals = const [],
+  }) async {
+    final ref = _firestore
+        .collection(studentsCollection)
+        .doc(userUid)
+        .collection(messOffSubcollection)
+        .doc();
+
+    final now = DateTime.now();
+    await ref.set({
+      'studentUid': userUid,
+      'startDate': Timestamp.fromDate(
+        DateTime(startDate.year, startDate.month, startDate.day),
+      ),
+      'endDate': Timestamp.fromDate(
+        DateTime(endDate.year, endDate.month, endDate.day),
+      ),
+      'setByUid': setByUid,
+      'createdAt': Timestamp.fromDate(now),
+      'meals': meals,
+    });
+
+    return ref.id;
+  }
+
+  /// Update just the end date and meals of an existing mess-off record.
+  Future<void> updateStudentMessOff({
+    required String userUid,
+    required String messOffId,
+    required DateTime endDate,
+    required List<String> meals,
+  }) async {
+    await _firestore
+        .collection(studentsCollection)
+        .doc(userUid)
+        .collection(messOffSubcollection)
+        .doc(messOffId)
+        .update({
+          'endDate': Timestamp.fromDate(
+            DateTime(endDate.year, endDate.month, endDate.day),
+          ),
+          'meals': meals,
+        });
+  }
+
+  /// Fetch all mess-off records for a student.
+  Future<List<MessOff>> getStudentMessOff(String userUid) async {
+    try {
+      final snapshot = await _firestore
+          .collection(studentsCollection)
+          .doc(userUid)
+          .collection(messOffSubcollection)
+          .get();
+
+      return snapshot.docs
+          .map((doc) => MessOff.fromFirestore(doc.data(), doc.id))
+          .toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /// Delete a specific mess-off record.
+  Future<void> removeStudentMessOff({
+    required String userUid,
+    required String messOffId,
+  }) async {
+    await _firestore
+        .collection(studentsCollection)
+        .doc(userUid)
+        .collection(messOffSubcollection)
+        .doc(messOffId)
+        .delete();
   }
 }

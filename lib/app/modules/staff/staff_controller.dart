@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../data/models/student.dart';
 import '../../../core/utils/toast_message.dart';
 import '../../data/models/attendance.dart';
+import '../../data/models/mess_off.dart';
 import '../../data/models/menu.dart';
 import '../../data/services/dummy_data_service.dart';
 import '../../data/services/menu_service.dart';
@@ -32,6 +34,11 @@ class StaffController extends GetxController {
 
   // Mapping from roll number shown in UI to actual user uid in students/users data
   final RxMap<String, String> _rollToUid = <String, String>{}.obs;
+
+  // Mess-off cache: uid -> list of MessOff records
+  final Map<String, List<MessOff>> _messOffByUid = {};
+  // Incremented whenever mess-off data changes — widgets observe this to rebuild
+  final messOffVersion = 0.obs;
 
   final Set<String> _loadedAttendanceMonths = <String>{};
   final Set<String> _loadingAttendanceMonths = <String>{};
@@ -80,7 +87,7 @@ class StaffController extends GetxController {
 
     _studentFilterWorker = ever(_studentController.filteredStudents, (_) {
       allStudents.value = _studentsAsMapFromAppUsers(
-        _studentController.allStudents,
+        _studentController.activeStudents,
       );
       _rebuildRollToUidMap();
       _applyFilters();
@@ -126,7 +133,7 @@ class StaffController extends GetxController {
 
       // Initial load
       allStudents.value = _studentsAsMapFromAppUsers(
-        _studentController.allStudents,
+        _studentController.activeStudents,
       );
       _rebuildRollToUidMap();
 
@@ -143,6 +150,9 @@ class StaffController extends GetxController {
 
       // Load meal rates
       mealRates.value = DummyDataService.getMealRates();
+
+      // Load mess-off records for all students
+      await _loadAllMessOff();
 
       _applyFilters();
     } finally {
@@ -408,6 +418,9 @@ class StaffController extends GetxController {
     final map = <String, String>{};
 
     for (final student in _studentController.allStudents) {
+      if (student.status != UserStatus.active || student.isDeleted) {
+        continue;
+      }
       final details = _studentController.studentDetails[student.uid];
       final rollNumber = details?['rollNumber']?.toString() ?? '';
       if (rollNumber.isNotEmpty && rollNumber != 'N/A') {
@@ -637,6 +650,85 @@ class StaffController extends GetxController {
 
   String _attendanceKey(String studentId, DateTime date, String mealType) {
     return '${studentId}_${_dateKey(date)}_${_normalizeMealType(mealType)}';
+  }
+
+  // ── Mess-off helpers ──────────────────────────────────────────────────────
+
+  Future<void> _loadAllMessOff() async {
+    _messOffByUid.clear();
+    for (final entry in _rollToUid.entries) {
+      final uid = entry.value;
+      try {
+        final records = await _userService.getStudentMessOff(uid);
+        _messOffByUid[uid] = records;
+      } catch (_) {
+        _messOffByUid[uid] = [];
+      }
+    }
+  }
+
+  bool isStudentMessedOff(String studentId, DateTime date, {String? meal}) {
+    final uid = _rollToUid[studentId];
+    if (uid == null) return false;
+    final records = _messOffByUid[uid] ?? [];
+    if (meal != null) {
+      return records.any((m) => m.isActiveForMeal(date, meal));
+    }
+    return records.any((m) => m.isActiveOnDate(date));
+  }
+
+  /// Returns all current mess-off records for a student (for display/removal).
+  List<MessOff> getStudentMessOffRecords(String studentId) {
+    final uid = _rollToUid[studentId];
+    if (uid == null) return [];
+    return List.unmodifiable(_messOffByUid[uid] ?? []);
+  }
+
+  Future<void> setStudentMessOff(
+    String studentId,
+    DateTime start,
+    DateTime end, {
+    List<String> meals = const [],
+  }) async {
+    final uid = _rollToUid[studentId];
+    if (uid == null) return;
+    final currentUser = FirebaseAuth.instance.currentUser;
+    await _userService.setStudentMessOff(
+      userUid: uid,
+      startDate: start,
+      endDate: end,
+      setByUid: currentUser?.uid ?? '',
+      meals: meals,
+    );
+    // Refresh cache for this student
+    _messOffByUid[uid] = await _userService.getStudentMessOff(uid);
+    messOffVersion.value++;
+  }
+
+  Future<void> updateStudentMessOff(
+    String studentId,
+    String messOffId,
+    DateTime newEndDate,
+    List<String> newMeals,
+  ) async {
+    final uid = _rollToUid[studentId];
+    if (uid == null) return;
+    await _userService.updateStudentMessOff(
+      userUid: uid,
+      messOffId: messOffId,
+      endDate: newEndDate,
+      meals: newMeals,
+    );
+    _messOffByUid[uid] = await _userService.getStudentMessOff(uid);
+    messOffVersion.value++;
+  }
+
+  Future<void> removeStudentMessOff(String studentId, String messOffId) async {
+    final uid = _rollToUid[studentId];
+    if (uid == null) return;
+    await _userService.removeStudentMessOff(userUid: uid, messOffId: messOffId);
+    _messOffByUid[uid] = await _userService.getStudentMessOff(uid);
+    messOffVersion.value++;
   }
 
   void markAttendanceOld(String studentId, MealType mealType, bool isPresent) {

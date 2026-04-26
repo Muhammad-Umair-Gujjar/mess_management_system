@@ -44,7 +44,7 @@ class UserFilters extends StatelessWidget {
           ],
         ],
       ),
-    ).animate().fadeIn(duration:  300.ms ).slideY(begin: -0.3);
+    ).animate().fadeIn(duration: 300.ms).slideY(begin: -0.3);
   }
 
   Widget _buildMobileLayout(BuildContext context) {
@@ -62,14 +62,18 @@ class UserFilters extends StatelessWidget {
             SizedBox(width: ResponsiveHelper.getSpacing(context, 'xsmall')),
             Expanded(flex: 2, child: _buildStatusDropdown(context)),
             SizedBox(width: ResponsiveHelper.getSpacing(context, 'xsmall')),
-            Flexible(
-              child: ReusableButton(
-                text: 'Add User',
-                icon: FontAwesomeIcons.userPlus,
-                
-                type: ButtonType.primary,
-                size: ButtonSize.medium,
+            SizedBox(
+              width: 48,
+              height: 48,
+              child: ElevatedButton(
                 onPressed: onAddUser,
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Icon(FontAwesomeIcons.userPlus, size: 16),
               ),
             ),
           ],
@@ -129,13 +133,15 @@ class UserFilters extends StatelessWidget {
     return DropdownButtonFormField<String>(
       style: TextStyle(
         fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
+        color: Colors.black87,
       ),
-      decoration:  InputDecoration(
+      decoration: InputDecoration(
         labelText: 'Role',
         labelStyle: TextStyle(fontSize: 14),
         border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.symmetric(horizontal: ResponsiveHelper.getSpacing(context, 'small'),
-        vertical: ResponsiveHelper.getSpacing(context, 'medium')
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+          vertical: ResponsiveHelper.getSpacing(context, 'medium'),
         ),
         isDense: true,
       ),
@@ -159,13 +165,16 @@ class UserFilters extends StatelessWidget {
     return DropdownButtonFormField<String>(
       style: TextStyle(
         fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
+        color: Colors.black87,
       ),
-      decoration:  InputDecoration(
+      decoration: InputDecoration(
         labelText: 'Status',
         labelStyle: TextStyle(fontSize: 14),
         border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.symmetric(horizontal: ResponsiveHelper.getSpacing(context, 'small'),
-        vertical: ResponsiveHelper.getSpacing(context, 'medium')),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: ResponsiveHelper.getSpacing(context, 'small'),
+          vertical: ResponsiveHelper.getSpacing(context, 'medium'),
+        ),
         isDense: true,
       ),
       value: selectedStatus.isEmpty ? null : selectedStatus,
@@ -184,7 +193,3 @@ class UserFilters extends StatelessWidget {
     );
   }
 }
-
-
-
-

@@ -38,58 +38,60 @@ class RoleSelectionDropdown extends StatelessWidget {
             ),
             border: Border.all(color: AppColors.primary.withOpacity(0.2)),
           ),
-          child: DropdownButtonFormField<UserRole>(
-            value: selectedRole,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              errorBorder: InputBorder.none,
-              disabledBorder: InputBorder.none,
-              focusedErrorBorder: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: ResponsiveHelper.getSpacing(context, 'large'),
-                vertical: ResponsiveHelper.getSpacing(context, 'medium'),
-              ),
-              
-          
-
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getBorderRadius(context, 'medium'),
             ),
-            items: UserRole.values.map((role) {
-              return DropdownMenuItem(
-                value: role,
-                child: Row(
-                  children: [
-                    Icon(
-                      _getRoleIcon(role),
-                      color: _getRoleColor(role),
-                      size: ResponsiveHelper.getIconSize(context, 'small'),
-                    ),
-                    SizedBox(
-                      width: ResponsiveHelper.getSpacing(context, 'small'),
-                    ),
-                    Text(
-                      _getRoleTitle(role),
-                      style: AppTextStyles.body1.copyWith(
-                        fontSize: ResponsiveHelper.getFontSize(
-                          context,
-                          'body1',
-                        ),
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ],
+            child: DropdownButtonFormField<UserRole>(
+              value: selectedRole,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                focusedErrorBorder: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+                  vertical: ResponsiveHelper.getSpacing(context, 'medium'),
                 ),
-              );
-            }).toList(),
-            onChanged: (UserRole? value) {
-              if (value != null) {
-                onRoleChanged(value);
-              }
-            },
-            style: AppTextStyles.body1.copyWith(
-              fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
-              color: AppColors.textPrimary,
+              ),
+              items: UserRole.values.map((role) {
+                return DropdownMenuItem(
+                  value: role,
+                  child: Row(
+                    children: [
+                      Icon(
+                        _getRoleIcon(role),
+                        color: _getRoleColor(role),
+                        size: ResponsiveHelper.getIconSize(context, 'small'),
+                      ),
+                      SizedBox(
+                        width: ResponsiveHelper.getSpacing(context, 'small'),
+                      ),
+                      Text(
+                        _getRoleTitle(role),
+                        style: AppTextStyles.body1.copyWith(
+                          fontSize: ResponsiveHelper.getFontSize(
+                            context,
+                            'body1',
+                          ),
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+              onChanged: (UserRole? value) {
+                if (value != null) {
+                  onRoleChanged(value);
+                }
+              },
+              style: AppTextStyles.body1.copyWith(
+                fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
+                color: AppColors.textPrimary,
+              ),
             ),
           ),
         ),
@@ -170,50 +172,54 @@ class HostelSelectionDropdown extends StatelessWidget {
             ),
             border: Border.all(color: AppColors.primary.withOpacity(0.2)),
           ),
-          child: DropdownButtonFormField<String>(
-            value: selectedHostel,
-            decoration: InputDecoration(
-               border: InputBorder.none,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(
+              ResponsiveHelper.getBorderRadius(context, 'medium'),
+            ),
+            child: DropdownButtonFormField<String>(
+              value: selectedHostel,
+              decoration: InputDecoration(
+                border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 errorBorder: InputBorder.none,
                 disabledBorder: InputBorder.none,
                 focusedErrorBorder: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: ResponsiveHelper.getSpacing(context, 'large'),
-                vertical: ResponsiveHelper.getSpacing(context, 'medium'),
-              ),
-             
-              prefixIcon: Icon(
-                FontAwesomeIcons.building,
-                color: AppColors.primary,
-                size: ResponsiveHelper.getIconSize(context, 'medium'),
-              ),
-            ),
-            items: hostels.map((hostel) {
-              return DropdownMenuItem(
-                value: hostel,
-                child: Text(
-                  hostel,
-                  style: AppTextStyles.body1.copyWith(
-                    fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
-                    color: AppColors.textPrimary,
-                  ),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.getSpacing(context, 'large'),
+                  vertical: ResponsiveHelper.getSpacing(context, 'medium'),
                 ),
-              );
-            }).toList(),
-            onChanged: (String? value) {
-              if (value != null) {
-                onHostelChanged(value);
-              }
-            },
-            style: AppTextStyles.body1.copyWith(
-              fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
-              color: AppColors.textPrimary,
+
+                prefixIcon: Icon(
+                  FontAwesomeIcons.building,
+                  color: AppColors.primary,
+                  size: ResponsiveHelper.getIconSize(context, 'medium'),
+                ),
+              ),
+              items: hostels.map((hostel) {
+                return DropdownMenuItem(
+                  value: hostel,
+                  child: Text(
+                    hostel,
+                    style: AppTextStyles.body1.copyWith(
+                      fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                );
+              }).toList(),
+              onChanged: (String? value) {
+                if (value != null) {
+                  onHostelChanged(value);
+                }
+              },
+              style: AppTextStyles.body1.copyWith(
+                fontSize: ResponsiveHelper.getFontSize(context, 'body1'),
+                color: AppColors.textPrimary,
+              ),
             ),
           ),
         ),
-      
       ],
     );
   }

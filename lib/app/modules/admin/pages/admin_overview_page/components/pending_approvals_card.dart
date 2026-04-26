@@ -175,10 +175,12 @@ class PendingApprovalsCard extends StatelessWidget {
                           ),
                           Row(
                             children: [
-                              _buildInfoChip(
-                                context,
-                                'Roll No',
-                                request.rollNumber,
+                              Flexible(
+                                child: _buildInfoChip(
+                                  context,
+                                  'Roll No',
+                                  request.rollNumber,
+                                ),
                               ),
                               SizedBox(
                                 width: ResponsiveHelper.getSpacing(
@@ -186,39 +188,15 @@ class PendingApprovalsCard extends StatelessWidget {
                                   'xs',
                                 ),
                               ),
-                              _buildInfoChip(context, 'Hostel', request.hostel),
+                              Flexible(
+                                child: _buildInfoChip(
+                                  context,
+                                  'Hostel',
+                                  request.hostel,
+                                ),
+                              ),
                             ],
                           ),
-                          if (request.department.isNotEmpty ||
-                              request.semester > 0) ...[
-                            SizedBox(
-                              height: ResponsiveHelper.getSpacing(
-                                context,
-                                'xs',
-                              ),
-                            ),
-                            if (!ResponsiveHelper.isMobile(context))
-                              Row(
-                                children: [
-                                  _buildInfoChip(
-                                    context,
-                                    'Department',
-                                    request.department,
-                                  ),
-                                  SizedBox(
-                                    width: ResponsiveHelper.getSpacing(
-                                      context,
-                                      'small',
-                                    ),
-                                  ),
-                                  _buildInfoChip(
-                                    context,
-                                    'Semester',
-                                    '${request.semester}',
-                                  ),
-                                ],
-                              ),
-                          ],
                           SizedBox(
                             height: ResponsiveHelper.getSpacing(
                               context,

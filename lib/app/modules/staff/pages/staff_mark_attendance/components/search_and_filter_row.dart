@@ -52,12 +52,15 @@ class SearchAndFilterRow extends StatelessWidget {
                 ),
                 labelStyle: const TextStyle(fontSize: 12),
               ),
-              style: const TextStyle(fontSize: 12),
+              style: const TextStyle(fontSize: 12, color: Colors.black87),
               value: controller.statusFilter.value,
               items: ['All', 'Present', 'Absent', 'Not Marked'].map((status) {
                 return DropdownMenuItem(
                   value: status,
-                  child: Text(status, style: const TextStyle(fontSize: 12)),
+                  child: Text(
+                    status,
+                    style: const TextStyle(fontSize: 12, color: Colors.black87),
+                  ),
                 );
               }).toList(),
               onChanged: (value) => controller.filterByStatus(value ?? 'All'),

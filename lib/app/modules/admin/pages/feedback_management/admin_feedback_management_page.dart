@@ -1,3 +1,4 @@
+import 'dart:math' show max;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -95,7 +96,13 @@ class _AdminFeedbackManagementPageState
       decoration: AppDecorations.floatingCard(),
       child: Row(
         children: [
-          Text('Student Feedback', style: AppTextStyles.heading5),
+          Flexible(
+            child: Text(
+              'Student Feedback',
+              style: AppTextStyles.heading5,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
           const Spacer(),
           Container(
             padding: EdgeInsets.symmetric(
@@ -111,6 +118,10 @@ class _AdminFeedbackManagementPageState
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 value: _statusFilter,
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontSize: ResponsiveHelper.getFontSize(context, 'body2'),
+                ),
                 borderRadius: BorderRadius.circular(
                   ResponsiveHelper.getBorderRadius(context, 'medium'),
                 ),
@@ -286,10 +297,18 @@ class _AdminFeedbackManagementPageState
                     : FontAwesomeIcons.reply,
                 size: ResponsiveHelper.getIconSize(context, 'xsmall'),
               ),
-              label: Text(hasResponse ? 'Edit Response' : 'Add Response'),
+              label: Text(
+                hasResponse ? 'Edit Response' : 'Add Response',
+                overflow: TextOverflow.ellipsis,
+              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.adminRole,
                 foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.getSpacing(context, 'medium'),
+                  vertical: ResponsiveHelper.getSpacing(context, 'small'),
+                ),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
             ),
           ),
@@ -350,93 +369,140 @@ class _AdminFeedbackManagementPageState
       builder: (context) {
         return StatefulBuilder(
           builder: (dialogContext, setDialogState) {
-            return AlertDialog(
-              title: const Text('Respond to Feedback'),
-              content: SizedBox(
-                width: 520,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      feedback.comment,
-                      style: AppTextStyles.body2.copyWith(
-                        color: AppColors.textSecondary,
+            final mediaQuery = MediaQuery.of(dialogContext);
+            final bottomInset = mediaQuery.viewInsets.bottom;
+            final isKeyboardOpen = bottomInset > 0;
+            // Keyboard inset is already handled by Dialog.insetPadding.
+            // Do not subtract it again here, otherwise the dialog shrinks too much.
+            final availableHeight =
+                mediaQuery.size.height -
+                mediaQuery.padding.top -
+                mediaQuery.padding.bottom -
+                32;
+            return Dialog(
+              alignment: isKeyboardOpen
+                  ? Alignment.bottomCenter
+                  : Alignment.center,
+              insetPadding: EdgeInsets.fromLTRB(
+                20,
+                16,
+                20,
+                isKeyboardOpen ? 4 : 20,
+              ),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: ResponsiveHelper.isMobile(dialogContext)
+                      ? double.infinity
+                      : 560,
+                  maxHeight: isKeyboardOpen
+                      ? mediaQuery.size.height * 0.55
+                      : max(220.0, availableHeight),
+                ),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Respond to Feedback',
+                        style: Theme.of(dialogContext).textTheme.titleLarge,
                       ),
-                    ),
-                    SizedBox(
-                      height: ResponsiveHelper.getSpacing(
-                        dialogContext,
-                        'medium',
-                      ),
-                    ),
-                    ReusableTextField(
-                      label: 'Response',
-                      hintText: 'Write your response for the student',
-                      controller: responseController,
-                      maxLines: 4,
-                      prefixIcon: Icons.reply,
-                    ),
-                    SizedBox(
-                      height: ResponsiveHelper.getSpacing(
-                        dialogContext,
-                        'small',
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Text('Status', style: AppTextStyles.body2),
-                        SizedBox(
-                          width: ResponsiveHelper.getSpacing(
-                            dialogContext,
-                            'small',
-                          ),
+                      const SizedBox(height: 10),
+                      Text(
+                        feedback.comment,
+                        style: AppTextStyles.body2.copyWith(
+                          color: AppColors.textSecondary,
                         ),
-                        Expanded(
-                          child: DropdownButtonFormField<String>(
-                            value: selectedStatus,
-                            decoration: const InputDecoration(
-                              isDense: true,
-                              border: OutlineInputBorder(),
+                      ),
+                      SizedBox(
+                        height: ResponsiveHelper.getSpacing(
+                          dialogContext,
+                          'medium',
+                        ),
+                      ),
+                      ReusableTextField(
+                        label: 'Response',
+                        hintText: 'Write your response for the student',
+                        controller: responseController,
+                        maxLines: ResponsiveHelper.isMobile(dialogContext)
+                            ? (isKeyboardOpen ? 2 : 3)
+                            : 4,
+                        prefixIcon: Icons.reply,
+                      ),
+                      SizedBox(
+                        height: ResponsiveHelper.getSpacing(
+                          dialogContext,
+                          'small',
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Text('Status', style: AppTextStyles.body2),
+                          SizedBox(
+                            width: ResponsiveHelper.getSpacing(
+                              dialogContext,
+                              'small',
                             ),
-                            items: const [
-                              DropdownMenuItem(
-                                value: 'reviewed',
-                                child: Text('reviewed'),
+                          ),
+                          Expanded(
+                            child: DropdownButtonFormField<String>(
+                              value: selectedStatus,
+                              style: const TextStyle(color: Colors.black87),
+                              decoration: const InputDecoration(
+                                isDense: true,
+                                border: OutlineInputBorder(),
                               ),
-                              DropdownMenuItem(
-                                value: 'resolved',
-                                child: Text('resolved'),
-                              ),
-                            ],
-                            onChanged: (value) {
-                              if (value == null) return;
-                              setDialogState(() {
-                                selectedStatus = value;
+                              items: const [
+                                DropdownMenuItem(
+                                  value: 'reviewed',
+                                  child: Text('reviewed'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'resolved',
+                                  child: Text('resolved'),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                if (value == null) return;
+                                setDialogState(() => selectedStatus = value);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.of(dialogContext).pop(),
+                            child: const Text('Cancel'),
+                          ),
+                          const SizedBox(width: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(dialogContext).pop({
+                                'response': responseController.text.trim(),
+                                'status': selectedStatus,
                               });
                             },
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(0, 36),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: const Text('Save Response'),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(),
-                  child: const Text('Cancel'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(dialogContext).pop({
-                      'response': responseController.text.trim(),
-                      'status': selectedStatus,
-                    });
-                  },
-                  child: const Text('Save Response'),
-                ),
-              ],
             );
           },
         );

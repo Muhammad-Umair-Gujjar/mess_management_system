@@ -44,14 +44,17 @@ class ActiveStudentsTab extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Active Students', style: AppTextStyles.heading5),
-                    Obx(
-                      () => Text(
-                        '${studentController.filteredStudents.length} students enrolled',
+                    Obx(() {
+                      final activeCount = studentController.studentsAsMap
+                          .where((s) => s['isApproved'] == true)
+                          .length;
+                      return Text(
+                        '$activeCount students enrolled',
                         style: AppTextStyles.body2.copyWith(
                           color: AppColors.textLight,
                         ),
-                      ),
-                    ),
+                      );
+                    }),
                   ],
                 ),
               ),
@@ -70,7 +73,9 @@ class ActiveStudentsTab extends StatelessWidget {
           // Students Grid/List
           Expanded(
             child: Obx(() {
-              final students = studentController.studentsAsMap;
+              final students = studentController.studentsAsMap
+                  .where((s) => s['isApproved'] == true)
+                  .toList();
 
               if (students.isEmpty) {
                 if (studentController.isLoading.value) {
