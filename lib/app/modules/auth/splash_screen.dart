@@ -158,13 +158,14 @@ class _SplashScreenState extends State<SplashScreen>
                 child: Transform.scale(
                   scale: _scaleAnimation.value,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(flex: 6, child: _buildMainContent()),
-                      Expanded(flex: 2, child: _buildLoadingSection()),
-                      if (_showContent) _buildQuickActions(),
+                      _buildMainContent(),
                       SizedBox(
                         height: ResponsiveHelper.getSpacing(context, 'large'),
                       ),
+                      _buildLoadingSection(),
+                      // if (_showContent) _buildQuickActions(),
                     ],
                   ),
                 ),
@@ -214,10 +215,10 @@ class _SplashScreenState extends State<SplashScreen>
               children: [
                 Icon(
                   Icons.restaurant_menu,
-                  size: ResponsiveHelper.getIconSize(context, 'large'),
+                  size: ResponsiveHelper.getIconSize(context, 'large') + 8,
                   color: AppColors.primary,
                 ),
-               ],
+              ],
             ),
           ),
 
